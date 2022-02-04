@@ -1,0 +1,90 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:icon="@drawable/ic_storage_24"
+        app:title="@string/manage_data_header">
+
+        <Preference
+            app:icon="@drawable/ic_download_24"
+            app:key="import"
+            app:summary="@string/import_summary"
+            app:title="@string/import_title" />
+
+        <Preference
+            app:icon="@drawable/ic_upload_24"
+            app:key="export"
+            app:summary="@string/export_summary"
+            app:title="@string/export_title" />
+
+        <Preference
+            app:icon="@drawable/ic_delete_older_than_24"
+            app:key="delete_older_than"
+            app:summary="@string/delete_events_older_than_summary"
+            app:title="@string/delete_events_older_than_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:icon="@drawable/ic_notifications_24"
+        app:title="@string/notifications_header">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:icon="@drawable/ic_notifications_active_24"
+            app:key="receive_notifications"
+            app:summaryOff="@string/receive_notifications_summary_off"
+            app:summaryOn="@string/receive_notifications_summary_on"
+            app:title="@string/receive_notifications_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="receive_notifications"
+            app:icon="@drawable/ic_event_24"
+            app:key="receive_schedule_notifications"
+            app:summary="@string/schedule_events_notifications_summary"
+            app:title="@string/schedule_events_notifications_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="receive_notifications"
+            app:icon="@drawable/ic_clapperboard_24"
+            app:key="receive_movies_list_notifications"
+            app:summary="@string/movies_list_notifications_summary"
+            app:title="@string/movies_list_notifications_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="receive_notifications"
+            app:icon="@drawable/ic_music_note_24"
+            app:key="receive_music_list_notifications"
+            app:summary="@string/music_list_notifications_summary"
+            app:title="@string/music_list_notifications_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="receive_notifications"
+            app:icon="@drawable/ic_translate_24"
+            app:key="receive_languages_list_notifications"
+            app:summary="@string/languages_list_notifications_summary"
+            app:title="@string/languages_list_notifications_title" />
+
+    </PreferenceCategory>
+
+    <!--<PreferenceCategory app:title="@string/messages_header">
+
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>-->
+
+</PreferenceScreen>

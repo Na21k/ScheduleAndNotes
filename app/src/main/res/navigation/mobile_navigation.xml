@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_schedule">
+
+    <fragment
+        android:id="@+id/navigation_schedule"
+        android:name="com.na21k.schedulenotes.ui.schedule.ScheduleFragment"
+        android:label="@string/title_schedule"
+        tools:layout="@layout/schedule_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_notes"
+        android:name="com.na21k.schedulenotes.ui.notes.NotesFragment"
+        android:label="@string/title_notes"
+        tools:layout="@layout/notes_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_lists"
+        android:name="com.na21k.schedulenotes.ui.lists.ListsFragment"
+        android:label="@string/title_lists"
+        tools:layout="@layout/lists_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_categories"
+        android:name="com.na21k.schedulenotes.ui.categories.CategoriesFragment"
+        android:label="@string/title_categories"
+        tools:layout="@layout/categories_fragment" />
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.na21k.schedulenotes.ui.settings.SettingsFragment"
+        android:label="@string/title_settings" />
+
+    <!--    <fragment
+            android:id="@+id/navigation_home"
+            android:name="com.na21k.schedulenotes.ui.home.HomeFragment"
+            android:label="@string/title_home"
+            tools:layout="@layout/fragment_home" />-->
+</navigation>

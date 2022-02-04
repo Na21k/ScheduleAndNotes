@@ -1,0 +1,145 @@
+package com.na21k.schedulenotes.ui.categories;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.CategoriesHelper;
+import com.na21k.schedulenotes.Constants;
+import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.models.ColorSet;
+import com.na21k.schedulenotes.data.models.ColorSetModel;
+import com.na21k.schedulenotes.databinding.CategoriesListItemBinding;
+import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
+
+import java.util.List;
+
+public class CategoriesListAdapter
+        extends RecyclerView.Adapter<CategoriesListAdapter.CategoryViewHolder> {
+
+    private final CategoriesViewModel mFragmentViewModel;
+    private final boolean mIsNightMode;
+    private List<Category> mCategories = null;
+
+    public CategoriesListAdapter(CategoriesViewModel mFragmentViewModel, boolean isNightMode) {
+        this.mFragmentViewModel = mFragmentViewModel;
+        mIsNightMode = isNightMode;
+    }
+
+    @NonNull
+    @Override
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        CategoriesListItemBinding binding = CategoriesListItemBinding
+                .inflate(inflater, parent, false);
+
+        return new CategoryViewHolder(binding.getRoot(), binding, mFragmentViewModel, mIsNightMode);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+        Category category = mCategories.get(position);
+        holder.setData(category);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mCategories != null ? mCategories.size() : 0;
+    }
+
+    public void setCategories(List<Category> categories) {
+        mCategories = categories;
+        notifyDataSetChanged();
+    }
+
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder
+            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+
+        private final CategoriesViewModel mFragmentViewModel;
+        private final CategoriesListItemBinding mBinding;
+        private final boolean mIsNightMode;
+        private Category mCategory;
+
+        public CategoryViewHolder(@NonNull View itemView, CategoriesListItemBinding binding,
+                                  CategoriesViewModel fragmentViewModel, boolean isNightMode) {
+            super(itemView);
+            mBinding = binding;
+            mFragmentViewModel = fragmentViewModel;
+            mIsNightMode = isNightMode;
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v,
+                                        ContextMenu.ContextMenuInfo menuInfo) {
+            MenuInflater menuInflater = new MenuInflater(v.getContext());
+            menuInflater.inflate(R.menu.category_long_press_menu, menu);
+
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                item.setOnMenuItemClickListener(this);
+            }
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.category_delete_menu_item:
+                    mFragmentViewModel.delete(mCategory);
+                    Snackbar.make(itemView, R.string.category_deleted_snackbar, 3000)
+                            .show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void setData(Category category) {
+            mCategory = category;
+            mBinding.categoryName.setText(category.getTitle());
+            mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
+
+            itemView.setOnClickListener(v -> {
+                Context context = v.getContext();
+
+                if (context != null) {
+                    Intent intent = new Intent(context, CategoryDetailsActivity.class);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.CATEGORY_ID_INTENT_KEY, category.getId());
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
+                }
+            });
+
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        private int getCardColor(Category category) {
+            ColorSet categoryColorSet = category.getColorSet();
+            List<ColorSetModel> colorSetModels = CategoriesHelper.getCategoriesColorSets(itemView.getContext());
+            ColorSetModel categoryColorSetModel = colorSetModels.stream()
+                    .filter(colorSetModel -> colorSetModel.getColorSet()
+                            .equals(categoryColorSet)).findFirst().orElse(null);
+
+            int res = 0;
+
+            if (categoryColorSetModel != null) {
+                res = mIsNightMode ? categoryColorSetModel.getColorNightHex() : categoryColorSetModel.getColorDayHex();
+            }
+
+            return res;
+        }
+    }
+}

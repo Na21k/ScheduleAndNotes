@@ -1,0 +1,59 @@
+package com.na21k.schedulenotes.data.database.Lists.Languages;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+
+import com.na21k.schedulenotes.data.database.SimpleListItem;
+
+import org.jetbrains.annotations.NotNull;
+
+@Entity(tableName = "languages_list_items", indices = {@Index(value = "id")})
+public class LanguagesListItem extends SimpleListItem {
+
+    @ColumnInfo(name = "translation")
+    private String translation;
+
+    @ColumnInfo(name = "explanation")
+    private String explanation;
+
+    @ColumnInfo(name = "usage_example_text")
+    private String usageExampleText;
+
+    //TODO: add images support (create a converter) (usage example image
+    // (or maybe use an array of images)
+
+
+    public LanguagesListItem(int id, @NotNull String text, String translation, String explanation,
+                             String usageExampleText) {
+        this.id = id;
+        this.text = text;
+        this.translation = translation;
+        this.explanation = explanation;
+        this.usageExampleText = usageExampleText;
+    }
+
+    public String getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public String getUsageExampleText() {
+        return usageExampleText;
+    }
+
+    public void setUsageExampleText(String usageExampleText) {
+        this.usageExampleText = usageExampleText;
+    }
+}

@@ -1,0 +1,65 @@
+<resources>
+    <!--General-->
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="app_name">Schedule &amp; Notes</string>
+    <string name="title_home">Home</string>
+    <string name="title_schedule">Schedule</string>
+    <string name="title_notes">Notes</string>
+    <string name="title_lists">Lists</string>
+    <string name="title_categories">Categories</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_import">Import</string>
+    <string name="title_export">Export</string>
+    <string name="title_create_category">Create a category</string>
+    <string name="title_edit_category">Edit a category</string>
+    <!-- Preference Titles -->
+    <!--<string name="messages_header">Messages</string>-->
+    <string name="manage_data_header">Manage data</string>
+    <string name="notifications_header">Notifications</string>
+
+    <!--Data management preferences-->
+    <string name="import_title">Import</string>
+    <string name="import_summary">Import data (including settings) from a file</string>
+    <string name="export_title">Export</string>
+    <string name="export_summary">Export data (including settings) to a file</string>
+    <string name="delete_events_older_than_title">Delete events older than …</string>
+    <string name="delete_events_older_than_summary">Delete events up to a selected date (inclusive)</string>
+
+    <!--Notifications preferences-->
+    <string name="receive_notifications_title">Receive notifications</string>
+    <string name="receive_notifications_summary_on">You\'ll receive selected notifications</string>
+    <string name="receive_notifications_summary_off">You won\'t receive any notifications</string>
+    <string name="schedule_events_notifications_title">Schedule events notifications</string>
+    <string name="schedule_events_notifications_summary">Get notified about events 30 minutes before the beginning and when they start</string>
+    <string name="movies_list_notifications_title">Movies List notifications</string>
+    <string name="movies_list_notifications_summary">Receive reminders to watch a random film from your Movies List</string>
+    <string name="music_list_notifications_title">Music List notifications</string>
+    <string name="music_list_notifications_summary">Note down bands, albums, and songs you are interested in and get reminders to check them out</string>
+    <string name="languages_list_notifications_title">Languages List notifications</string>
+    <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Languages List and receiving periodic notifications. This way you will be able to memorize them better</string>
+
+    <!-- Messages Preferences -->
+    <!--<string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>-->
+
+    <!--Snackbar and Toast messages-->
+    <string name="delete_events_older_than_succeeded_snackbar">Successfully deleted the selected range of events</string>
+    <string name="backing_up_toast">Backing up …</string>
+    <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
+    <string name="backup_created_successfully_toast">Backup created successfully</string>
+    <string name="unexpected_error_toast">An unexpected error occurred</string>
+    <string name="importing_from_backup_toast">Importing from backup …</string>
+    <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
+    <string name="specify_category_name_toast">Specify category name</string>
+    <string name="category_deleted_snackbar">The category has been deleted</string>
+
+    <!--Categories-->
+    <string name="add_category_fab">Add category</string>
+    <string name="category_name_input_hint">Category name</string>
+    <string name="category_name_edit_text_title">Specify category name</string>
+    <string name="color_selection_title">Pick a color set</string>
+    <string name="color_selection_subtitle">Different color shades are used for light and dark mode</string>
+</resources>
