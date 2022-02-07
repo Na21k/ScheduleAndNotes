@@ -11,12 +11,6 @@
     <string name="title_lists">Lists</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
-    <string name="title_import">Import</string>
-    <string name="title_export">Export</string>
-    <string name="title_create_category">Create a category</string>
-    <string name="title_edit_category">Edit a category</string>
-    <string name="title_create_note">Create a note</string>
-    <string name="title_edit_note">Edit a note</string>
     <!-- Preference Titles -->
     <!--<string name="messages_header">Messages</string>-->
     <string name="manage_data_header">Manage data</string>
@@ -48,6 +42,8 @@
     <string name="reply_title">Default reply action</string>-->
 
     <!--Settings-->
+    <string name="title_import">Import</string>
+    <string name="title_export">Export</string>
     <string name="delete_events_older_than_succeeded_snackbar">Successfully deleted the selected range of events</string>
     <string name="backing_up_toast">Backing up …</string>
     <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
@@ -59,6 +55,8 @@
     <string name="unexpected_error_toast">An unexpected error occurred</string>
 
     <!--Categories-->
+    <string name="title_create_category">Create a category</string>
+    <string name="title_edit_category">Edit a category</string>
     <string name="add_category_fab">Add category</string>
     <string name="category_name_input_hint">Category name</string>
     <string name="category_name_edit_text_title">Specify category name</string>
@@ -68,6 +66,8 @@
     <string name="category_deleted_snackbar">The category has been deleted</string>
 
     <!--Notes-->
+    <string name="title_create_note">Create a note</string>
+    <string name="title_edit_note">Edit a note</string>
     <string name="add_note_fab">Add note</string>
     <string name="note_deleted_snackbar">The note has been deleted</string>
     <string name="specify_note_title_toast">Specify note title</string>
