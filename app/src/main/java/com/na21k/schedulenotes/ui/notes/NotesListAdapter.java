@@ -112,6 +112,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             mBinding.noteTitle.setText(note.getTitle());
             mBinding.noteDetails.setText(note.getDetails());
 
+            if (mBinding.noteDetails.getText().toString().isEmpty()) {
+                mBinding.noteDetails.setVisibility(View.GONE);
+            } else {
+                mBinding.noteDetails.setVisibility(View.VISIBLE);
+            }
+
             int backColor = CategoriesHelper
                     .getNoteCategoryColor(itemView.getContext(), note, mCategories, mIsNightMode);
 
