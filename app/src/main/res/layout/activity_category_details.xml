@@ -11,20 +11,23 @@
         android:orientation="vertical"
         android:paddingVertical="@dimen/page_margin">
 
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/page_margin"
             android:text="@string/category_name_edit_text_title"
-            android:textSize="24sp" />
+            android:textSize="24sp" />-->
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <EditText
             android:id="@+id/category_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/page_margin"
+            android:background="@null"
             android:hint="@string/category_name_input_hint"
-            android:inputType="textCapSentences" />
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences"
+            android:textSize="36sp" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -35,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/page_margin"
             android:text="@string/color_selection_title"
-            android:textSize="24sp" />
+            android:textSize="36sp" />
 
         <TextView
             android:layout_width="wrap_content"

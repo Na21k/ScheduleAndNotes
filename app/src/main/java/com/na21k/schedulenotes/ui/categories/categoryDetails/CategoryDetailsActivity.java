@@ -61,7 +61,6 @@ public class CategoryDetailsActivity extends AppCompatActivity
             setTitle(R.string.title_create_category);
             mSelectedColorSet = ColorSet.GRAY;
             rerenderColorPickerItems();
-            mBinding.categoryNameInput.requestFocus();
         }
     }
 
