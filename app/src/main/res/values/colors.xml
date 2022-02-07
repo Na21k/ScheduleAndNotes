@@ -12,9 +12,9 @@
     <color name="colorPrimaryDark">#DF583C</color>
     <color name="colorAccent">#41D5F4</color>
     <color name="colorAccentDark">#3CC4E1</color>
-    <color name="navigationBar">#FFFFFF</color>
-    <color name="navigationBarDark">#2D2D2D</color>
     <color name="shadow_color">#000000</color>
+    <color name="window_background">#FFFFFF</color>
+    <color name="navigation_bar">#FFFFFF</color>
 
     <color name="check_color">#20DD65</color>
 

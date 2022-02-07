@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.na21k.schedulenotes.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.databinding.CategoriesFragmentBinding;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
@@ -42,10 +43,7 @@ public class CategoriesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = mBinding.includedList.categoriesList;
-        CategoriesListAdapter adapter = new CategoriesListAdapter(mViewModel, isInDarkMode());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        CategoriesListAdapter adapter = setUpRecyclerView();
 
         //mViewModel.deleteAll();
 
@@ -64,11 +62,28 @@ public class CategoriesFragment extends Fragment {
         mViewModel.insert(new Category(0, "Test category 13", 0xffd4bd2a));
         mViewModel.insert(new Category(0, "Test category 14", 0xff2a66d4));*/
 
+        observeCategories(adapter);
+        setListeners();
+    }
+
+    private CategoriesListAdapter setUpRecyclerView() {
+        RecyclerView recyclerView = mBinding.includedList.categoriesList;
+        CategoriesListAdapter adapter =
+                new CategoriesListAdapter(mViewModel, UiHelper.isInDarkMode(this));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        return adapter;
+    }
+
+    private void observeCategories(CategoriesListAdapter adapter) {
         mViewModel.getAll().observe(getViewLifecycleOwner(), categories -> {
             categories.sort(Comparator.comparing(Category::getTitle));
             adapter.setCategories(categories);
         });
+    }
 
+    private void setListeners() {
         mBinding.addCategoryFab.setOnClickListener(v -> newCategory());
 
         mBinding.includedList.categoriesList.setOnScrollChangeListener(
@@ -88,10 +103,5 @@ public class CategoriesFragment extends Fragment {
             Intent intent = new Intent(context, CategoryDetailsActivity.class);
             startActivity(intent);
         }
-    }
-
-    private boolean isInDarkMode() {
-        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                == Configuration.UI_MODE_NIGHT_YES;
     }
 }

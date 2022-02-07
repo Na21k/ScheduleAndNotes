@@ -47,4 +47,10 @@
     <string name="category_name_edit_text_title">Вкажіть назву категорії</string>
     <string name="color_selection_title">Оберіть набір кольорів</string>
     <string name="color_selection_subtitle">Для світлого і темного режиму використовуються різні відтінки кольору</string>
+    <string name="add_note_fab">Додати нотатку</string>
+    <string name="note_deleted_snackbar">Нотатку видалено</string>
+    <string name="title_create_note">Створити нотатку</string>
+    <string name="title_edit_note">Редагувати нотатку</string>
+    <string name="specify_note_title_toast">Вкажіть заголовок нотатки</string>
+    <string name="note_set_category_menu_item">Встановити категорію</string>
 </resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/page_margin"
+    tools:context=".ui.notes.noteDetails.NoteDetailsActivity">
+
+    <EditText
+        android:id="@+id/note_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="Note title"
+        android:importantForAutofill="no"
+        android:inputType="textCapSentences"
+        android:textSize="36sp" />
+
+    <EditText
+        android:id="@+id/note_details"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/page_margin"
+        android:layout_weight="1"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="Note body"
+        android:importantForAutofill="no"
+        android:inputType="textCapSentences|textMultiLine"
+        android:scrollbars="vertical"
+        android:textSize="22sp" />
+
+</LinearLayout>

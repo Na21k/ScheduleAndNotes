@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="window_background">#202124</color>
+    <color name="navigation_bar">#3A3B3D</color>
     <color name="shadow_color">#ffffff</color>
 
     <color name="check_color">#1ECF5F</color>

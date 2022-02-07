@@ -15,6 +15,8 @@
     <string name="title_export">Export</string>
     <string name="title_create_category">Create a category</string>
     <string name="title_edit_category">Edit a category</string>
+    <string name="title_create_note">Create a note</string>
+    <string name="title_edit_note">Edit a note</string>
     <!-- Preference Titles -->
     <!--<string name="messages_header">Messages</string>-->
     <string name="manage_data_header">Manage data</string>
@@ -45,16 +47,16 @@
     <!--<string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>-->
 
-    <!--Snackbar and Toast messages-->
+    <!--Settings-->
     <string name="delete_events_older_than_succeeded_snackbar">Successfully deleted the selected range of events</string>
     <string name="backing_up_toast">Backing up …</string>
     <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
     <string name="backup_created_successfully_toast">Backup created successfully</string>
-    <string name="unexpected_error_toast">An unexpected error occurred</string>
     <string name="importing_from_backup_toast">Importing from backup …</string>
     <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
-    <string name="specify_category_name_toast">Specify category name</string>
-    <string name="category_deleted_snackbar">The category has been deleted</string>
+
+    <!--Snackbar and Toast messages-->
+    <string name="unexpected_error_toast">An unexpected error occurred</string>
 
     <!--Categories-->
     <string name="add_category_fab">Add category</string>
@@ -62,4 +64,12 @@
     <string name="category_name_edit_text_title">Specify category name</string>
     <string name="color_selection_title">Pick a color set</string>
     <string name="color_selection_subtitle">Different color shades are used for light and dark mode</string>
+    <string name="specify_category_name_toast">Specify category name</string>
+    <string name="category_deleted_snackbar">The category has been deleted</string>
+
+    <!--Notes-->
+    <string name="add_note_fab">Add note</string>
+    <string name="note_deleted_snackbar">The note has been deleted</string>
+    <string name="specify_note_title_toast">Specify note title</string>
+    <string name="note_set_category_menu_item">Set category</string>
 </resources>

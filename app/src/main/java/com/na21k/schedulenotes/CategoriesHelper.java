@@ -2,16 +2,21 @@ package com.na21k.schedulenotes;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
+import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesHelper {
 
+    @NonNull
     public static List<ColorSetModel> getCategoriesColorSets(Context context) {
         int colorGrayDay = ContextCompat.getColor(context, R.color.category_gray);
         int colorGrayNight = ContextCompat.getColor(context, R.color.category_gray_night);
@@ -41,5 +46,54 @@ public class CategoriesHelper {
         res.add(new ColorSetModel(ColorSet.PURPLE, colorPurpleDay, colorPurpleNight));
 
         return res;
+    }
+
+    public static int getNoteCategoryColor(Context context, Note note, List<Category> categories,
+                                           boolean isNightMode) throws CouldNotFindColorSetModelException {
+        Integer categoryId = note.getCategoryId();
+        ColorSetModel defaultColorSetModel = getDefaultColorSetModel(context);
+        int defaultColor = isNightMode ? defaultColorSetModel.getColorNightHex() :
+                defaultColorSetModel.getColorDayHex();
+
+        if (categoryId == null) {
+            return defaultColor;
+        }
+
+        Category noteCategory = categories.stream().filter(
+                category -> category.getId() == categoryId).findFirst().orElse(null);
+
+        List<ColorSetModel> colorSetModels = getCategoriesColorSets(context);
+
+        if (noteCategory == null) {
+            return defaultColor;
+        }
+
+        ColorSetModel noteColorSetModel = colorSetModels.stream().filter(
+                colorSetModel -> colorSetModel.getColorSet().equals(noteCategory.getColorSet()))
+                .findFirst().orElse(null);
+
+        if (noteColorSetModel == null) {
+            return defaultColor;
+        }
+
+        return isNightMode ?
+                noteColorSetModel.getColorNightHex() : noteColorSetModel.getColorDayHex();
+    }
+
+    private static ColorSetModel getDefaultColorSetModel(Context context)
+            throws CouldNotFindColorSetModelException {
+        ColorSet defaultColorSet = Constants.DEFAULT_COLOR_SET;
+
+        List<ColorSetModel> colorSetModels = CategoriesHelper.getCategoriesColorSets(context);
+        ColorSetModel res = colorSetModels.stream().filter(
+                colorSetModel -> colorSetModel.getColorSet().equals(defaultColorSet))
+                .findFirst().orElse(null);
+
+        if (res != null) {
+            return res;
+        } else {
+            throw new CouldNotFindColorSetModelException(
+                    "Could not find the default color set model", defaultColorSet);
+        }
     }
 }

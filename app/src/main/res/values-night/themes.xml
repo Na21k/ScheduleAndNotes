@@ -4,6 +4,7 @@
         <!-- Primary brand color. -->
         <!--<item name="colorPrimary">@color/purple_200</item>-->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorSurface">@color/window_background</item>
         <!--<item name="colorPrimaryVariant">@color/purple_700</item>-->
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@color/black</item>
@@ -16,8 +17,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!--Navigation bar color-->
-        <item name="android:navigationBarColor">@color/navigationBarDark</item>
+        <item name="android:navigationBarColor">@color/navigation_bar</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/window_background</item>
+
         <!--Snackbar style-->
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>

@@ -16,6 +16,7 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_export.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_import_activity.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_main.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_note_details.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list_item.xml" value="0.27291666666666664" />
@@ -23,11 +24,15 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/lists_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/notes_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/notes_list.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/notes_list_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/schedule_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/settings_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/bottom_nav_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/category_details_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/category_long_press_menu.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/note_details_menu.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/note_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/xml/root_preferences.xml" value="0.27291666666666664" />
       </map>
     </option>

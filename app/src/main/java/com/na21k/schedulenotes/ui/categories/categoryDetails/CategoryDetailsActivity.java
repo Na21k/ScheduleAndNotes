@@ -65,6 +65,56 @@ public class CategoryDetailsActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        ColorSetModel model = (ColorSetModel) v.getTag();
+        mSelectedColorSet = model.getColorSet();
+        setSelectedColorPickerItem(v);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.category_details_menu, menu);
+
+        if (!isEditing()) {
+            menu.removeItem(R.id.menu_delete);
+        }
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                /*if (isEditing()) updateCategory();
+                else createCategory();*/
+                saveCategory();
+                break;
+            case R.id.menu_cancel:
+                finish();
+                break;
+            case R.id.menu_delete:
+                deleteCategory();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    @Override
+    public void onChanged(Category category) {
+        mBinding.categoryNameInput.setText(category.getTitle());
+        mSelectedColorSet = category.getColorSet();
+        rerenderColorPickerItems();
+    }
+
     private void rerenderColorPickerItems() {
         List<ColorSetModel> models = CategoriesHelper.getCategoriesColorSets(this);
         LinearLayout variantsLayout = mBinding.colorVariants;
@@ -103,55 +153,6 @@ public class CategoryDetailsActivity extends AppCompatActivity
         mSelectedColorSetModel = newSelectionModel;
     }
 
-    @Override
-    public void onClick(View v) {
-        ColorSetModel model = (ColorSetModel) v.getTag();
-        mSelectedColorSet = model.getColorSet();
-        setSelectedColorPickerItem(v);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.category_details_menu, menu);
-
-        if (!isEditing()) {
-            menu.removeItem(R.id.menu_delete);
-        }
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_save:
-                if (isEditing()) updateCategory();
-                else createCategory();
-                break;
-            case R.id.menu_cancel:
-                finish();
-                break;
-            case R.id.menu_delete:
-                deleteCategory();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
-
-    @Override
-    public void onChanged(Category category) {
-        mBinding.categoryNameInput.setText(category.getTitle());
-        mSelectedColorSet = category.getColorSet();
-        rerenderColorPickerItems();
-    }
-
     private boolean isEditing() {
         Bundle bundle = getIntent().getExtras();
         return bundle != null;
@@ -161,7 +162,26 @@ public class CategoryDetailsActivity extends AppCompatActivity
         mViewModel.getCategory(categoryId).observe(this, this);
     }
 
-    private void createCategory() {
+    private void saveCategory() {
+        Editable editable = mBinding.categoryNameInput.getText();
+
+        if (editable != null && !editable.toString().isEmpty()) {
+            Category category = new Category(0, editable.toString(), mSelectedColorSet);
+
+            if (isEditing()) {
+                mViewModel.updateCurrentCategory(category);
+            } else {
+                mViewModel.createCategory(category);
+            }
+
+            finish();
+        } else {
+            Toast.makeText(this, R.string.specify_category_name_toast,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*private void createCategory() {
         Editable editable = mBinding.categoryNameInput.getText();
 
         if (editable != null && !editable.toString().isEmpty()) {
@@ -187,16 +207,15 @@ public class CategoryDetailsActivity extends AppCompatActivity
             Toast.makeText(this, R.string.specify_category_name_toast,
                     Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     private void deleteCategory() {
         LiveData<Category> category = mViewModel.getCurrentCategory();
 
         if (category != null) {
             category.removeObserver(this);
+            mViewModel.deleteCurrentCategory();
+            finish();
         }
-
-        mViewModel.deleteCurrentCategory();
-        finish();
     }
 }

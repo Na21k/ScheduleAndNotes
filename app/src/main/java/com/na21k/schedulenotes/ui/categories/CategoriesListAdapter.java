@@ -104,7 +104,7 @@ public class CategoriesListAdapter
             }
         }
 
-        private void setData(Category category) {
+        private void setData(@NonNull Category category) {
             mCategory = category;
             mBinding.categoryName.setText(category.getTitle());
             mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
