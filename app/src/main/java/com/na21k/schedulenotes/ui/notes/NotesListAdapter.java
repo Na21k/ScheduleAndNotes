@@ -89,6 +89,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             MenuInflater inflater = new MenuInflater(v.getContext());
             inflater.inflate(R.menu.note_long_press_menu, menu);
 
+            if (mNote.getCategoryId() == null) {
+                menu.removeItem(R.id.note_remove_category_menu_item);
+            }
+
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem item = menu.getItem(i);
                 item.setOnMenuItemClickListener(this);
@@ -104,6 +108,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
                     return true;
                 case R.id.note_set_category_menu_item:
                     mOnChooseNoteCategoryListener.onCategorySelectionRequested(mNote);
+                    return true;
+                case R.id.note_remove_category_menu_item:
+                    mNote.setCategoryId(null);
+                    mFragmentViewModel.updateNote(mNote);
                     return true;
                 default:
                     return false;

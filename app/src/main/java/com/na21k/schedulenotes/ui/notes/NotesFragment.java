@@ -116,12 +116,11 @@ public class NotesFragment extends Fragment
         if (context != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setIcon(R.drawable.ic_categories_24);
-            builder.setTitle("Pick a category");
+            builder.setTitle(R.string.pick_category_dialog_title);
 
             mViewModel.getAllCategories().observe(this, categories -> {
                 categories.sort(Comparator.comparing(Category::getTitle));
 
-                //TODO: add a "no category" option
                 ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
                         android.R.layout.simple_list_item_1, categories);
                 builder.setAdapter(adapter, (dialog, which) -> {
