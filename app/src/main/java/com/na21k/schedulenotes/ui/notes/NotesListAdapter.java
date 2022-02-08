@@ -88,6 +88,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
                                         ContextMenu.ContextMenuInfo menuInfo) {
             MenuInflater inflater = new MenuInflater(v.getContext());
             inflater.inflate(R.menu.note_long_press_menu, menu);
+            menu.setHeaderTitle(R.string.note_context_menu_title);
 
             if (mNote.getCategoryId() == null) {
                 menu.removeItem(R.id.note_remove_category_menu_item);
