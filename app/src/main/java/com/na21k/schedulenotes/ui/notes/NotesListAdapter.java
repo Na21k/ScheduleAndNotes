@@ -29,12 +29,15 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     private final NotesViewModel mFragmentViewModel;
     private final boolean mIsNightMode;
+    private final OnChooseNoteCategoryListener mOnChooseNoteCategoryListener;
     private List<Note> mNotes = null;
     private List<Category> mCategories = null;
 
-    public NotesListAdapter(NotesViewModel mFragmentViewModel, boolean mIsNightMode) {
-        this.mFragmentViewModel = mFragmentViewModel;
-        this.mIsNightMode = mIsNightMode;
+    public NotesListAdapter(NotesViewModel fragmentViewModel, boolean isNightMode,
+                            OnChooseNoteCategoryListener onChooseNoteCategoryListener) {
+        mFragmentViewModel = fragmentViewModel;
+        mIsNightMode = isNightMode;
+        mOnChooseNoteCategoryListener = onChooseNoteCategoryListener;
     }
 
     @NonNull
@@ -100,7 +103,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
                     Snackbar.make(itemView, R.string.note_deleted_snackbar, 3000).show();
                     return true;
                 case R.id.note_set_category_menu_item:
-                    //TODO: implement category setting
+                    mOnChooseNoteCategoryListener.onCategorySelectionRequested(mNote);
                     return true;
                 default:
                     return false;
@@ -138,5 +141,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
             itemView.setOnCreateContextMenuListener(this);
         }
+    }
+
+    public interface OnChooseNoteCategoryListener {
+
+        void onCategorySelectionRequested(Note note);
     }
 }

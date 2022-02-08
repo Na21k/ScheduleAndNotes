@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.data.database.Categories;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -53,5 +54,11 @@ public class Category extends Identifiable {
 
     public void setColorSet(ColorSet colorSet) {
         this.colorSet = colorSet;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return title;
     }
 }

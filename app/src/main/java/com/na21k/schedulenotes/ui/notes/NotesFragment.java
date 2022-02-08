@@ -2,19 +2,21 @@ package com.na21k.schedulenotes.ui.notes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
@@ -24,7 +26,8 @@ import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 import java.util.Comparator;
 import java.util.List;
 
-public class NotesFragment extends Fragment {
+public class NotesFragment extends Fragment
+        implements NotesListAdapter.OnChooseNoteCategoryListener {
 
     private NotesViewModel mViewModel;
     private NotesFragmentBinding mBinding;
@@ -53,7 +56,8 @@ public class NotesFragment extends Fragment {
     private NotesListAdapter setUpRecyclerView() {
         RecyclerView recyclerView = mBinding.includedList.notesList;
         NotesListAdapter adapter =
-                new NotesListAdapter(mViewModel, UiHelper.isInDarkMode(this));
+                new NotesListAdapter(mViewModel, UiHelper.isInDarkMode(this),
+                        this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -102,6 +106,32 @@ public class NotesFragment extends Fragment {
         if (context != null) {
             Intent intent = new Intent(context, NoteDetailsActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onCategorySelectionRequested(Note note) {
+        Context context = getContext();
+
+        if (context != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_categories_24);
+            builder.setTitle("Pick a category");
+
+            mViewModel.getAllCategories().observe(this, categories -> {
+                categories.sort(Comparator.comparing(Category::getTitle));
+
+                //TODO: add a "no category" option
+                ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
+                        android.R.layout.simple_list_item_1, categories);
+                builder.setAdapter(adapter, (dialog, which) -> {
+                    int selectedCategoryId = categories.get(which).getId();
+                    note.setCategoryId(selectedCategoryId);
+                    mViewModel.updateNote(note);
+                });
+
+                builder.show();
+            });
         }
     }
 }

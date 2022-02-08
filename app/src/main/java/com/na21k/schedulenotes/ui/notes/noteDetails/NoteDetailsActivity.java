@@ -23,6 +23,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
     private NoteDetailsViewModel mViewModel;
     private ActivityNoteDetailsBinding mBinding;
+    private Integer mCurrentNotesCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         Editable detailsEditable = mBinding.noteDetails.getText();
 
         if (titleEditable != null && !titleEditable.toString().isEmpty()) {
-            Note note = new Note(0, titleEditable.toString(), detailsEditable.toString(), null);
+            Note note = new Note(0, titleEditable.toString(), detailsEditable.toString(),
+                    mCurrentNotesCategory);
 
             if (isEditing()) {
                 mViewModel.updateCurrentNote(note);
@@ -127,5 +129,6 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     public void onChanged(Note note) {
         mBinding.noteTitle.setText(note.getTitle());
         mBinding.noteDetails.setText(note.getDetails());
+        mCurrentNotesCategory = note.getCategoryId();
     }
 }
