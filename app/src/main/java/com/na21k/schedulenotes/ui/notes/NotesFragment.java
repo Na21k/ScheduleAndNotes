@@ -97,6 +97,12 @@ public class NotesFragment extends Fragment
                     } else {
                         mBinding.addNoteFab.shrink();
                     }
+
+                    if (v.canScrollVertically(1)) {
+                        mBinding.addNoteFab.show();
+                    } else {
+                        mBinding.addNoteFab.hide();
+                    }
                 });
     }
 

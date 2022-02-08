@@ -17,7 +17,7 @@
         android:hint="Note title"
         android:importantForAutofill="no"
         android:inputType="textCapSentences"
-        android:textSize="36sp" />
+        android:textSize="34sp" />
 
     <EditText
         android:id="@+id/note_details"
@@ -31,6 +31,6 @@
         android:importantForAutofill="no"
         android:inputType="textCapSentences|textMultiLine"
         android:scrollbars="vertical"
-        android:textSize="22sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>
