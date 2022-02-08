@@ -124,7 +124,7 @@ public class NotesFragment extends Fragment
             builder.setIcon(R.drawable.ic_categories_24);
             builder.setTitle(R.string.pick_category_dialog_title);
 
-            mViewModel.getAllCategories().observe(this, categories -> {
+            mViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
                 categories.sort(Comparator.comparing(Category::getTitle));
 
                 ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
