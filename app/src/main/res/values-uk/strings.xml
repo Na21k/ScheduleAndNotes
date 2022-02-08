@@ -56,4 +56,6 @@
     <string name="pick_category_dialog_title">Оберіть категорію</string>
     <string name="note_remove_category_context_menu_item">Виключити з категорії</string>
     <string name="note_context_menu_title">Дії з нотаткою</string>
+    <string name="note_title_input_hint">Заголовок нотатки</string>
+    <string name="note_body_input_hint">Тіло нотатки (опціонально)</string>
 </resources>
