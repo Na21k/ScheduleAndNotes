@@ -71,8 +71,8 @@
     <string name="add_note_fab">Add note</string>
     <string name="note_deleted_snackbar">The note has been deleted</string>
     <string name="specify_note_title_toast">Specify note title</string>
-    <string name="note_set_category_menu_item">Set category</string>
-    <string name="note_remove_category_menu_item">Remove category</string>
+    <string name="note_context_menu_title">Note actions</string>
+    <string name="note_set_category_context_menu_item">Set category</string>
+    <string name="note_remove_category_context_menu_item">Exclude from category</string>
     <string name="pick_category_dialog_title">Pick a category</string>
-    <string name="no_category_dialog_option">No category</string>
 </resources>

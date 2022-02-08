@@ -9,11 +9,11 @@
     <item
         android:id="@+id/note_set_category_menu_item"
         android:icon="@drawable/ic_categories_24"
-        android:title="@string/note_set_category_menu_item" />
+        android:title="@string/note_set_category_context_menu_item" />
 
     <item
         android:id="@+id/note_remove_category_menu_item"
         android:icon="@drawable/ic_category_crossed_out_24"
-        android:title="@string/note_remove_category_menu_item" />
+        android:title="@string/note_remove_category_context_menu_item" />
 
 </menu>

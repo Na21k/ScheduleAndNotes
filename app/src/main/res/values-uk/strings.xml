@@ -52,8 +52,8 @@
     <string name="title_create_note">Створити нотатку</string>
     <string name="title_edit_note">Редагувати нотатку</string>
     <string name="specify_note_title_toast">Вкажіть заголовок нотатки</string>
-    <string name="note_set_category_menu_item">Встановити категорію</string>
+    <string name="note_set_category_context_menu_item">Встановити категорію</string>
     <string name="pick_category_dialog_title">Оберіть категорію</string>
-    <string name="no_category_dialog_option">Без категорії</string>
-    <string name="note_remove_category_menu_item">Видалити категорію</string>
+    <string name="note_remove_category_context_menu_item">Виключити з категорії</string>
+    <string name="note_context_menu_title">Дії з нотаткою</string>
 </resources>
