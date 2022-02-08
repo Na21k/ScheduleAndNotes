@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.ui.categories;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +91,12 @@ public class CategoriesFragment extends Fragment {
                         mBinding.addCategoryFab.extend();
                     } else {
                         mBinding.addCategoryFab.shrink();
+                    }
+
+                    if (v.canScrollVertically(1)) {
+                        mBinding.addCategoryFab.show();
+                    } else {
+                        mBinding.addCategoryFab.hide();
                     }
                 });
     }
