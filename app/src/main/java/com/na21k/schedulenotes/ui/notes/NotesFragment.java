@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
@@ -27,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class NotesFragment extends Fragment
-        implements NotesListAdapter.OnChooseNoteCategoryListener {
+        implements NotesListAdapter.OnNoteActionRequestedListener {
 
     private NotesViewModel mViewModel;
     private NotesFragmentBinding mBinding;
@@ -56,8 +57,7 @@ public class NotesFragment extends Fragment
     private NotesListAdapter setUpRecyclerView() {
         RecyclerView recyclerView = mBinding.includedList.notesList;
         NotesListAdapter adapter =
-                new NotesListAdapter(mViewModel, UiHelper.isInDarkMode(this),
-                        this);
+                new NotesListAdapter(UiHelper.isInDarkMode(this), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -98,10 +98,10 @@ public class NotesFragment extends Fragment
                         mBinding.addNoteFab.shrink();
                     }
 
-                    if (v.canScrollVertically(1)) {
-                        mBinding.addNoteFab.show();
-                    } else {
+                    if (!v.canScrollVertically(1) && v.canScrollVertically(-1)) {
                         mBinding.addNoteFab.hide();
+                    } else {
+                        mBinding.addNoteFab.show();
                     }
                 });
     }
@@ -138,5 +138,33 @@ public class NotesFragment extends Fragment
                 builder.show();
             });
         }
+    }
+
+    @Override
+    public void onNoteDeletionRequested(Note note) {
+        Context context = getContext();
+
+        if (context != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_delete_24);
+            builder.setTitle(R.string.note_deletion_alert_title);
+            builder.setMessage(R.string.note_deletion_alert_message);
+
+            builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+                mViewModel.deleteNote(note);
+                Snackbar.make(mBinding.getRoot(), R.string.note_deleted_snackbar, 3000)
+                        .show();
+            });
+            builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+            });
+
+            builder.show();
+        }
+    }
+
+    @Override
+    public void onRemoveCategoryRequested(Note note) {
+        note.setCategoryId(null);
+        mViewModel.updateNote(note);
     }
 }

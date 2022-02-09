@@ -60,4 +60,9 @@
     <string name="excluded_from_category_snackbar">Виключено з категорії</string>
     <string name="category_set_snackbar">Категорію встановлено</string>
     <string name="specify_note_title_snackbar">Вкажіть заголовок нотатки</string>
+    <string name="keep">Залишити</string>
+    <string name="note_deletion_alert_title">Видалити нотатку</string>
+    <string name="note_deletion_alert_message">Ви впевнені, що бажаєте видалити цю нотатку?</string>
+    <string name="category_deletion_alert_title">Видалити категорію</string>
+    <string name="category_deletion_alert_message">Ви впевнені, що бажаєте видалити цю категорію? Усі пов\'язані події розкладу і нотатки перестануть належати до категорії</string>
 </resources>

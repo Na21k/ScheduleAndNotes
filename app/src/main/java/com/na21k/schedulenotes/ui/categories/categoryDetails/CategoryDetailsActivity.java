@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -209,12 +210,23 @@ public class CategoryDetailsActivity extends AppCompatActivity
     }*/
 
     private void deleteCategory() {
-        LiveData<Category> category = mViewModel.getCurrentCategory();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_delete_24);
+        builder.setTitle(R.string.category_deletion_alert_title);
+        builder.setMessage(R.string.category_deletion_alert_message);
 
-        if (category != null) {
-            category.removeObserver(this);
-            mViewModel.deleteCurrentCategory();
-            finish();
-        }
+        builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+            LiveData<Category> category = mViewModel.getCurrentCategory();
+
+            if (category != null) {
+                category.removeObserver(this);
+                mViewModel.deleteCurrentCategory();
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+        });
+
+        builder.show();
     }
 }

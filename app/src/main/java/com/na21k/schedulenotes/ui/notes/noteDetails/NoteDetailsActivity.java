@@ -130,13 +130,24 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     }
 
     private void deleteNote() {
-        LiveData<Note> note = mViewModel.getCurrentNote();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_delete_24);
+        builder.setTitle(R.string.note_deletion_alert_title);
+        builder.setMessage(R.string.note_deletion_alert_message);
 
-        if (note != null) {
-            note.removeObserver(this);
-            mViewModel.deleteCurrentNote();
-            finish();
-        }
+        builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+            LiveData<Note> note = mViewModel.getCurrentNote();
+
+            if (note != null) {
+                note.removeObserver(this);
+                mViewModel.deleteCurrentNote();
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+        });
+
+        builder.show();
     }
 
     private void removeCategory() {

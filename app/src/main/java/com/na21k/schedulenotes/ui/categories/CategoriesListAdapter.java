@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.CategoriesHelper;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
@@ -28,13 +27,13 @@ import java.util.List;
 public class CategoriesListAdapter
         extends RecyclerView.Adapter<CategoriesListAdapter.CategoryViewHolder> {
 
-    private final CategoriesViewModel mFragmentViewModel;
     private final boolean mIsNightMode;
+    private final OnCategoryActionRequestedListener mOnCategoryActionRequestedListener;
     private List<Category> mCategories = null;
 
-    public CategoriesListAdapter(CategoriesViewModel mFragmentViewModel, boolean isNightMode) {
-        this.mFragmentViewModel = mFragmentViewModel;
+    public CategoriesListAdapter(boolean isNightMode, OnCategoryActionRequestedListener onCategoryActionRequestedListener) {
         mIsNightMode = isNightMode;
+        mOnCategoryActionRequestedListener = onCategoryActionRequestedListener;
     }
 
     @NonNull
@@ -44,7 +43,7 @@ public class CategoriesListAdapter
         CategoriesListItemBinding binding = CategoriesListItemBinding
                 .inflate(inflater, parent, false);
 
-        return new CategoryViewHolder(binding.getRoot(), binding, mFragmentViewModel, mIsNightMode);
+        return new CategoryViewHolder(binding.getRoot(), binding);
     }
 
     @Override
@@ -63,20 +62,15 @@ public class CategoriesListAdapter
         notifyDataSetChanged();
     }
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder
+    public class CategoryViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private final CategoriesViewModel mFragmentViewModel;
         private final CategoriesListItemBinding mBinding;
-        private final boolean mIsNightMode;
         private Category mCategory;
 
-        public CategoryViewHolder(@NonNull View itemView, CategoriesListItemBinding binding,
-                                  CategoriesViewModel fragmentViewModel, boolean isNightMode) {
+        public CategoryViewHolder(@NonNull View itemView, CategoriesListItemBinding binding) {
             super(itemView);
             mBinding = binding;
-            mFragmentViewModel = fragmentViewModel;
-            mIsNightMode = isNightMode;
         }
 
         @Override
@@ -95,9 +89,7 @@ public class CategoriesListAdapter
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.category_delete_menu_item:
-                    mFragmentViewModel.delete(mCategory);
-                    Snackbar.make(itemView, R.string.category_deleted_snackbar, 3000)
-                            .show();
+                    mOnCategoryActionRequestedListener.onCategoryDeletionRequested(mCategory);
                     return true;
                 default:
                     return false;
@@ -141,5 +133,10 @@ public class CategoriesListAdapter
 
             return res;
         }
+    }
+
+    public interface OnCategoryActionRequestedListener {
+
+        void onCategoryDeletionRequested(Category category);
     }
 }

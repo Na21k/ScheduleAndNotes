@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.CategoriesHelper;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
@@ -27,17 +26,15 @@ import java.util.List;
 
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NoteViewHolder> {
 
-    private final NotesViewModel mFragmentViewModel;
     private final boolean mIsNightMode;
-    private final OnChooseNoteCategoryListener mOnChooseNoteCategoryListener;
+    private final OnNoteActionRequestedListener mOnNoteActionRequestedListener;
     private List<Note> mNotes = null;
     private List<Category> mCategories = null;
 
-    public NotesListAdapter(NotesViewModel fragmentViewModel, boolean isNightMode,
-                            OnChooseNoteCategoryListener onChooseNoteCategoryListener) {
-        mFragmentViewModel = fragmentViewModel;
+    public NotesListAdapter(boolean isNightMode,
+                            OnNoteActionRequestedListener onNoteActionRequestedListener) {
         mIsNightMode = isNightMode;
-        mOnChooseNoteCategoryListener = onChooseNoteCategoryListener;
+        mOnNoteActionRequestedListener = onNoteActionRequestedListener;
     }
 
     @NonNull
@@ -104,15 +101,13 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.note_delete_menu_item:
-                    mFragmentViewModel.deleteNote(mNote);
-                    Snackbar.make(itemView, R.string.note_deleted_snackbar, 3000).show();
+                    mOnNoteActionRequestedListener.onNoteDeletionRequested(mNote);
                     return true;
                 case R.id.note_set_category_menu_item:
-                    mOnChooseNoteCategoryListener.onCategorySelectionRequested(mNote);
+                    mOnNoteActionRequestedListener.onCategorySelectionRequested(mNote);
                     return true;
                 case R.id.note_remove_category_menu_item:
-                    mNote.setCategoryId(null);
-                    mFragmentViewModel.updateNote(mNote);
+                    mOnNoteActionRequestedListener.onRemoveCategoryRequested(mNote);
                     return true;
                 default:
                     return false;
@@ -152,8 +147,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         }
     }
 
-    public interface OnChooseNoteCategoryListener {
+    public interface OnNoteActionRequestedListener {
 
         void onCategorySelectionRequested(Note note);
+
+        void onNoteDeletionRequested(Note note);
+
+        void onRemoveCategoryRequested(Note note);
     }
 }

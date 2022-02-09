@@ -3,6 +3,7 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="keep">Keep</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
     <string name="title_home">Home</string>
@@ -55,8 +56,8 @@
     <string name="unexpected_error_toast">An unexpected error occurred</string>
 
     <!--Categories-->
-    <string name="title_create_category">Create a category</string>
-    <string name="title_edit_category">Edit a category</string>
+    <string name="title_create_category">Create category</string>
+    <string name="title_edit_category">Edit category</string>
     <string name="add_category_fab">Add category</string>
     <string name="category_name_input_hint">Category name</string>
     <string name="category_name_edit_text_title">Specify category name</string>
@@ -64,10 +65,12 @@
     <string name="color_selection_subtitle">Different color shades are used for light and dark mode</string>
     <string name="specify_category_name_toast">Specify category name</string>
     <string name="category_deleted_snackbar">The category has been deleted</string>
+    <string name="category_deletion_alert_title">Delete category</string>
+    <string name="category_deletion_alert_message">Are you sure you want to delete this category? All the schedule events and notes that belong to it will not anymore</string>
 
     <!--Notes-->
-    <string name="title_create_note">Create a note</string>
-    <string name="title_edit_note">Edit a note</string>
+    <string name="title_create_note">Create note</string>
+    <string name="title_edit_note">Edit note</string>
     <string name="add_note_fab">Add note</string>
     <string name="note_deleted_snackbar">The note has been deleted</string>
     <string name="specify_note_title_snackbar">Specify note title</string>
@@ -79,4 +82,6 @@
     <string name="note_body_input_hint">Note body (optional)</string>
     <string name="excluded_from_category_snackbar">Excluded from category</string>
     <string name="category_set_snackbar">Category set</string>
+    <string name="note_deletion_alert_title">Delete note</string>
+    <string name="note_deletion_alert_message">Are you sure you want to delete this note?</string>
 </resources>
