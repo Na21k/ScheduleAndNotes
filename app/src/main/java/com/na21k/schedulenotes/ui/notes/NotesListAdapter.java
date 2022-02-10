@@ -18,18 +18,27 @@ import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
+import com.na21k.schedulenotes.data.models.groupedListModels.GroupedListItemViewHolderBase;
+import com.na21k.schedulenotes.data.models.groupedListModels.GroupedListsItem;
+import com.na21k.schedulenotes.data.models.groupedListModels.HeaderListItem;
+import com.na21k.schedulenotes.data.models.groupedListModels.HeaderViewHolder;
+import com.na21k.schedulenotes.data.models.groupedListModels.NotesListItem;
+import com.na21k.schedulenotes.databinding.GroupedListHeaderItemBinding;
 import com.na21k.schedulenotes.databinding.NotesListItemBinding;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
-public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NoteViewHolder> {
+public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHolderBase> {
 
     private final boolean mIsNightMode;
     private final OnNoteActionRequestedListener mOnNoteActionRequestedListener;
-    private List<Note> mNotes = null;
     private List<Category> mCategories = null;
+    private List<GroupedListsItem> mNotesAndHeaders;
 
     public NotesListAdapter(boolean isNightMode,
                             OnNoteActionRequestedListener onNoteActionRequestedListener) {
@@ -39,37 +48,80 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     @NonNull
     @Override
-    public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GroupedListItemViewHolderBase onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        NotesListItemBinding binding = NotesListItemBinding
-                .inflate(inflater, parent, false);
 
-        return new NoteViewHolder(binding.getRoot(), binding);
-    }
+        if (viewType == GroupedListsItem.HEADER_ITEM) {
+            GroupedListHeaderItemBinding binding = GroupedListHeaderItemBinding
+                    .inflate(inflater, parent, false);
 
-    @Override
-    public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note note = mNotes.get(position);
+            return new HeaderViewHolder(binding.getRoot(), binding);
+        } else {
+            NotesListItemBinding binding = NotesListItemBinding
+                    .inflate(inflater, parent, false);
 
-        try {
-            holder.setData(note);
-        } catch (CouldNotFindColorSetModelException e) {
-            e.printStackTrace();
+            return new NoteViewHolder(binding.getRoot(), binding);
         }
     }
 
     @Override
-    public int getItemCount() {
-        return mNotes != null ? mNotes.size() : 0;
+    public void onBindViewHolder(@NonNull GroupedListItemViewHolderBase holder, int position) {
+        int viewType = getItemViewType(position);
+
+        if (viewType == GroupedListsItem.HEADER_ITEM) {
+            HeaderListItem headerItem = (HeaderListItem) mNotesAndHeaders.get(position);
+            HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
+
+            viewHolder.setHeaderText(headerItem.getHeaderText());
+        } else {
+            NotesListItem noteItem = (NotesListItem) mNotesAndHeaders.get(position);
+            NoteViewHolder viewHolder = (NoteViewHolder) holder;
+
+            try {
+                viewHolder.setData(noteItem.getNote());
+            } catch (CouldNotFindColorSetModelException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void setData(List<Note> notes, List<Category> categories) {
-        mNotes = notes;
-        mCategories = categories;
+    @Override
+    public int getItemViewType(int position) {
+        return mNotesAndHeaders.get(position).getType();
+    }
+
+    @Override
+    public int getItemCount() {
+        return mNotesAndHeaders != null ? mNotesAndHeaders.size() : 0;
+    }
+
+    public void setData(TreeMap<Category, List<Note>> groupedNotes) {
+        Set<Category> groups = groupedNotes.keySet();
+        mCategories = new ArrayList<>(groups);
+
+        List<GroupedListsItem> newNotesAndHeaders = new ArrayList<>();
+
+        for (Category categoryGroup : groups) {
+            List<Note> groupNotes = groupedNotes.get(categoryGroup);
+
+            if (groupNotes == null) {
+                continue;
+            }
+
+            HeaderListItem header = new HeaderListItem(categoryGroup.getTitle());
+            newNotesAndHeaders.add(header);
+
+            for (Note note : groupNotes) {
+                NotesListItem noteItem = new NotesListItem(note);
+                newNotesAndHeaders.add(noteItem);
+            }
+        }
+
+        mNotesAndHeaders = newNotesAndHeaders;
         notifyDataSetChanged();
     }
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder
+    public class NoteViewHolder extends GroupedListItemViewHolderBase
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private final NotesListItemBinding mBinding;

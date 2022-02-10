@@ -20,12 +20,16 @@ import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.database.Identifiable;
 import com.na21k.schedulenotes.data.database.Notes.Note;
+import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.databinding.NotesFragmentBinding;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class NotesFragment extends Fragment
         implements NotesListAdapter.OnNoteActionRequestedListener {
@@ -82,9 +86,36 @@ public class NotesFragment extends Fragment
         List<Category> categoriesCache = mViewModel.getCategoriesCache();
         boolean isEnoughData = notesCache != null && categoriesCache != null;
 
-        if (isEnoughData) {
-            adapter.setData(notesCache, categoriesCache);
+        if (!isEnoughData) {
+            return;
         }
+
+        TreeMap<Category, List<Note>> groupedNotes =
+                new TreeMap<>(Comparator.comparing(Identifiable::getId));
+
+        for (Category category : categoriesCache) {
+            List<Note> categoryNotes = notesCache.stream()
+                    .filter(note -> note.getCategoryId() != null &&
+                            note.getCategoryId().equals(category.getId()))
+                    .collect(Collectors.toList());
+
+            if (!categoryNotes.isEmpty()) {
+                groupedNotes.put(category, categoryNotes);
+            }
+        }
+
+        List<Note> uncategorizedNotes = notesCache.stream()
+                .filter(note -> note.getCategoryId() == null).collect(Collectors.toList());
+
+        if (!uncategorizedNotes.isEmpty()) {
+            String uncategorizedPlaceholder = getResources()
+                    .getString(R.string.uncategorized_notes_category_placeholder);
+            Category noCategory = new Category(0, uncategorizedPlaceholder, ColorSet.GRAY);
+
+            groupedNotes.put(noCategory, uncategorizedNotes);
+        }
+
+        adapter.setData(groupedNotes);
     }
 
     private void setListeners() {
