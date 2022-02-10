@@ -19,7 +19,7 @@
     <string name="delete_events_older_than_summary">Видалити події по обрану дату включно</string>
     <string name="receive_notifications_title">Отримувати сповіщення</string>
     <string name="receive_notifications_summary_on">Ви отримуватимете обрані сповіщення</string>
-    <string name="receive_notifications_summary_off">Ви не отримуватимете ніяких сповіщень</string>
+    <string name="receive_notifications_summary_off">Ви не отримуватимете жодних сповіщень</string>
     <string name="schedule_events_notifications_title">Сповіщення подій розкладу</string>
     <string name="schedule_events_notifications_summary">Отримувати сповіщення за 30 хвилин до і у момент початку події</string>
     <string name="movies_list_notifications_title">Сповіщення списку Фільмів</string>
