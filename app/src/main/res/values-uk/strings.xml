@@ -66,4 +66,5 @@
     <string name="category_deletion_alert_title">Видалити категорію</string>
     <string name="category_deletion_alert_message">Ви впевнені, що бажаєте видалити цю категорію? Усі пов\'язані події розкладу і нотатки перестануть належати до категорії</string>
     <string name="uncategorized_notes_category_placeholder">Без категорії</string>
+    <string name="add_event_fab">Додати подію</string>
 </resources>
