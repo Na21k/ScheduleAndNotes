@@ -5,4 +5,5 @@
     <color name="shadow_color">#ffffff</color>
 
     <color name="check_color">#1ECF5F</color>
+    <color name="neutral_button">#787878</color>
 </resources>

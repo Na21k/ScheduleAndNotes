@@ -88,4 +88,7 @@
 
     <!--Schedule-->
     <string name="add_event_fab">Add event</string>
+    <string name="prev_date_btn_description">Previous date</string>
+    <string name="selected_date_btn_description">Selected date. Click to open calendar</string>
+    <string name="next_date_btn_description">Next date</string>
 </resources>

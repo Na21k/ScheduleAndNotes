@@ -17,18 +17,21 @@ public class ScheduleFragment extends Fragment {
     private ScheduleViewModel mViewModel;
     private ScheduleFragmentBinding binding;
 
-    public static ScheduleFragment newInstance() {
-        return new ScheduleFragment();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         binding = ScheduleFragmentBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //TODO: observe vars in the vm and display vm data in the binding
+        return binding.getRoot();
+    }
 
-        return root;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

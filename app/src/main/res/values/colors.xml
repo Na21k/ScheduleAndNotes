@@ -17,6 +17,7 @@
     <color name="navigation_bar">#FFFFFF</color>
 
     <color name="check_color">#20DD65</color>
+    <color name="neutral_button">#D6D6D6</color>
 
     <!--Categories color sets-->
     <color name="category_gray">#D6D6D6</color>

@@ -1,16 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.schedule.ScheduleFragment">
 
-    <!--TODO: change the layout, maybe to LinearLayout and finish it with top controls-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <include
-        android:id="@+id/included_list"
-        layout="@layout/schedule_list" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin">
+
+            <ImageButton
+                android:id="@+id/previous_date_btn"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_gravity="left|center_vertical"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/prev_date_btn_description"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_navigate_before_48"
+                tools:ignore="RtlHardcoded" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendar_btn_card"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginVertical="12dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:contentDescription="@string/selected_date_btn_description"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:outlineAmbientShadowColor="@color/shadow_color"
+                android:outlineSpotShadowColor="@color/shadow_color"
+                app:cardBackgroundColor="@color/neutral_button"
+                app:cardCornerRadius="@dimen/corner_radius"
+                app:cardElevation="@dimen/elevation">
+
+                <TextView
+                    android:id="@+id/calendar_btn_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="14dp"
+                    android:textSize="22sp"
+                    tools:text="Feb 22" />
+
+            </androidx.cardview.widget.CardView>
+
+            <ImageButton
+                android:id="@+id/next_date_btn"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_gravity="right|center_vertical"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/next_date_btn_description"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_navigate_next_48"
+                tools:ignore="RtlHardcoded" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/included_list"
+            layout="@layout/schedule_list" />
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/add_event_fab"
@@ -25,4 +89,4 @@
         app:icon="@drawable/ic_add_24"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtendedFab" />
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -67,4 +67,7 @@
     <string name="category_deletion_alert_message">Ви впевнені, що бажаєте видалити цю категорію? Усі пов\'язані події розкладу і нотатки перестануть належати до категорії</string>
     <string name="uncategorized_notes_category_placeholder">Без категорії</string>
     <string name="add_event_fab">Додати подію</string>
+    <string name="prev_date_btn_description">Попередня дата</string>
+    <string name="next_date_btn_description">Наступна дата</string>
+    <string name="selected_date_btn_description">Обрана дата. Натисність, щоб відкрити календар</string>
 </resources>
