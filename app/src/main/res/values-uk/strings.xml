@@ -70,8 +70,6 @@
     <string name="prev_date_btn_description">Попередня дата</string>
     <string name="next_date_btn_description">Наступна дата</string>
     <string name="selected_date_btn_description">Обрана дата. Натисність, щоб відкрити календар</string>
-    <string name="event_set_category_menu_item">Встановити категорію</string>
-    <string name="event_remove_category_menu_item">Виключити з категорії</string>
     <string name="event_context_menu_title">Дії з подією</string>
     <string name="event_deletion_alert_title">Видалити подію</string>
     <string name="event_deletion_alert_message">Ви впевнені, що бажаєте видалити цю подію?</string>

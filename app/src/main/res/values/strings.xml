@@ -87,8 +87,6 @@
     <string name="selected_date_btn_description">Selected date. Click to open calendar</string>
     <string name="next_date_btn_description">Next date</string>
     <string name="event_context_menu_title">Event actions</string>
-    <string name="event_set_category_menu_item">Set category</string>
-    <string name="event_remove_category_menu_item">Exclude from category</string>
     <string name="event_deletion_alert_title">Delete event</string>
     <string name="event_deletion_alert_message">Are you sure you want to delete this event?</string>
 
