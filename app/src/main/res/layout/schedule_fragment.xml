@@ -39,6 +39,8 @@
                 android:contentDescription="@string/selected_date_btn_description"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:hapticFeedbackEnabled="true"
+                android:longClickable="true"
                 android:outlineAmbientShadowColor="@color/shadow_color"
                 android:outlineSpotShadowColor="@color/shadow_color"
                 app:cardBackgroundColor="@color/neutral_button"

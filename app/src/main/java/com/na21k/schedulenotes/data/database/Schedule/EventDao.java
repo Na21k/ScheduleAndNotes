@@ -2,9 +2,11 @@ package com.na21k.schedulenotes.data.database.Schedule;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,18 @@ public interface EventDao {
 
     @Query("select * from events")
     LiveData<List<Event>> getAll();
+
+    @Query("select * from events E where e.id = :id")
+    LiveData<Event> getById(int id);
+
+    @Update
+    void update(Event event);
+
+    @Delete
+    void delete(Event event);
+
+    @Query("delete from events where id = :id")
+    void delete(int id);
 
     @Query("select * from events E where E.title like '%'||:search||'%'" +
             "or E.details like '%'||:search||'%'" +

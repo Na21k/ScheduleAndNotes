@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
+import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
@@ -78,6 +79,38 @@ public class CategoriesHelper {
 
         return isNightMode ?
                 noteColorSetModel.getColorNightHex() : noteColorSetModel.getColorDayHex();
+    }
+
+    public static int getEventCategoryColor(Context context, Event event, List<Category> categories,
+                                            boolean isNightMode) throws CouldNotFindColorSetModelException {
+        Integer categoryId = event.getCategoryId();
+        ColorSetModel defaultColorSetModel = getDefaultColorSetModel(context);
+        int defaultColor = isNightMode ? defaultColorSetModel.getColorNightHex() :
+                defaultColorSetModel.getColorDayHex();
+
+        if (categoryId == null) {
+            return defaultColor;
+        }
+
+        Category eventCategory = categories.stream().filter(
+                category -> category.getId() == categoryId).findFirst().orElse(null);
+
+        List<ColorSetModel> colorSetModels = getCategoriesColorSets(context);
+
+        if (eventCategory == null) {
+            return defaultColor;
+        }
+
+        ColorSetModel eventColorSetModel = colorSetModels.stream().filter(
+                colorSetModel -> colorSetModel.getColorSet().equals(eventCategory.getColorSet()))
+                .findFirst().orElse(null);
+
+        if (eventColorSetModel == null) {
+            return defaultColor;
+        }
+
+        return isNightMode ?
+                eventColorSetModel.getColorNightHex() : eventColorSetModel.getColorDayHex();
     }
 
     private static ColorSetModel getDefaultColorSetModel(Context context)

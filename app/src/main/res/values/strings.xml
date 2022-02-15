@@ -75,13 +75,8 @@
     <string name="note_deleted_snackbar">The note has been deleted</string>
     <string name="specify_note_title_snackbar">Specify note title</string>
     <string name="note_context_menu_title">Note actions</string>
-    <string name="note_set_category_menu_item">Set category</string>
-    <string name="note_remove_category_menu_item">Exclude from category</string>
-    <string name="pick_category_dialog_title">Pick a category</string>
     <string name="note_title_input_hint">Note title</string>
     <string name="note_body_input_hint">Note body (optional)</string>
-    <string name="excluded_from_category_snackbar">Excluded from category</string>
-    <string name="category_set_snackbar">Category set</string>
     <string name="note_deletion_alert_title">Delete note</string>
     <string name="note_deletion_alert_message">Are you sure you want to delete this note?</string>
     <string name="uncategorized_notes_category_placeholder">No category</string>
@@ -91,4 +86,16 @@
     <string name="prev_date_btn_description">Previous date</string>
     <string name="selected_date_btn_description">Selected date. Click to open calendar</string>
     <string name="next_date_btn_description">Next date</string>
+    <string name="event_context_menu_title">Event actions</string>
+    <string name="event_set_category_menu_item">Set category</string>
+    <string name="event_remove_category_menu_item">Exclude from category</string>
+    <string name="event_deletion_alert_title">Delete event</string>
+    <string name="event_deletion_alert_message">Are you sure you want to delete this event?</string>
+
+    <!--Notes and Schedule (shared)-->
+    <string name="pick_category_dialog_title">Pick a category</string>
+    <string name="category_set_snackbar">Category set</string>
+    <string name="excluded_from_category_snackbar">Excluded from category</string>
+    <string name="set_category_menu_item">Set category</string>
+    <string name="remove_category_menu_item">Exclude from category</string>
 </resources>

@@ -184,6 +184,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
 
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
+
                 if (context != null) {
                     Intent intent = new Intent(context, NoteDetailsActivity.class);
 

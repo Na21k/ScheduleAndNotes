@@ -6,5 +6,6 @@ public class Constants {
 
     public static final String CATEGORY_ID_INTENT_KEY = "categoryId";
     public static final String NOTE_ID_INTENT_KEY = "noteId";
+    public static final String EVENT_ID_INTENT_KEY = "eventId";
     public static final ColorSet DEFAULT_COLOR_SET = ColorSet.GRAY;
 }
