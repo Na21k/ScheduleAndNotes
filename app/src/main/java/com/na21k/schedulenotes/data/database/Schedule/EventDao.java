@@ -23,7 +23,7 @@ public interface EventDao {
     @Query("select * from events")
     LiveData<List<Event>> getAll();
 
-    @Query("select * from events E where e.id = :id")
+    @Query("select * from events E where E.id = :id")
     LiveData<Event> getById(int id);
 
     @Update
