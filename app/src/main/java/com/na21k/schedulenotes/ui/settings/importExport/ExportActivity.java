@@ -45,7 +45,7 @@ public class ExportActivity extends AppCompatActivity {
                             Uri uri = data.getData();
                             writeDataToFile(uri);
                         } else {
-                            Toast.makeText(this, R.string.unexpected_error_toast,
+                            Toast.makeText(this, R.string.unexpected_error,
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
@@ -77,7 +77,7 @@ public class ExportActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, R.string.unexpected_error_toast, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
         }
 
         finish();

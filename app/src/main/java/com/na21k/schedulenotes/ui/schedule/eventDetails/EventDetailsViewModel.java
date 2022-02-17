@@ -12,6 +12,7 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 
+import java.util.Date;
 import java.util.List;
 
 public class EventDetailsViewModel extends AndroidViewModel {
@@ -20,6 +21,8 @@ public class EventDetailsViewModel extends AndroidViewModel {
     private final LiveData<List<Category>> mCategories;
     private LiveData<Event> mEvent;
     private int mEventId;
+    private Date mSelectedDateTimeStarts;
+    private Date mSelectedDateTimeEnds;
 
     public EventDetailsViewModel(@NonNull Application application) {
         super(application);
@@ -58,5 +61,23 @@ public class EventDetailsViewModel extends AndroidViewModel {
     @Nullable
     public LiveData<Event> getCurrentEvent() {
         return mEvent;
+    }
+
+    @Nullable
+    public Date getSelectedDateTimeStarts() {
+        return mSelectedDateTimeStarts;
+    }
+
+    public void setSelectedDateTimeStarts(@NonNull Date selectedDateTimeStarts) {
+        this.mSelectedDateTimeStarts = selectedDateTimeStarts;
+    }
+
+    @Nullable
+    public Date getSelectedDateTimeEnds() {
+        return mSelectedDateTimeEnds;
+    }
+
+    public void setSelectedDateTimeEnds(@NonNull Date selectedDateTimeEnds) {
+        mSelectedDateTimeEnds = selectedDateTimeEnds;
     }
 }

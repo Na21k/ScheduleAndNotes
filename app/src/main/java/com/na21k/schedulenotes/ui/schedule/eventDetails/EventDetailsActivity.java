@@ -1,10 +1,15 @@
 package com.na21k.schedulenotes.ui.schedule.eventDetails;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -22,7 +27,12 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ActivityEventDetailsBinding;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Objects;
 
 public class EventDetailsActivity extends AppCompatActivity implements Observer<Event> {
 
@@ -46,20 +56,38 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setPickersListeners();
+
         if (isEditing()) {
-            setTitle("Edit event");
+            setTitle(R.string.title_edit_event);
 
             Bundle bundle = getIntent().getExtras();
             int eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
             loadEventFromDb(eventId);
         } else {
-            setTitle("Create event");
+            setTitle(R.string.title_create_event);
+            setSelectedDateTimesToDefaults();
         }
     }
 
     @Override
     public void onChanged(Event event) {
+        mBinding.eventTitle.setText(event.getTitle());
+        mBinding.eventDetails.setText(event.getDetails());
+        mCurrentEventsCategoryId = event.getCategoryId();
 
+        Date starts = event.getDateTimeStarts();
+        Date ends = event.getDateTimeEnds();
+
+        mViewModel.setSelectedDateTimeStarts(starts);
+        mViewModel.setSelectedDateTimeEnds(ends);
+
+        mBinding.dateStarts.setText(getFormattedDate(starts));
+        mBinding.timeStarts.setText(getFormattedTime(starts));
+        mBinding.dateEnds.setText(getFormattedDate(ends));
+        mBinding.timeEnds.setText(getFormattedTime(ends));
+
+        mBinding.isHidden.setChecked(event.isHidden());
     }
 
     @Override
@@ -107,7 +135,32 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     }
 
     private void saveEvent() {
+        Editable titleEditable = mBinding.eventTitle.getText();
+        Editable detailsEditable = mBinding.eventDetails.getText();
+        boolean isHidden = mBinding.isHidden.isChecked();
+        Date starts = mViewModel.getSelectedDateTimeStarts();
+        Date ends = mViewModel.getSelectedDateTimeEnds();
 
+        if (titleEditable == null || titleEditable.toString().isEmpty()) {
+            showSnackbar(R.string.specify_event_title_snackbar);
+            return;
+        }
+
+        if (Objects.requireNonNull(starts).compareTo(ends) > 0) {
+            showSnackbar(R.string.start_time_less_than_end_time_snackbar);
+            return;
+        }
+
+        Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
+                mCurrentEventsCategoryId, starts, Objects.requireNonNull(ends), isHidden);
+
+        if (isEditing()) {
+            mViewModel.updateCurrentEvent(event);
+        } else {
+            mViewModel.createEvent(event);
+        }
+
+        finish();
     }
 
     private void deleteEvent() {
@@ -158,6 +211,101 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         });
     }
 
+    private void setPickersListeners() {
+        mBinding.dateStarts.setOnClickListener(v -> createDateStartsPicker().show());
+        mBinding.dateEnds.setOnClickListener(v -> createDateEndsPicker().show());
+        mBinding.timeStarts.setOnClickListener(v -> createTimeStartsPicker().show());
+        mBinding.timeEnds.setOnClickListener(v -> createTimeEndsPicker().show());
+    }
+
+    private DatePickerDialog createDateStartsPicker() {
+        Date date = mViewModel.getSelectedDateTimeStarts();
+        return createDatePicker(date, this::onDateStartsSet);
+    }
+
+    private DatePickerDialog createDateEndsPicker() {
+        Date date = mViewModel.getSelectedDateTimeEnds();
+        return createDatePicker(date, this::onDateEndsSet);
+    }
+
+    private TimePickerDialog createTimeStartsPicker() {
+        Date date = mViewModel.getSelectedDateTimeStarts();
+        return createTimePicker(date, this::onTimeStartsSet);
+    }
+
+    private TimePickerDialog createTimeEndsPicker() {
+        Date date = mViewModel.getSelectedDateTimeEnds();
+        return createTimePicker(date, this::onTimeEndsSet);
+    }
+
+    private DatePickerDialog createDatePicker(Date date,
+                                              DatePickerDialog.OnDateSetListener dateSetListener) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        return new DatePickerDialog(this, dateSetListener, year, month, day);
+    }
+
+    private TimePickerDialog createTimePicker(Date date,
+                                              TimePickerDialog.OnTimeSetListener timeSetListener) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        boolean is24Hour = android.text.format.DateFormat.is24HourFormat(this);
+
+        return new TimePickerDialog(this, timeSetListener, hour, minute, is24Hour);
+    }
+
+    private void onDateStartsSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Date oldDate = mViewModel.getSelectedDateTimeStarts();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Objects.requireNonNull(oldDate));
+        calendar.set(year, month, dayOfMonth);
+        Date newDate = calendar.getTime();
+
+        mViewModel.setSelectedDateTimeStarts(newDate);
+        mBinding.dateStarts.setText(getFormattedDate(newDate));
+    }
+
+    private void onDateEndsSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Date oldDate = mViewModel.getSelectedDateTimeEnds();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Objects.requireNonNull(oldDate));
+        calendar.set(year, month, dayOfMonth);
+        Date newDate = calendar.getTime();
+
+        mViewModel.setSelectedDateTimeEnds(newDate);
+        mBinding.dateEnds.setText(getFormattedDate(newDate));
+    }
+
+    private void onTimeStartsSet(TimePicker view, int hourOfDay, int minute) {
+        Date oldDate = mViewModel.getSelectedDateTimeStarts();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Objects.requireNonNull(oldDate));
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        Date newDate = calendar.getTime();
+
+        mViewModel.setSelectedDateTimeStarts(newDate);
+        mBinding.timeStarts.setText(getFormattedTime(newDate));
+    }
+
+    private void onTimeEndsSet(TimePicker view, int hourOfDay, int minute) {
+        Date oldDate = mViewModel.getSelectedDateTimeEnds();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Objects.requireNonNull(oldDate));
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        Date newDate = calendar.getTime();
+
+        mViewModel.setSelectedDateTimeEnds(newDate);
+        mBinding.timeEnds.setText(getFormattedTime(newDate));
+    }
+
     private boolean isEditing() {
         Bundle bundle = getIntent().getExtras();
         return bundle != null;
@@ -169,5 +317,32 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     private void showSnackbar(@StringRes int stringResourceId) {
         Snackbar.make(mBinding.activityEventDetailsRoot, stringResourceId, 3000).show();
+    }
+
+    private void setSelectedDateTimesToDefaults() {
+        Calendar calendarStarts = Calendar.getInstance();
+        Calendar calendarEnds = Calendar.getInstance();
+        calendarEnds.add(Calendar.HOUR_OF_DAY, 1);
+
+        Date starts = calendarStarts.getTime();
+        Date ends = calendarEnds.getTime();
+
+        mViewModel.setSelectedDateTimeStarts(calendarStarts.getTime());
+        mViewModel.setSelectedDateTimeEnds(calendarEnds.getTime());
+
+        mBinding.dateStarts.setText(getFormattedDate(starts));
+        mBinding.timeStarts.setText(getFormattedTime(starts));
+        mBinding.dateEnds.setText(getFormattedDate(ends));
+        mBinding.timeEnds.setText(getFormattedTime(ends));
+    }
+
+    private static String getFormattedDate(Date date) {
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        return dateFormat.format(date);
+    }
+
+    private static String getFormattedTime(Date date) {
+        DateFormat timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+        return timeFormat.format(date);
     }
 }

@@ -53,7 +53,7 @@
     <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
 
     <!--Snackbar and Toast messages-->
-    <string name="unexpected_error_toast">An unexpected error occurred</string>
+    <string name="unexpected_error">An unexpected error occurred</string>
 
     <!--Categories-->
     <string name="title_create_category">Create category</string>
@@ -82,6 +82,8 @@
     <string name="uncategorized_notes_category_placeholder">No category</string>
 
     <!--Schedule-->
+    <string name="title_create_event">Create event</string>
+    <string name="title_edit_event">Edit event</string>
     <string name="add_event_fab">Add event</string>
     <string name="prev_date_btn_description">Previous date</string>
     <string name="selected_date_btn_description">Selected date. Click to open calendar</string>
@@ -89,6 +91,9 @@
     <string name="event_context_menu_title">Event actions</string>
     <string name="event_deletion_alert_title">Delete event</string>
     <string name="event_deletion_alert_message">Are you sure you want to delete this event?</string>
+    <string name="event_title_input_hint">Event title</string>
+    <string name="event_details_input_hint">Event details (optional)</string>
+    <string name="specify_event_title_snackbar">Specify event title</string>
 
     <!--Notes and Schedule (shared)-->
     <string name="pick_category_dialog_title">Pick a category</string>
@@ -96,4 +101,7 @@
     <string name="excluded_from_category_snackbar">Excluded from category</string>
     <string name="set_category_menu_item">Set category</string>
     <string name="remove_category_menu_item">Exclude from category</string>
+    <string name="is_hidden_checkbox">Hidden</string>
+    <string name="is_hidden_checkbox_description">Use this to hide this events title in the schedule list so that others won\'t be able to see it when you scroll through the list. \"Hidden event\" text will be shown instead. Tap on the event in the list to see its info</string>
+    <string name="start_time_less_than_end_time_snackbar">The start time can not be later than the end one</string>
 </resources>

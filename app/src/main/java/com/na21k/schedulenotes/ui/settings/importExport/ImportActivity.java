@@ -42,7 +42,7 @@ public class ImportActivity extends AppCompatActivity {
                             Uri uri = data.getData();
                             readFromFile(uri);
                         } else {
-                            Toast.makeText(this, R.string.unexpected_error_toast,
+                            Toast.makeText(this, R.string.unexpected_error,
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
@@ -72,7 +72,7 @@ public class ImportActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, R.string.unexpected_error_toast, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
         }
 
         Toast.makeText(this, stringBuilder.toString(), Toast.LENGTH_LONG).show();

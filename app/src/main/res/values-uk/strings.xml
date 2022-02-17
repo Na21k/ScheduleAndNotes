@@ -32,7 +32,7 @@
     <string name="backing_up_toast">Створення резервної копії …</string>
     <string name="backing_up_failed_toast">Не вдалось створити резервну копію</string>
     <string name="backup_created_successfully_toast">Резервну копію успішно створено</string>
-    <string name="unexpected_error_toast">Сталась неочікувана помилка</string>
+    <string name="unexpected_error">Сталась неочікувана помилка</string>
     <string name="importing_from_backup_toast">Імпорт з резервної копії …</string>
     <string name="importing_from_backup_failed_toast">Не вдалось імпортувати дані з резервної копії</string>
     <string name="add_category_fab">Додати категорію</string>
@@ -73,4 +73,12 @@
     <string name="event_context_menu_title">Дії з подією</string>
     <string name="event_deletion_alert_title">Видалити подію</string>
     <string name="event_deletion_alert_message">Ви впевнені, що бажаєте видалити цю подію?</string>
+    <string name="event_title_input_hint">Назва події</string>
+    <string name="event_details_input_hint">Деталі події (опціонально)</string>
+    <string name="is_hidden_checkbox">Прихована подія</string>
+    <string name="is_hidden_checkbox_description">Використовуйте це, щоб приховати назву події у поданні розкладу. Відтак, інші не зможуть побачити її, коли Ви переглядатимете список. Натомість відображатиметься текст \"Прихована подія\". Натисніть на подію для перегляду інформації про неї</string>
+    <string name="specify_event_title_snackbar">Вкажіть назву події</string>
+    <string name="start_time_less_than_end_time_snackbar">Час початку не може бути більш пізнім, ніж час закінчення</string>
+    <string name="title_create_event">Створити подію</string>
+    <string name="title_edit_event">Редагувати подію</string>
 </resources>
