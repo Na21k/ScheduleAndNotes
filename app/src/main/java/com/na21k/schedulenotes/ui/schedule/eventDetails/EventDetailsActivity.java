@@ -56,16 +56,18 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         }
 
         setPickersListeners();
+        Bundle bundle = getIntent().getExtras();
 
         if (isEditing()) {
             setTitle(R.string.title_edit_event);
 
-            Bundle bundle = getIntent().getExtras();
             int eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
             loadEventFromDb(eventId);
         } else {
             setTitle(R.string.title_create_event);
-            setSelectedDateTimesToDefaults();
+
+            long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
+            setSelectedDateTimes(millis);
         }
     }
 
@@ -307,7 +309,9 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     private boolean isEditing() {
         Bundle bundle = getIntent().getExtras();
-        return bundle != null;
+        int id = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
+        return id != 0;
+        //return bundle != null;
     }
 
     private void loadEventFromDb(int eventId) {
@@ -318,9 +322,13 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Snackbar.make(mBinding.activityEventDetailsRoot, stringResourceId, 3000).show();
     }
 
-    private void setSelectedDateTimesToDefaults() {
+    private void setSelectedDateTimes(long millis) {
+        Date selectedDateTime = new Date(millis);
+
         Calendar calendarStarts = Calendar.getInstance();
-        Calendar calendarEnds = Calendar.getInstance();
+        calendarStarts.setTime(selectedDateTime);
+
+        Calendar calendarEnds = (Calendar) calendarStarts.clone();
         calendarEnds.add(Calendar.HOUR_OF_DAY, 1);
 
         Date starts = calendarStarts.getTime();

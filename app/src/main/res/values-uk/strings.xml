@@ -81,4 +81,5 @@
     <string name="start_time_less_than_end_time_snackbar">Час початку не може бути більш пізнім, ніж час закінчення</string>
     <string name="title_create_event">Створити подію</string>
     <string name="title_edit_event">Редагувати подію</string>
+    <string name="jump_to_today_snackbar">Переходимо до Сьогодні …</string>
 </resources>

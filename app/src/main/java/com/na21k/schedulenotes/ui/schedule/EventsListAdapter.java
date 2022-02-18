@@ -20,6 +20,7 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleListItemBinding;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
+import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 
 import java.util.List;
@@ -123,8 +124,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         private void setData(@NonNull Event event) throws CouldNotFindColorSetModelException {
             mEvent = event;
             mBinding.eventTitle.setText(event.getTitle());
-            mBinding.eventStartTime.setText(event.getDateTimeStarts().toString());
-            mBinding.eventEndTime.setText(event.getDateTimeEnds().toString());
+            String startsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeStarts());
+            String endsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeEnds());
+            mBinding.eventStartTime.setText(startsFormatted);
+            mBinding.eventEndTime.setText(endsFormatted);
 
             int backColor = CategoriesHelper
                     .getEventCategoryColor(itemView.getContext(), event, mCategories, mIsNightMode);

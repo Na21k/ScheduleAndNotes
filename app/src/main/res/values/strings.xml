@@ -94,6 +94,7 @@
     <string name="event_title_input_hint">Event title</string>
     <string name="event_details_input_hint">Event details (optional)</string>
     <string name="specify_event_title_snackbar">Specify event title</string>
+    <string name="jump_to_today_snackbar">Jumping to Today …</string>
 
     <!--Notes and Schedule (shared)-->
     <string name="pick_category_dialog_title">Pick a category</string>
