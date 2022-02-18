@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,11 +36,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class ScheduleFragment extends Fragment implements EventsListAdapter.OnEventActionRequestedListener {
+public class ScheduleFragment extends Fragment
+        implements Observer<List<Event>>, EventsListAdapter.OnEventActionRequestedListener {
 
     private ScheduleViewModel mViewModel;
     private ScheduleFragmentBinding mBinding;
     private EventsListAdapter mAdapter;
+    private LiveData<List<Event>> mScheduleListLiveData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,15 +130,24 @@ public class ScheduleFragment extends Fragment implements EventsListAdapter.OnEv
     private void jumpToDate(Date date) {
         Date dateMinInclusive = DateTimeHelper.truncateToDateOnly(date);
         Date dateMaxExclusive = DateTimeHelper.addDays(dateMinInclusive, 1);
+        mViewModel.setSelectedDate(dateMinInclusive);
 
-        //TODO: remove observer cause different observers get fired and the selected date switches when it shouldn't
-        mViewModel.getByDate(dateMinInclusive, dateMaxExclusive).observe(getViewLifecycleOwner(),
-                events -> {
-                    events.sort(Comparator.comparing(Event::getDateTimeStarts));
-                    mViewModel.setEventsCache(events);
-                    mViewModel.setSelectedDate(dateMinInclusive);
-                    updateListIfEnoughData();
-                });
+        unsubscribeFromLiveData();
+        mScheduleListLiveData = mViewModel.getByDate(dateMinInclusive, dateMaxExclusive);
+        mScheduleListLiveData.observe(getViewLifecycleOwner(), this);
+    }
+
+    @Override
+    public void onChanged(List<Event> events) {
+        events.sort(Comparator.comparing(Event::getDateTimeStarts));
+        mViewModel.setEventsCache(events);
+        updateListIfEnoughData();
+    }
+
+    private void unsubscribeFromLiveData() {
+        if (mScheduleListLiveData != null) {
+            mScheduleListLiveData.removeObserver(this);
+        }
     }
 
     private void displayDateSelection() {
