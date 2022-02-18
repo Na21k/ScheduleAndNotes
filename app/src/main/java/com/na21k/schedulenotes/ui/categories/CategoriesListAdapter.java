@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.CategoriesHelper;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;

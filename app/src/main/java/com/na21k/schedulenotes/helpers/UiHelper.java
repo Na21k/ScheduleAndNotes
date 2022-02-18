@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes;
+package com.na21k.schedulenotes.helpers;
 
 import android.content.res.Configuration;
 

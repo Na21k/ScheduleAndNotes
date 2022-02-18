@@ -1,10 +1,12 @@
-package com.na21k.schedulenotes;
+package com.na21k.schedulenotes.helpers;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.na21k.schedulenotes.Constants;
+import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;

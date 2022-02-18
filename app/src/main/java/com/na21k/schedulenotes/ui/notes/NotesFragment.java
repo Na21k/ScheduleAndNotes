@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.UiHelper;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Identifiable;
 import com.na21k.schedulenotes.data.database.Notes.Note;

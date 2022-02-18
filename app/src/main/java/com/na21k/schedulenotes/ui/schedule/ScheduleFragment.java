@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.UiHelper;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleFragmentBinding;

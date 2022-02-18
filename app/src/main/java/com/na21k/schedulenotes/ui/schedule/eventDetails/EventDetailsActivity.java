@@ -26,9 +26,8 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ActivityEventDetailsBinding;
+import com.na21k.schedulenotes.helpers.DateTimeHelper;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -82,10 +81,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         mViewModel.setSelectedDateTimeStarts(starts);
         mViewModel.setSelectedDateTimeEnds(ends);
 
-        mBinding.dateStarts.setText(getFormattedDate(starts));
-        mBinding.timeStarts.setText(getFormattedTime(starts));
-        mBinding.dateEnds.setText(getFormattedDate(ends));
-        mBinding.timeEnds.setText(getFormattedTime(ends));
+        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(starts));
+        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(starts));
+        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(ends));
+        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(ends));
 
         mBinding.isHidden.setChecked(event.isHidden());
     }
@@ -138,8 +137,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Editable titleEditable = mBinding.eventTitle.getText();
         Editable detailsEditable = mBinding.eventDetails.getText();
         boolean isHidden = mBinding.isHidden.isChecked();
-        Date starts = mViewModel.getSelectedDateTimeStarts();
-        Date ends = mViewModel.getSelectedDateTimeEnds();
+        Date starts = DateTimeHelper.truncateSecondsAndMillis(mViewModel.getSelectedDateTimeStarts());
+        Date ends = DateTimeHelper.truncateSecondsAndMillis(mViewModel.getSelectedDateTimeEnds());
 
         if (titleEditable == null || titleEditable.toString().isEmpty()) {
             showSnackbar(R.string.specify_event_title_snackbar);
@@ -268,7 +267,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date newDate = calendar.getTime();
 
         mViewModel.setSelectedDateTimeStarts(newDate);
-        mBinding.dateStarts.setText(getFormattedDate(newDate));
+        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(newDate));
     }
 
     private void onDateEndsSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -279,7 +278,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date newDate = calendar.getTime();
 
         mViewModel.setSelectedDateTimeEnds(newDate);
-        mBinding.dateEnds.setText(getFormattedDate(newDate));
+        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(newDate));
     }
 
     private void onTimeStartsSet(TimePicker view, int hourOfDay, int minute) {
@@ -291,7 +290,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date newDate = calendar.getTime();
 
         mViewModel.setSelectedDateTimeStarts(newDate);
-        mBinding.timeStarts.setText(getFormattedTime(newDate));
+        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
     }
 
     private void onTimeEndsSet(TimePicker view, int hourOfDay, int minute) {
@@ -303,7 +302,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date newDate = calendar.getTime();
 
         mViewModel.setSelectedDateTimeEnds(newDate);
-        mBinding.timeEnds.setText(getFormattedTime(newDate));
+        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
     }
 
     private boolean isEditing() {
@@ -327,22 +326,12 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date starts = calendarStarts.getTime();
         Date ends = calendarEnds.getTime();
 
-        mViewModel.setSelectedDateTimeStarts(calendarStarts.getTime());
-        mViewModel.setSelectedDateTimeEnds(calendarEnds.getTime());
+        mViewModel.setSelectedDateTimeStarts(starts);
+        mViewModel.setSelectedDateTimeEnds(ends);
 
-        mBinding.dateStarts.setText(getFormattedDate(starts));
-        mBinding.timeStarts.setText(getFormattedTime(starts));
-        mBinding.dateEnds.setText(getFormattedDate(ends));
-        mBinding.timeEnds.setText(getFormattedTime(ends));
-    }
-
-    private static String getFormattedDate(Date date) {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
-        return dateFormat.format(date);
-    }
-
-    private static String getFormattedTime(Date date) {
-        DateFormat timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
-        return timeFormat.format(date);
+        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(starts));
+        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(starts));
+        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(ends));
+        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(ends));
     }
 }

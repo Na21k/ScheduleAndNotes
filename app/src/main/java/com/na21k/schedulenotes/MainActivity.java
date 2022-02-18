@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.na21k.schedulenotes.databinding.ActivityMainBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 
 public class MainActivity extends AppCompatActivity {
 
