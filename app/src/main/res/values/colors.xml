@@ -36,4 +36,6 @@
     <color name="category_blue_night">#4D7DDF</color>
     <color name="category_purple">#D163FF</color>
     <color name="category_purple_night">#B355DA</color>
+    <color name="category_pink">#FF63FC</color>
+    <color name="category_pink_night">#DD56DB</color>
 </resources>

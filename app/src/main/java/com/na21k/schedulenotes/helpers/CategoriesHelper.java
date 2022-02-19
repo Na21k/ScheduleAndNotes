@@ -37,6 +37,8 @@ public class CategoriesHelper {
         int colorBlueNight = ContextCompat.getColor(context, R.color.category_blue_night);
         int colorPurpleDay = ContextCompat.getColor(context, R.color.category_purple);
         int colorPurpleNight = ContextCompat.getColor(context, R.color.category_purple_night);
+        int colorPinkDay = ContextCompat.getColor(context, R.color.category_pink);
+        int colorPinkNight = ContextCompat.getColor(context, R.color.category_pink_night);
 
         List<ColorSetModel> res = new ArrayList<>();
         res.add(new ColorSetModel(ColorSet.GRAY, colorGrayDay, colorGrayNight));
@@ -47,6 +49,7 @@ public class CategoriesHelper {
         res.add(new ColorSetModel(ColorSet.CYAN, colorCyanDay, colorCyanNight));
         res.add(new ColorSetModel(ColorSet.BLUE, colorBlueDay, colorBlueNight));
         res.add(new ColorSetModel(ColorSet.PURPLE, colorPurpleDay, colorPurpleNight));
+        res.add(new ColorSetModel(ColorSet.PINK, colorPinkDay, colorPinkNight));
 
         return res;
     }
