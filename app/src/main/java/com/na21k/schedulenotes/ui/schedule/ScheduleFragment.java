@@ -239,7 +239,23 @@ public class ScheduleFragment extends Fragment
 
     @Override
     public void onEventDeletionRequested(Event event) {
-        mViewModel.deleteEvent(event);
+        Context context = getContext();
+
+        if (context != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_delete_24);
+            builder.setTitle(R.string.event_deletion_alert_title);
+            builder.setMessage(R.string.event_deletion_alert_message);
+
+            builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+                mViewModel.deleteEvent(event);
+                showSnackbar(R.string.event_deleted_snackbar);
+            });
+            builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+            });
+
+            builder.show();
+        }
     }
 
     @Override

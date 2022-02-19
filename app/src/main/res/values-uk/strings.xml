@@ -82,4 +82,5 @@
     <string name="title_create_event">Створити подію</string>
     <string name="title_edit_event">Редагувати подію</string>
     <string name="jump_to_today_snackbar">Переходимо до Сьогодні …</string>
+    <string name="event_deleted_snackbar">Подію видалено</string>
 </resources>
