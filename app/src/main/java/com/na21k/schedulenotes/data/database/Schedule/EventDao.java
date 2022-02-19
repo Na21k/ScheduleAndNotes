@@ -26,9 +26,9 @@ public interface EventDao {
     @Query("select * from events E where E.id = :id")
     LiveData<Event> getById(int id);
 
-    @Query("select * from events E where E.date_time_starts >= :dateMinInclusive " +
-            "and E.date_time_ends < :dateMaxExclusive")
-    LiveData<List<Event>> getByDate(Date dateMinInclusive, Date dateMaxExclusive);
+    @Query("select * from events E where E.date_time_starts < :hasStartedBefore " +
+            "and E.date_time_ends >= :hasNotEndedBy")
+    LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy);
 
     @Update
     void update(Event event);

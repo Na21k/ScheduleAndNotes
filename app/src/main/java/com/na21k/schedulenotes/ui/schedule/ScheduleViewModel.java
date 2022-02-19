@@ -36,8 +36,8 @@ public class ScheduleViewModel extends AndroidViewModel {
         return mAllEvents;
     }
 
-    public LiveData<List<Event>> getByDate(Date dateMinInclusive, Date dateMaxExclusive) {
-        return mEventDao.getByDate(dateMinInclusive, dateMaxExclusive);
+    public LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy) {
+        return mEventDao.getByDate(hasStartedBefore, hasNotEndedBy);
     }
 
     public LiveData<List<Category>> getAllCategories() {

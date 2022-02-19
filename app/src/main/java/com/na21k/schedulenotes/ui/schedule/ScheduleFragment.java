@@ -128,12 +128,14 @@ public class ScheduleFragment extends Fragment
     }
 
     private void jumpToDate(Date date) {
-        Date dateMinInclusive = DateTimeHelper.truncateToDateOnly(date);
-        Date dateMaxExclusive = DateTimeHelper.addDays(dateMinInclusive, 1);
-        mViewModel.setSelectedDate(dateMinInclusive);
+        date = DateTimeHelper.truncateToDateOnly(date);
+        mViewModel.setSelectedDate(date);
+
+        Date hasStartedBefore = DateTimeHelper.addDays(date, 1);
+        Date hasNotEndedBy = date;
 
         unsubscribeFromLiveData();
-        mScheduleListLiveData = mViewModel.getByDate(dateMinInclusive, dateMaxExclusive);
+        mScheduleListLiveData = mViewModel.getByDate(hasStartedBefore, hasNotEndedBy);
         mScheduleListLiveData.observe(getViewLifecycleOwner(), this);
     }
 
