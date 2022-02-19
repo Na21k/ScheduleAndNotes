@@ -81,7 +81,13 @@ public class ScheduleFragment extends Fragment
             updateListIfEnoughData();
         });
 
-        jumpToToday(true);
+        Date cachedSelectedDate = mViewModel.getSelectedDate();
+
+        if (cachedSelectedDate != null) {
+            jumpToDate(cachedSelectedDate);
+        } else {
+            jumpToToday(true);
+        }
     }
 
     private void updateListIfEnoughData() {
