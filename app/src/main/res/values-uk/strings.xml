@@ -83,4 +83,9 @@
     <string name="title_edit_event">Редагувати подію</string>
     <string name="jump_to_today_snackbar">Переходимо до Сьогодні …</string>
     <string name="event_deleted_snackbar">Подію видалено</string>
+    <string name="add_list_fab">Додати список</string>
+    <string name="movies_list_btn">Фільми</string>
+    <string name="music_list_btn">Музика</string>
+    <string name="shopping_list_btn">Покупки</string>
+    <string name="Languages_list_btn">Мови</string>
 </resources>

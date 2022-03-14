@@ -38,4 +38,10 @@
     <color name="category_purple_night">#B355DA</color>
     <color name="category_pink">#FF63FC</color>
     <color name="category_pink_night">#DD56DB</color>
+
+    <!--Standard lists colors-->
+    <color name="list_movies">#588FFF</color>
+    <color name="list_music">#FF4545</color>
+    <color name="list_shopping">#3DFF67</color>
+    <color name="list_languages">#D163FF</color>
 </resources>

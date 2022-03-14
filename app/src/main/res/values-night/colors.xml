@@ -6,4 +6,10 @@
 
     <color name="check_color">#1ECF5F</color>
     <color name="neutral_button">#787878</color>
+
+    <!--Standard lists colors-->
+    <color name="list_movies">#4D7DDF</color>
+    <color name="list_music">#E43C3C</color>
+    <color name="list_shopping">#33D656</color>
+    <color name="list_languages">#B355DA</color>
 </resources>

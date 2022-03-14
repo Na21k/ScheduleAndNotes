@@ -106,4 +106,11 @@
     <string name="is_hidden_checkbox">Hidden</string>
     <string name="is_hidden_checkbox_description">Use this to hide this events title in the schedule list so that others won\'t be able to see it when you scroll through the list. \"Hidden event\" text will be shown instead. Tap on the event in the list to see its info</string>
     <string name="start_time_less_than_end_time_snackbar">The start time can not be later than the end one</string>
+
+    <!--Lists-->
+    <string name="add_list_fab">Add List</string>
+    <string name="movies_list_btn">Movies</string>
+    <string name="music_list_btn">Music</string>
+    <string name="shopping_list_btn">Shopping</string>
+    <string name="Languages_list_btn">Languages</string>
 </resources>
