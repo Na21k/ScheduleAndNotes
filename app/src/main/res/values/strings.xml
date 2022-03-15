@@ -113,4 +113,7 @@
     <string name="music_list_btn">Music</string>
     <string name="shopping_list_btn">Shopping</string>
     <string name="Languages_list_btn">Languages</string>
+    <string name="list_deleted_snackbar">The list has been deleted</string>
+    <string name="list_deletion_alert_title">Delete list</string>
+    <string name="list_deletion_alert_message">Are you sure you want to delete this list? All it\'s items will be lost</string>
 </resources>

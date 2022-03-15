@@ -2,6 +2,7 @@ package com.na21k.schedulenotes.data.database.Lists.UserDefined;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -22,4 +23,7 @@ public interface UserDefinedListDao {
 
     @Query("select * from user_defined_lists L where L.id = :id")
     LiveData<UserDefinedList> getById(int id);
+
+    @Delete
+    void delete(UserDefinedList list);
 }

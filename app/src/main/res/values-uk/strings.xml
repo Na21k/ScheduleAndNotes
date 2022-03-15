@@ -88,4 +88,7 @@
     <string name="music_list_btn">Музика</string>
     <string name="shopping_list_btn">Покупки</string>
     <string name="Languages_list_btn">Мови</string>
+    <string name="list_deleted_snackbar">Список видалено</string>
+    <string name="list_deletion_alert_title">Видалити список</string>
+    <string name="list_deletion_alert_message">Ви впевнені, що бажаєте видалити цей список? Усі його елементи буде втрачено</string>
 </resources>
