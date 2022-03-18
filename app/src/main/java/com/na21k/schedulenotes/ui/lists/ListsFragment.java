@@ -1,6 +1,7 @@
 package com.na21k.schedulenotes.ui.lists;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
+import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 
 import java.util.Comparator;
 
@@ -66,6 +68,7 @@ public class ListsFragment extends Fragment
 
     private void setListeners() {
         mBinding.addListFab.setOnClickListener(v -> newList());
+        mBinding.moviesListBtnCard.setOnClickListener(v -> openMoviesList());
 
         mBinding.includedList.listsList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -88,6 +91,15 @@ public class ListsFragment extends Fragment
 
         if (context != null) {
             Snackbar.make(mBinding.getRoot(), "Test", 3000).show();
+        }
+    }
+
+    private void openMoviesList() {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, MoviesListActivity.class);
+            startActivity(intent);
         }
     }
 
