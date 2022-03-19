@@ -96,4 +96,10 @@
     <string name="list_item_deletion_alert_title">Видалити елемент списку</string>
     <string name="list_item_deletion_alert_message">Ви впевнені, що хочете видалити цей елемент?</string>
     <string name="title_movies_list">Список фільмів</string>
+    <string name="list_item_creation_alert_title">Додати елемент списку</string>
+    <string name="list_item_creation_empty_input_alert_message">Неможливо додати порожній елемент. Спробуйте ще раз</string>
+    <string name="list_item_editing_alert_title">Редагувати елемент списку</string>
+    <string name="list_item_editing_empty_input_alert_message">Неможливо оновити порожнім введенням. Спробуйте ще раз</string>
+    <string name="oops_aletr_title">Ой …</string>
+    <string name="movie_info_input_hint">Фільм (назва, рік або ін.)</string>
 </resources>

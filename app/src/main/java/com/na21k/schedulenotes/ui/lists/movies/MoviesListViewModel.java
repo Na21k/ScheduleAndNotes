@@ -29,6 +29,14 @@ public class MoviesListViewModel extends AndroidViewModel {
         return mAllMovies;
     }
 
+    public void addNew(MoviesListItem moviesListItem) {
+        new Thread(() -> mMoviesListItemDao.insert(moviesListItem)).start();
+    }
+
+    public void update(MoviesListItem moviesListItem) {
+        new Thread(() -> mMoviesListItemDao.update(moviesListItem)).start();
+    }
+
     public void delete(MoviesListItem moviesListItem) {
         new Thread(() -> mMoviesListItemDao.delete(moviesListItem)).start();
     }

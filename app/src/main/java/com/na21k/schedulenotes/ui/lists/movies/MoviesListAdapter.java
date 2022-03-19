@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.lists.movies;
 
-import android.content.Context;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -90,22 +89,16 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
             mMovie = movie;
             mBinding.movieName.setText(movie.getText());
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Context context = v.getContext();
-
-                    if (context != null) {
-
-                    }
-                }
-            });
+            itemView.setOnClickListener(
+                    v -> mOnMovieActionRequestedListener.onMovieUpdateRequested(movie));
 
             itemView.setOnCreateContextMenuListener(this);
         }
     }
 
     public interface OnMovieActionRequestedListener {
+
+        void onMovieUpdateRequested(MoviesListItem movie);
 
         void onMovieDeletionRequested(MoviesListItem movie);
     }

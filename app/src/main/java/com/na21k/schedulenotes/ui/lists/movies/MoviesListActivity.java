@@ -2,16 +2,21 @@ package com.na21k.schedulenotes.ui.lists.movies;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.databinding.ActivityMoviesListBinding;
+import com.na21k.schedulenotes.databinding.MovieInfoAlertViewBinding;
 
 import java.util.Comparator;
 
@@ -40,8 +45,17 @@ public class MoviesListActivity extends AppCompatActivity
         setUpList();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
     private void setUpList() {
+        RecyclerView recyclerView = mBinding.includedList.moviesList;
         MoviesListAdapter adapter = new MoviesListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         observeMovies(adapter);
         setListeners();
     }
@@ -55,10 +69,78 @@ public class MoviesListActivity extends AppCompatActivity
 
     private void setListeners() {
         mBinding.addMovieFab.setOnClickListener(v -> newMovie());
+
+        mBinding.includedList.moviesList.setOnScrollChangeListener(
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (scrollY <= oldScrollY) {
+                        mBinding.addMovieFab.extend();
+                    } else {
+                        mBinding.addMovieFab.shrink();
+                    }
+
+                    if (!v.canScrollVertically(1) && v.canScrollVertically(-1)) {
+                        mBinding.addMovieFab.hide();
+                    } else {
+                        mBinding.addMovieFab.show();
+                    }
+                });
     }
 
     private void newMovie() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_add_24);
+        builder.setTitle(R.string.list_item_creation_alert_title);
 
+        MovieInfoAlertViewBinding viewBinding = MovieInfoAlertViewBinding
+                .inflate(getLayoutInflater(), mBinding.getRoot(), false);
+        viewBinding.input.requestFocus();
+        builder.setView(viewBinding.getRoot());
+
+        builder.setPositiveButton(R.string.save, (dialog, which) -> {
+            Editable movieTextEditable = viewBinding.input.getText();
+
+            if (movieTextEditable != null && !movieTextEditable.toString().isEmpty()) {
+                String movieText = movieTextEditable.toString();
+                mViewModel.addNew(new MoviesListItem(0, movieText));
+            } else {
+                newMovie();
+                showErrorDialog(R.string.list_item_creation_empty_input_alert_message);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+        });
+
+        builder.show();
+    }
+
+    @Override
+    public void onMovieUpdateRequested(MoviesListItem movie) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_edit_24);
+        builder.setTitle(R.string.list_item_editing_alert_title);
+
+        MovieInfoAlertViewBinding viewBinding = MovieInfoAlertViewBinding
+                .inflate(getLayoutInflater(), mBinding.getRoot(), false);
+        viewBinding.input.setText(movie.getText());
+        viewBinding.input.requestFocus();
+        builder.setView(viewBinding.getRoot());
+
+        builder.setPositiveButton(R.string.save, (dialog, which) -> {
+            Editable movieTextEditable = viewBinding.input.getText();
+
+            if (movieTextEditable != null && !movieTextEditable.toString().isEmpty()) {
+                String movieText = movieTextEditable.toString();
+                movie.setText(movieText);
+                mViewModel.update(movie);
+            } else {
+                onMovieUpdateRequested(movie);
+                showErrorDialog(R.string.list_item_editing_empty_input_alert_message);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+        });
+
+        builder.show();
     }
 
     @Override
@@ -73,6 +155,18 @@ public class MoviesListActivity extends AppCompatActivity
             Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+        });
+
+        builder.show();
+    }
+
+    private void showErrorDialog(@StringRes int errorTextResource) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_error_24);
+        builder.setTitle(R.string.oops_aletr_title);
+        builder.setMessage(errorTextResource);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
         });
 
         builder.show();
