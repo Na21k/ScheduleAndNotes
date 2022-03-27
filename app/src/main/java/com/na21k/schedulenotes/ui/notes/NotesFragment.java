@@ -2,6 +2,7 @@ package com.na21k.schedulenotes.ui.notes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +14,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Identifiable;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.models.ColorSet;
+import com.na21k.schedulenotes.data.models.groupedListModels.GroupedListsItem;
 import com.na21k.schedulenotes.databinding.NotesFragmentBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 
 import java.util.Comparator;
@@ -34,6 +37,9 @@ import java.util.stream.Collectors;
 public class NotesFragment extends Fragment
         implements NotesListAdapter.OnNoteActionRequestedListener {
 
+    private static final int mLandscapeColumnCount = 2;
+    private static final int mPortraitColumnCountTablet = 2;
+    private static final int mLandscapeColumnCountTablet = 3;
     private NotesViewModel mViewModel;
     private NotesFragmentBinding mBinding;
 
@@ -63,7 +69,43 @@ public class NotesFragment extends Fragment
         NotesListAdapter adapter =
                 new NotesListAdapter(UiHelper.isInDarkMode(this), this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        int orientation = getResources().getConfiguration().orientation;
+        boolean isTablet = UiHelper.isTablet(getResources());
+
+        if (!isTablet && orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+            return adapter;
+        }
+
+        int columnCount;
+
+        if (isTablet) {
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                columnCount = mLandscapeColumnCountTablet;
+            } else {
+                columnCount = mPortraitColumnCountTablet;
+            }
+        } else {
+            columnCount = mLandscapeColumnCount;
+        }
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columnCount);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int viewType = adapter.getItemViewType(position);
+
+                if (viewType == GroupedListsItem.HEADER_ITEM) {
+                    return columnCount;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+        recyclerView.setLayoutManager(layoutManager);
 
         return adapter;
     }
