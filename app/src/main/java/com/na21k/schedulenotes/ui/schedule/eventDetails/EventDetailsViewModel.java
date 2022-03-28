@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class EventDetailsViewModel extends AndroidViewModel {
 
     private final EventDao mEventDao;
-    private final LiveData<List<Category>> mCategories;
+    private final CategoryDao mCategoryDao;
     private LiveData<Event> mEvent;
     private int mEventId;
     private Date mSelectedDateTimeStarts;
@@ -29,7 +30,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mEventDao = db.eventDao();
-        mCategories = db.categoryDao().getAll();
+        mCategoryDao = db.categoryDao();
     }
 
     public LiveData<Event> getEvent(int id) {
@@ -42,7 +43,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Category>> getAllCategories() {
-        return mCategories;
+        return mCategoryDao.getAll();
     }
 
     public void createEvent(Event event) {

@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Notes.NoteDao;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class NoteDetailsViewModel extends AndroidViewModel {
 
     private final NoteDao mNoteDao;
-    private final LiveData<List<Category>> mCategories;
+    private final CategoryDao mCategoryDao;
     private LiveData<Note> mNote;
     private int mNoteId;
 
@@ -26,7 +27,7 @@ public class NoteDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mNoteDao = db.noteDao();
-        mCategories = db.categoryDao().getAll();
+        mCategoryDao = db.categoryDao();
     }
 
     public LiveData<Note> getNote(int id) {
@@ -39,7 +40,7 @@ public class NoteDetailsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Category>> getAllCategories() {
-        return mCategories;
+        return mCategoryDao.getAll();
     }
 
     public void createNote(Note note) {

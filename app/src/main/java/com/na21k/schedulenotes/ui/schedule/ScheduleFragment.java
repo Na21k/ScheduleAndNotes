@@ -29,6 +29,7 @@ import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleFragmentBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.UiHelper;
+import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 
 import java.util.Calendar;
@@ -233,6 +234,10 @@ public class ScheduleFragment extends Fragment
             builder.setIcon(R.drawable.ic_categories_24);
             builder.setTitle(R.string.pick_category_dialog_title);
             builder.setNegativeButton(R.string.cancel, null);
+            builder.setPositiveButton(R.string.create_category_dialog_button, (dialog, which) -> {
+                Intent intent = new Intent(context, CategoryDetailsActivity.class);
+                startActivity(intent);
+            });
 
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
                     android.R.layout.simple_list_item_1, categoriesCache);

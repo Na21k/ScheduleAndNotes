@@ -100,6 +100,7 @@
 
     <!--Notes and Schedule (shared)-->
     <string name="pick_category_dialog_title">Pick a category</string>
+    <string name="create_category_dialog_button">Create</string>
     <string name="category_set_snackbar">Category set</string>
     <string name="excluded_from_category_snackbar">Excluded from category</string>
     <string name="set_category_menu_item">Set category</string>

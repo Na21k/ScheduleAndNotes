@@ -26,6 +26,7 @@ import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.groupedListModels.GroupedListsItem;
 import com.na21k.schedulenotes.databinding.NotesFragmentBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
+import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 
 import java.util.Comparator;
@@ -193,24 +194,27 @@ public class NotesFragment extends Fragment
         Context context = getContext();
 
         if (context != null) {
+            List<Category> categoriesCache = mViewModel.getCategoriesCache();
+            categoriesCache.sort(Comparator.comparing(Category::getTitle));
+
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setIcon(R.drawable.ic_categories_24);
             builder.setTitle(R.string.pick_category_dialog_title);
             builder.setNegativeButton(R.string.cancel, null);
-
-            mViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
-                categories.sort(Comparator.comparing(Category::getTitle));
-
-                ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
-                        android.R.layout.simple_list_item_1, categories);
-                builder.setAdapter(adapter, (dialog, which) -> {
-                    int selectedCategoryId = categories.get(which).getId();
-                    note.setCategoryId(selectedCategoryId);
-                    mViewModel.updateNote(note);
-                });
-
-                builder.show();
+            builder.setPositiveButton(R.string.create_category_dialog_button, (dialog, which) -> {
+                Intent intent = new Intent(context, CategoryDetailsActivity.class);
+                startActivity(intent);
             });
+
+            ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
+                    android.R.layout.simple_list_item_1, categoriesCache);
+            builder.setAdapter(adapter, (dialog, which) -> {
+                int selectedCategoryId = categoriesCache.get(which).getId();
+                note.setCategoryId(selectedCategoryId);
+                mViewModel.updateNote(note);
+            });
+
+            builder.show();
         }
     }
 

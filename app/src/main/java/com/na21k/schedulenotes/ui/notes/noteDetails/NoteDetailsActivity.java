@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.notes.noteDetails;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,8 +23,10 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.databinding.ActivityNoteDetailsBinding;
+import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class NoteDetailsActivity extends AppCompatActivity implements Observer<Note> {
 
@@ -162,20 +165,31 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         builder.setIcon(R.drawable.ic_categories_24);
         builder.setTitle(R.string.pick_category_dialog_title);
         builder.setNegativeButton(R.string.cancel, null);
-
-        mViewModel.getAllCategories().observe(this, categories -> {
-            categories.sort(Comparator.comparing(Category::getTitle));
-
-            ArrayAdapter<Category> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, categories);
-            builder.setAdapter(adapter, (dialog, which) -> {
-                mCurrentNotesCategoryId = categories.get(which).getId();
-                showSnackbar(R.string.category_set_snackbar);
-                invalidateOptionsMenu();    //show the Exclude from category button
-            });
-
-            builder.show();
+        builder.setPositiveButton(R.string.create_category_dialog_button, (dialog, which) -> {
+            Intent intent = new Intent(this, CategoryDetailsActivity.class);
+            startActivity(intent);
         });
+
+        LiveData<List<Category>> liveData = mViewModel.getAllCategories();
+        Observer<List<Category>> observer = new Observer<List<Category>>() {
+            @Override
+            public void onChanged(List<Category> categories) {
+                categories.sort(Comparator.comparing(Category::getTitle));
+
+                ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
+                        android.R.layout.simple_list_item_1, categories);
+                builder.setAdapter(adapter, (dialog, which) -> {
+                    mCurrentNotesCategoryId = categories.get(which).getId();
+                    showSnackbar(R.string.category_set_snackbar);
+                    invalidateOptionsMenu();    //show the Exclude from category button
+                });
+
+                builder.show();
+                liveData.removeObserver(this);
+            }
+        };
+
+        liveData.observe(this, observer);
     }
 
     private boolean isEditing() {
