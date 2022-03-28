@@ -196,6 +196,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_categories_24);
         builder.setTitle(R.string.pick_category_dialog_title);
+        builder.setNegativeButton(R.string.cancel, null);
 
         mViewModel.getAllCategories().observe(this, categories -> {
             categories.sort(Comparator.comparing(Category::getTitle));

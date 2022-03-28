@@ -232,6 +232,7 @@ public class ScheduleFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setIcon(R.drawable.ic_categories_24);
             builder.setTitle(R.string.pick_category_dialog_title);
+            builder.setNegativeButton(R.string.cancel, null);
 
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(context,
                     android.R.layout.simple_list_item_1, categoriesCache);

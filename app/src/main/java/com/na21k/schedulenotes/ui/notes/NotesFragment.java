@@ -196,6 +196,7 @@ public class NotesFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setIcon(R.drawable.ic_categories_24);
             builder.setTitle(R.string.pick_category_dialog_title);
+            builder.setNegativeButton(R.string.cancel, null);
 
             mViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
                 categories.sort(Comparator.comparing(Category::getTitle));
