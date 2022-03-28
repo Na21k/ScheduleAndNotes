@@ -52,24 +52,6 @@ public class CategoriesFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         CategoriesListAdapter adapter = setUpRecyclerView();
-
-        //mViewModel.deleteAll();
-
-        /*mViewModel.insert(new Category(0, "Test category 1", 0xff5be02b));
-        mViewModel.insert(new Category(0, "Test category 2", 0xffe0792b));
-        mViewModel.insert(new Category(0, "Test category 3", 0xffe02b2b));
-        mViewModel.insert(new Category(0, "Test category 4", 0xffd42aac));
-        mViewModel.insert(new Category(0, "Test category 5", 0xff2ad4c3));
-        mViewModel.insert(new Category(0, "Test category 6", 0xffd4bd2a));
-        mViewModel.insert(new Category(0, "Test category 7", 0xff2a66d4));
-        mViewModel.insert(new Category(0, "Test category 8", 0xff5be02b));
-        mViewModel.insert(new Category(0, "Test category 9", 0xffe0792b));
-        mViewModel.insert(new Category(0, "Test category 10", 0xffe02b2b));
-        mViewModel.insert(new Category(0, "Test category 11", 0xffd42aac));
-        mViewModel.insert(new Category(0, "Test category 12", 0xff2ad4c3));
-        mViewModel.insert(new Category(0, "Test category 13", 0xffd4bd2a));
-        mViewModel.insert(new Category(0, "Test category 14", 0xff2a66d4));*/
-
         observeCategories(adapter);
         setListeners();
     }
