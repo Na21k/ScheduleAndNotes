@@ -19,19 +19,20 @@
 
             <ImageButton
                 android:id="@+id/previous_date_btn"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/prev_date_btn_description"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:padding="4dp"
                 android:src="@drawable/ic_navigate_before_48"
                 tools:ignore="RtlHardcoded" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/calendar_btn_card"
                 android:layout_width="0dp"
-                android:layout_height="54dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/page_margin"
                 android:layout_marginVertical="12dp"
@@ -54,20 +55,21 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="14dp"
+                    android:layout_marginVertical="12dp"
                     android:textSize="22sp"
-                    tools:text="Feb 22" />
+                    tools:text="Date formatted" />
 
             </androidx.cardview.widget.CardView>
 
             <ImageButton
                 android:id="@+id/next_date_btn"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/next_date_btn_description"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:padding="4dp"
                 android:src="@drawable/ic_navigate_next_48"
                 tools:ignore="RtlHardcoded" />
 
