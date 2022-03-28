@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Identifiable;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.groupedListModels.GroupedListsItem;
@@ -133,12 +132,13 @@ public class NotesFragment extends Fragment
         }
 
         TreeMap<Category, List<Note>> groupedNotes =
-                new TreeMap<>(Comparator.comparing(Identifiable::getId));
+                new TreeMap<>(Comparator.comparing(Category::getTitle));
 
         for (Category category : categoriesCache) {
             List<Note> categoryNotes = notesCache.stream()
                     .filter(note -> note.getCategoryId() != null &&
                             note.getCategoryId().equals(category.getId()))
+                    .sorted(Comparator.comparing(Note::getTitle))
                     .collect(Collectors.toList());
 
             if (!categoryNotes.isEmpty()) {
