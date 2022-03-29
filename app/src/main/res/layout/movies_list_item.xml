@@ -14,7 +14,7 @@
     android:longClickable="true"
     android:outlineAmbientShadowColor="@color/shadow_color"
     android:outlineSpotShadowColor="@color/shadow_color"
-    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardBackgroundColor="@color/list_item"
     app:cardCornerRadius="@dimen/corner_radius"
     app:cardElevation="@dimen/elevation">
 
@@ -27,6 +27,6 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:textSize="22sp"
-        tools:text="Movie name" />
+        tools:text="Movie info" />
 
 </androidx.cardview.widget.CardView>

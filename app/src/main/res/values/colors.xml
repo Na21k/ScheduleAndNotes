@@ -44,4 +44,5 @@
     <color name="list_music">#FF4545</color>
     <color name="list_shopping">#3DFF67</color>
     <color name="list_languages">#D163FF</color>
+    <color name="list_item">#D6D6D6</color>
 </resources>
