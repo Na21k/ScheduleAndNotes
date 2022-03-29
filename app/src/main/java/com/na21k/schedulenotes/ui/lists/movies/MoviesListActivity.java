@@ -17,6 +17,7 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.databinding.ActivityMoviesListBinding;
 import com.na21k.schedulenotes.databinding.MovieInfoAlertViewBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
 
@@ -104,7 +105,8 @@ public class MoviesListActivity extends AppCompatActivity
                 mViewModel.addNew(new MoviesListItem(0, movieText));
             } else {
                 newMovie();
-                showErrorDialog(R.string.list_item_creation_empty_input_alert_message);
+                UiHelper.showErrorDialog(this,
+                        R.string.list_item_creation_empty_input_alert_message);
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -134,7 +136,8 @@ public class MoviesListActivity extends AppCompatActivity
                 mViewModel.update(movie);
             } else {
                 onMovieUpdateRequested(movie);
-                showErrorDialog(R.string.list_item_editing_empty_input_alert_message);
+                UiHelper.showErrorDialog(this,
+                        R.string.list_item_editing_empty_input_alert_message);
             }
         });
         builder.setNeutralButton(R.string.cancel, (dialog, which) -> {
@@ -157,18 +160,6 @@ public class MoviesListActivity extends AppCompatActivity
             Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
-        });
-
-        builder.show();
-    }
-
-    private void showErrorDialog(@StringRes int errorTextResource) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.drawable.ic_error_24);
-        builder.setTitle(R.string.oops_aletr_title);
-        builder.setMessage(errorTextResource);
-
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
         });
 
         builder.show();

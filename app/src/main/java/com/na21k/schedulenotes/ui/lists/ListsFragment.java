@@ -20,6 +20,7 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
+import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
 
 import java.util.Comparator;
 
@@ -69,6 +70,7 @@ public class ListsFragment extends Fragment
     private void setListeners() {
         mBinding.addListFab.setOnClickListener(v -> newList());
         mBinding.moviesListBtnCard.setOnClickListener(v -> openMoviesList());
+        mBinding.musicListBtnCard.setOnClickListener(v -> openMusicList());
 
         mBinding.includedList.listsList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -99,6 +101,15 @@ public class ListsFragment extends Fragment
 
         if (context != null) {
             Intent intent = new Intent(context, MoviesListActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void openMusicList() {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, MusicListActivity.class);
             startActivity(intent);
         }
     }

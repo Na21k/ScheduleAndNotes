@@ -104,4 +104,6 @@
     <string name="movie_info_input_hint">Фільм (назва, рік або ін.)</string>
     <string name="create_category_dialog_button">Створити</string>
     <string name="add_item_fab">Додати елемент</string>
+    <string name="music_info_input_hint">Пісня, виконавець, альбом або ін.</string>
+    <string name="title_music_list">Список музики</string>
 </resources>

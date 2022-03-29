@@ -11,7 +11,8 @@
         android:theme="@style/Theme.ScheduleNotes">
         <activity
             android:name=".ui.lists.music.MusicListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/title_music_list" />
         <activity
             android:name=".ui.lists.movies.MoviesListActivity"
             android:exported="false"

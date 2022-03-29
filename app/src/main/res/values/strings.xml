@@ -11,6 +11,7 @@
     <string name="title_notes">Notes</string>
     <string name="title_lists">Lists</string>
     <string name="title_movies_list">Movies list</string>
+    <string name="title_music_list">Music list</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
     <!-- Preference Titles -->
@@ -129,6 +130,7 @@
     <string name="list_item_editing_empty_input_alert_message">Can\'t update with empty input. Try again</string>
     <string name="oops_aletr_title">Oops …</string>
     <string name="movie_info_input_hint">Movie info (name, year, etc.)</string>
+    <string name="music_info_input_hint">Song, artist, album, etc.</string>
     <string name="add_item_fab">Add item</string>
 
     <!--Movies list-->
