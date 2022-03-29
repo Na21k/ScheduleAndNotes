@@ -52,7 +52,7 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     private void setUpList() {
-        RecyclerView recyclerView = mBinding.includedList.moviesList;
+        RecyclerView recyclerView = mBinding.includedList.simpleList;
         MoviesListAdapter adapter = new MoviesListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -70,7 +70,7 @@ public class MoviesListActivity extends AppCompatActivity
     private void setListeners() {
         mBinding.addMovieFab.setOnClickListener(v -> newMovie());
 
-        mBinding.includedList.moviesList.setOnScrollChangeListener(
+        mBinding.includedList.simpleList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (scrollY <= oldScrollY) {
                         mBinding.addMovieFab.extend();

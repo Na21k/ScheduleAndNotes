@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
-import com.na21k.schedulenotes.databinding.MoviesListItemBinding;
+import com.na21k.schedulenotes.databinding.SimpleListItemBinding;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        MoviesListItemBinding binding = MoviesListItemBinding
+        SimpleListItemBinding binding = SimpleListItemBinding
                 .inflate(inflater, parent, false);
 
         return new MovieViewHolder(binding.getRoot(), binding);
@@ -54,10 +54,10 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
     public class MovieViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private final MoviesListItemBinding mBinding;
+        private final SimpleListItemBinding mBinding;
         private MoviesListItem mMovie;
 
-        public MovieViewHolder(@NonNull View itemView, MoviesListItemBinding binding) {
+        public MovieViewHolder(@NonNull View itemView, SimpleListItemBinding binding) {
             super(itemView);
             mBinding = binding;
         }
@@ -87,7 +87,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
         private void setData(MoviesListItem movie) {
             mMovie = movie;
-            mBinding.movieName.setText(movie.getText());
+            mBinding.itemText.setText(movie.getText());
 
             itemView.setOnClickListener(
                     v -> mOnMovieActionRequestedListener.onMovieUpdateRequested(movie));

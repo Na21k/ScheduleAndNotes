@@ -5,10 +5,10 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movies_list"
+        android:id="@+id/simple_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        tools:listitem="@layout/movies_list_item" />
+        tools:listitem="@layout/simple_list_item" />
 
 </FrameLayout>
