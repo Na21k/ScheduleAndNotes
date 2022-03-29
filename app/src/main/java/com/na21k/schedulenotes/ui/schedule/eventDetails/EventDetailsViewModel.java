@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 
@@ -19,7 +18,8 @@ import java.util.List;
 public class EventDetailsViewModel extends AndroidViewModel {
 
     private final EventDao mEventDao;
-    private final CategoryDao mCategoryDao;
+    private final LiveData<List<Category>> mCategories;
+    private List<Category> mCategoriesCache = null;
     private LiveData<Event> mEvent;
     private int mEventId;
     private Date mSelectedDateTimeStarts;
@@ -30,7 +30,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mEventDao = db.eventDao();
-        mCategoryDao = db.categoryDao();
+        mCategories = db.categoryDao().getAll();
     }
 
     public LiveData<Event> getEvent(int id) {
@@ -43,7 +43,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Category>> getAllCategories() {
-        return mCategoryDao.getAll();
+        return mCategories;
     }
 
     public void createEvent(Event event) {
@@ -80,5 +80,13 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void setSelectedDateTimeEnds(@NonNull Date selectedDateTimeEnds) {
         mSelectedDateTimeEnds = selectedDateTimeEnds;
+    }
+
+    public List<Category> getCategoriesCache() {
+        return mCategoriesCache;
+    }
+
+    public void setCategoriesCache(List<Category> categoriesCache) {
+        mCategoriesCache = categoriesCache;
     }
 }

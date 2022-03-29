@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Notes.NoteDao;
 
@@ -18,7 +17,8 @@ import java.util.List;
 public class NoteDetailsViewModel extends AndroidViewModel {
 
     private final NoteDao mNoteDao;
-    private final CategoryDao mCategoryDao;
+    private final LiveData<List<Category>> mCategories;
+    private List<Category> mCategoriesCache = null;
     private LiveData<Note> mNote;
     private int mNoteId;
 
@@ -27,7 +27,7 @@ public class NoteDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mNoteDao = db.noteDao();
-        mCategoryDao = db.categoryDao();
+        mCategories = db.categoryDao().getAll();
     }
 
     public LiveData<Note> getNote(int id) {
@@ -40,7 +40,7 @@ public class NoteDetailsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Category>> getAllCategories() {
-        return mCategoryDao.getAll();
+        return mCategories;
     }
 
     public void createNote(Note note) {
@@ -59,5 +59,13 @@ public class NoteDetailsViewModel extends AndroidViewModel {
     @Nullable
     public LiveData<Note> getCurrentNote() {
         return mNote;
+    }
+
+    public List<Category> getCategoriesCache() {
+        return mCategoriesCache;
+    }
+
+    public void setCategoriesCache(List<Category> categoriesCache) {
+        mCategoriesCache = categoriesCache;
     }
 }

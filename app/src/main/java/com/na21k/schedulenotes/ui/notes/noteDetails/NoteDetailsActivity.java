@@ -59,6 +59,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         } else {
             setTitle(R.string.title_create_note);
         }
+
+        loadCategoriesFromDb();
     }
 
     @Override
@@ -170,26 +172,21 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             startActivity(intent);
         });
 
-        LiveData<List<Category>> liveData = mViewModel.getAllCategories();
-        Observer<List<Category>> observer = new Observer<List<Category>>() {
-            @Override
-            public void onChanged(List<Category> categories) {
-                categories.sort(Comparator.comparing(Category::getTitle));
+        List<Category> categories = mViewModel.getCategoriesCache();
 
-                ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
-                        android.R.layout.simple_list_item_1, categories);
-                builder.setAdapter(adapter, (dialog, which) -> {
-                    mCurrentNotesCategoryId = categories.get(which).getId();
-                    showSnackbar(R.string.category_set_snackbar);
-                    invalidateOptionsMenu();    //show the Exclude from category button
-                });
+        if (categories != null) {
+            categories.sort(Comparator.comparing(Category::getTitle));
 
-                builder.show();
-                liveData.removeObserver(this);
-            }
-        };
+            ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
+                    android.R.layout.simple_list_item_1, categories);
+            builder.setAdapter(adapter, (dialog, which) -> {
+                mCurrentNotesCategoryId = categories.get(which).getId();
+                showSnackbar(R.string.category_set_snackbar);
+                invalidateOptionsMenu();    //show the Exclude from category button
+            });
 
-        liveData.observe(this, observer);
+            builder.show();
+        }
     }
 
     private boolean isEditing() {
@@ -199,6 +196,11 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
     private void loadNoteFromDb(int noteId) {
         mViewModel.getNote(noteId).observe(this, this);
+    }
+
+    private void loadCategoriesFromDb() {
+        mViewModel.getAllCategories().observe(this,
+                categories -> mViewModel.setCategoriesCache(categories));
     }
 
     private void showSnackbar(@StringRes int stringResourceId) {

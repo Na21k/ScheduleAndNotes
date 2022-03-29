@@ -72,6 +72,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
             setSelectedDateTimes(millis);
         }
+
+        loadCategoriesFromDb();
     }
 
     @Override
@@ -205,26 +207,21 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             startActivity(intent);
         });
 
-        LiveData<List<Category>> liveData = mViewModel.getAllCategories();
-        Observer<List<Category>> observer = new Observer<List<Category>>() {
-            @Override
-            public void onChanged(List<Category> categories) {
-                categories.sort(Comparator.comparing(Category::getTitle));
+        List<Category> categories = mViewModel.getCategoriesCache();
 
-                ArrayAdapter<Category> adapter = new ArrayAdapter<>(EventDetailsActivity.this,
-                        android.R.layout.simple_list_item_1, categories);
-                builder.setAdapter(adapter, (dialog, which) -> {
-                    mCurrentEventsCategoryId = categories.get(which).getId();
-                    showSnackbar(R.string.category_set_snackbar);
-                    invalidateOptionsMenu();    //show the Exclude from category button
-                });
+        if (categories != null) {
+            categories.sort(Comparator.comparing(Category::getTitle));
 
-                builder.show();
-                liveData.removeObserver(this);
-            }
-        };
+            ArrayAdapter<Category> adapter = new ArrayAdapter<>(EventDetailsActivity.this,
+                    android.R.layout.simple_list_item_1, categories);
+            builder.setAdapter(adapter, (dialog, which) -> {
+                mCurrentEventsCategoryId = categories.get(which).getId();
+                showSnackbar(R.string.category_set_snackbar);
+                invalidateOptionsMenu();    //show the Exclude from category button
+            });
 
-        liveData.observe(this, observer);
+            builder.show();
+        }
     }
 
     private void setPickersListeners() {
@@ -331,6 +328,11 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     private void loadEventFromDb(int eventId) {
         mViewModel.getEvent(eventId).observe(this, this);
+    }
+
+    private void loadCategoriesFromDb() {
+        mViewModel.getAllCategories().observe(this,
+                categories -> mViewModel.setCategoriesCache(categories));
     }
 
     private void showSnackbar(@StringRes int stringResourceId) {
