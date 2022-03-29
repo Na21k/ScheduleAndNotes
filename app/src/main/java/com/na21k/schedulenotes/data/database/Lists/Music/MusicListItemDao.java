@@ -2,9 +2,11 @@ package com.na21k.schedulenotes.data.database.Lists.Music;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -22,4 +24,10 @@ public interface MusicListItemDao {
 
     @Query("select * from music_list_items I where I.id = :id")
     LiveData<MusicListItem> getById(int id);
+
+    @Update
+    void update(MusicListItem musicListItem);
+
+    @Delete
+    void delete(MusicListItem musicListItem);
 }
