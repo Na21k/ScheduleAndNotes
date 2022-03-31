@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,13 +17,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
+import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
+import com.na21k.schedulenotes.ui.lists.userDefinedLists.UserDefinedListActivity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class ListsFragment extends Fragment
         implements ListsListAdapter.OnListActionRequestedListener {
@@ -61,10 +67,23 @@ public class ListsFragment extends Fragment
     }
 
     private void observeLists(ListsListAdapter adapter) {
-        mViewModel.getAll().observe(getViewLifecycleOwner(), userDefinedLists -> {
-            userDefinedLists.sort(Comparator.comparing(UserDefinedList::getTitle));
-            adapter.setLists(userDefinedLists);
-        });
+        mViewModel.getAll().observe(getViewLifecycleOwner(), userDefinedLists -> new Thread(() -> {
+            List<UserDefinedListModel> models = new ArrayList<>();
+
+            for (UserDefinedList list : userDefinedLists) {
+                int listId = list.getId();
+                int itemsCount = mViewModel.getListItemsCount(listId);
+                models.add(new UserDefinedListModel(list, itemsCount));
+            }
+
+            models.sort(Comparator.comparing(UserDefinedListModel::getTitle));
+
+            Activity activity = getActivity();
+
+            if (activity != null) {
+                activity.runOnUiThread(() -> adapter.setLists(models));
+            }
+        }).start());
     }
 
     private void setListeners() {
@@ -92,7 +111,8 @@ public class ListsFragment extends Fragment
         Context context = getContext();
 
         if (context != null) {
-            Snackbar.make(mBinding.getRoot(), "Test", 3000).show();
+            Intent intent = new Intent(context, UserDefinedListActivity.class);
+            context.startActivity(intent);
         }
     }
 
@@ -111,6 +131,21 @@ public class ListsFragment extends Fragment
         if (context != null) {
             Intent intent = new Intent(context, MusicListActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onListOpenRequested(UserDefinedList list) {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, UserDefinedListActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.LIST_ID_INTENT_KEY, list.getId());
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         }
     }
 

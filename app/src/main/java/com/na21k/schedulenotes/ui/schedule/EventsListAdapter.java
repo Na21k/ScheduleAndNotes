@@ -1,8 +1,5 @@
 package com.na21k.schedulenotes.ui.schedule;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,15 +10,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.helpers.CategoriesHelper;
-import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleListItemBinding;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 
 import java.util.List;
 
@@ -134,25 +129,16 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
             mBinding.scheduleListItemCard.setCardBackgroundColor(backColor);
 
-            itemView.setOnClickListener(v -> {
-                Context context = v.getContext();
-
-                if (context != null) {
-                    Intent intent = new Intent(context, EventDetailsActivity.class);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.EVENT_ID_INTENT_KEY, event.getId());
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
-                }
-            });
+            itemView.setOnClickListener(
+                    v -> mOnEventActionRequestedListener.onEventOpenRequested(event));
 
             itemView.setOnCreateContextMenuListener(this);
         }
     }
 
     public interface OnEventActionRequestedListener {
+
+        void onEventOpenRequested(Event event);
 
         void onCategorySelectionRequested(Event event);
 

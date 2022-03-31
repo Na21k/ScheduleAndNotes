@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.databinding.CategoriesFragmentBinding;
@@ -121,6 +122,21 @@ public class CategoriesFragment extends Fragment
         if (context != null) {
             Intent intent = new Intent(context, CategoryDetailsActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onCategoryOpenRequested(Category category) {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, CategoryDetailsActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.CATEGORY_ID_INTENT_KEY, category.getId());
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         }
     }
 

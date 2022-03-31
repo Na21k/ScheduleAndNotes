@@ -1,8 +1,5 @@
 package com.na21k.schedulenotes.ui.notes;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,8 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.helpers.CategoriesHelper;
-import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
@@ -26,7 +21,7 @@ import com.na21k.schedulenotes.data.models.groupedListModels.NotesListItem;
 import com.na21k.schedulenotes.databinding.GroupedListHeaderItemBinding;
 import com.na21k.schedulenotes.databinding.NotesListItemBinding;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
-import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,25 +177,16 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
 
             mBinding.notesListCard.setCardBackgroundColor(backColor);
 
-            itemView.setOnClickListener(v -> {
-                Context context = v.getContext();
-
-                if (context != null) {
-                    Intent intent = new Intent(context, NoteDetailsActivity.class);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.NOTE_ID_INTENT_KEY, note.getId());
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
-                }
-            });
+            itemView.setOnClickListener(
+                    v -> mOnNoteActionRequestedListener.onNoteOpenRequested(note));
 
             itemView.setOnCreateContextMenuListener(this);
         }
     }
 
     public interface OnNoteActionRequestedListener {
+
+        void onNoteOpenRequested(Note note);
 
         void onCategorySelectionRequested(Note note);
 

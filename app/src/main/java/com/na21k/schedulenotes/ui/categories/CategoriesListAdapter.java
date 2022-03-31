@@ -1,8 +1,5 @@
 package com.na21k.schedulenotes.ui.categories;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,14 +10,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.helpers.CategoriesHelper;
-import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.CategoriesListItemBinding;
-import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 
 import java.util.List;
 
@@ -101,19 +96,8 @@ public class CategoriesListAdapter
             mBinding.categoryName.setText(category.getTitle());
             mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
 
-            itemView.setOnClickListener(v -> {
-                Context context = v.getContext();
-
-                if (context != null) {
-                    Intent intent = new Intent(context, CategoryDetailsActivity.class);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.CATEGORY_ID_INTENT_KEY, category.getId());
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
-                }
-            });
+            itemView.setOnClickListener(
+                    v -> mOnCategoryActionRequestedListener.onCategoryOpenRequested(category));
 
             itemView.setOnCreateContextMenuListener(this);
         }
@@ -136,6 +120,8 @@ public class CategoriesListAdapter
     }
 
     public interface OnCategoryActionRequestedListener {
+
+        void onCategoryOpenRequested(Category category);
 
         void onCategoryDeletionRequested(Category category);
     }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
+import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsListItemBinding;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.ListViewHolder> {
 
     private final OnListActionRequestedListener mOnListActionRequestedListener;
-    private List<UserDefinedList> mLists;
+    private List<UserDefinedListModel> mLists;
 
     public ListsListAdapter(OnListActionRequestedListener onListActionRequestedListener) {
         mOnListActionRequestedListener = onListActionRequestedListener;
@@ -37,7 +38,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        UserDefinedList list = mLists.get(position);
+        UserDefinedListModel list = mLists.get(position);
         holder.setData(list);
     }
 
@@ -46,7 +47,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
         return mLists != null ? mLists.size() : 0;
     }
 
-    public void setLists(List<UserDefinedList> lists) {
+    public void setLists(List<UserDefinedListModel> lists) {
         mLists = lists;
         notifyDataSetChanged();
     }
@@ -55,7 +56,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private final ListsListItemBinding mBinding;
-        private UserDefinedList mList;
+        private UserDefinedListModel mList;
 
         public ListViewHolder(@NonNull View itemView, ListsListItemBinding binding) {
             super(itemView);
@@ -85,22 +86,21 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
             }
         }
 
-        private void setData(@NonNull UserDefinedList list) {
+        private void setData(@NonNull UserDefinedListModel list) {
             mList = list;
             mBinding.listName.setText(list.getTitle());
+            mBinding.listItemsCount.setText(list.getItemsCount());
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            itemView.setOnClickListener(
+                    v -> mOnListActionRequestedListener.onListOpenRequested(list));
 
             itemView.setOnCreateContextMenuListener(this);
         }
     }
 
     public interface OnListActionRequestedListener {
+
+        void onListOpenRequested(UserDefinedList list);
 
         void onListDeletionRequested(UserDefinedList list);
     }

@@ -223,6 +223,21 @@ public class ScheduleFragment extends Fragment
     }
 
     @Override
+    public void onEventOpenRequested(Event event) {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, EventDetailsActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.EVENT_ID_INTENT_KEY, event.getId());
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
+        }
+    }
+
+    @Override
     public void onCategorySelectionRequested(Event event) {
         Context context = getContext();
 

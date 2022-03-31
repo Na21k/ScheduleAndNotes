@@ -18,15 +18,33 @@
     app:cardCornerRadius="@dimen/corner_radius"
     app:cardElevation="@dimen/elevation">
 
-    <TextView
-        android:id="@+id/list_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="14dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textSize="22sp"
-        tools:text="List name" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="14dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="22sp"
+            tools:text="List name" />
+
+        <TextView
+            android:id="@+id/list_items_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="14sp"
+            tools:text="10 items" />
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

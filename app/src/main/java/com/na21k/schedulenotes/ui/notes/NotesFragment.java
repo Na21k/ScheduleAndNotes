@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
@@ -186,6 +187,21 @@ public class NotesFragment extends Fragment
         if (context != null) {
             Intent intent = new Intent(context, NoteDetailsActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onNoteOpenRequested(Note note) {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, NoteDetailsActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.NOTE_ID_INTENT_KEY, note.getId());
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         }
     }
 

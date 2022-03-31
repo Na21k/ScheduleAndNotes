@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduleNotes">
         <activity
+            android:name=".ui.lists.userDefinedLists.UserDefinedListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.lists.music.MusicListActivity"
             android:exported="false"
             android:label="@string/title_music_list" />
