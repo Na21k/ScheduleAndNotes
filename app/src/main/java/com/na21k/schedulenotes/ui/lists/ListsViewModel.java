@@ -33,6 +33,14 @@ public class ListsViewModel extends AndroidViewModel {
         return mListDao.getListItemsCount(listId);
     }
 
+    public void addNew(UserDefinedList list) {
+        new Thread(() -> mListDao.insert(list)).start();
+    }
+
+    public void update(UserDefinedList list) {
+        new Thread(() -> mListDao.update(list)).start();
+    }
+
     public void delete(UserDefinedList list) {
         new Thread(() -> mListDao.delete(list)).start();
     }

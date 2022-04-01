@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.ui.notes;
 
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,12 +49,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
             GroupedListHeaderItemBinding binding = GroupedListHeaderItemBinding
                     .inflate(inflater, parent, false);
 
-            return new HeaderViewHolder(binding.getRoot(), binding);
+            return new HeaderViewHolder(binding);
         } else {
             NotesListItemBinding binding = NotesListItemBinding
                     .inflate(inflater, parent, false);
 
-            return new NoteViewHolder(binding.getRoot(), binding);
+            return new NoteViewHolder(binding);
         }
     }
 
@@ -116,31 +115,23 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
         notifyDataSetChanged();
     }
 
-    public class NoteViewHolder extends GroupedListItemViewHolderBase
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class NoteViewHolder extends GroupedListItemViewHolderBase {
 
         private final NotesListItemBinding mBinding;
         private Note mNote;
 
-        public NoteViewHolder(@NonNull View itemView, NotesListItemBinding binding) {
-            super(itemView);
+        public NoteViewHolder(NotesListItemBinding binding) {
+            super(binding.getRoot(), R.menu.note_long_press_menu, R.string.note_context_menu_title);
             mBinding = binding;
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
                                         ContextMenu.ContextMenuInfo menuInfo) {
-            MenuInflater inflater = new MenuInflater(v.getContext());
-            inflater.inflate(R.menu.note_long_press_menu, menu);
-            menu.setHeaderTitle(R.string.note_context_menu_title);
+            super.onCreateContextMenu(menu, v, menuInfo);
 
             if (mNote.getCategoryId() == null) {
                 menu.removeItem(R.id.note_remove_category_menu_item);
-            }
-
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                item.setOnMenuItemClickListener(this);
             }
         }
 

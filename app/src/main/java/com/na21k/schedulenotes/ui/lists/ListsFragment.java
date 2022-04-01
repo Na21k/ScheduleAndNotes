@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
+import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertTitleBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
 import com.na21k.schedulenotes.ui.lists.userDefinedLists.UserDefinedListActivity;
@@ -111,8 +114,31 @@ public class ListsFragment extends Fragment
         Context context = getContext();
 
         if (context != null) {
-            Intent intent = new Intent(context, UserDefinedListActivity.class);
-            context.startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_add_24);
+            builder.setTitle(R.string.list_creation_alert_title);
+
+            UserDefinedListInfoAlertTitleBinding viewBinding = UserDefinedListInfoAlertTitleBinding
+                    .inflate(getLayoutInflater(), mBinding.getRoot(), false);
+            viewBinding.input.requestFocus();
+            builder.setView(viewBinding.getRoot());
+
+            builder.setPositiveButton(R.string.save, (dialog, which) -> {
+                Editable listNameEditable = viewBinding.input.getText();
+
+                if (listNameEditable != null && !listNameEditable.toString().isEmpty()) {
+                    String listName = listNameEditable.toString();
+                    mViewModel.addNew(new UserDefinedList(0, listName));
+                } else {
+                    newList();
+                    UiHelper.showErrorDialog(context,
+                            R.string.list_creation_empty_input_alert_message);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            });
+
+            builder.show();
         }
     }
 
@@ -143,9 +169,45 @@ public class ListsFragment extends Fragment
 
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.LIST_ID_INTENT_KEY, list.getId());
+            bundle.putString(Constants.LIST_TITLE_INTENT_KEY, list.getTitle());
             intent.putExtras(bundle);
 
             context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onListRenameRequested(UserDefinedList list) {
+        Context context = getContext();
+
+        if (context != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_edit_24);
+            builder.setTitle(R.string.list_rename_alert_title);
+
+            UserDefinedListInfoAlertTitleBinding viewBinding = UserDefinedListInfoAlertTitleBinding
+                    .inflate(getLayoutInflater(), mBinding.getRoot(), false);
+            viewBinding.input.setText(list.getTitle());
+            viewBinding.input.requestFocus();
+            builder.setView(viewBinding.getRoot());
+
+            builder.setPositiveButton(R.string.save, (dialog, which) -> {
+                Editable listNameEditable = viewBinding.input.getText();
+
+                if (listNameEditable != null && !listNameEditable.toString().isEmpty()) {
+                    String listName = listNameEditable.toString();
+                    list.setTitle(listName);
+                    mViewModel.update(list);
+                } else {
+                    onListRenameRequested(list);
+                    UiHelper.showErrorDialog(context,
+                            R.string.list_renaming_empty_input_alert_message);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            });
+
+            builder.show();
         }
     }
 

@@ -106,4 +106,11 @@
     <string name="add_item_fab">Додати елемент</string>
     <string name="music_info_input_hint">Пісня, виконавець, альбом або ін.</string>
     <string name="title_music_list">Список музики</string>
+    <string name="list_creation_alert_title">Додати список</string>
+    <string name="user_defined_list_name_input_hint">Назва списку</string>
+    <string name="list_creation_empty_input_alert_message">Назва списку не може бути порожньою. Спробуйте ще раз</string>
+    <string name="rename">Перейменувати</string>
+    <string name="list_rename_alert_title">Перейменувати список</string>
+    <string name="list_renaming_empty_input_alert_message">Неможливо перейменувати на порожню назву. Спробуйте ще раз</string>
+    <string name="list_context_menu_title">Дії зі списком</string>
 </resources>

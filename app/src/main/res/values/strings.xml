@@ -4,6 +4,8 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="keep">Keep</string>
+    <string name="rename">Rename</string>
+    <string name="oops_aletr_title">Oops …</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
     <string name="title_home">Home</string>
@@ -116,9 +118,15 @@
     <string name="music_list_btn">Music</string>
     <string name="shopping_list_btn">Shopping</string>
     <string name="Languages_list_btn">Languages</string>
+    <string name="list_creation_alert_title">Add list</string>
+    <string name="list_rename_alert_title">Rename list</string>
     <string name="list_deleted_snackbar">The list has been deleted</string>
     <string name="list_deletion_alert_title">Delete list</string>
     <string name="list_deletion_alert_message">Are you sure you want to delete this list? All it\'s items will be lost</string>
+    <string name="list_creation_empty_input_alert_message">List name can\'t be empty. Try again</string>
+    <string name="list_renaming_empty_input_alert_message">Can\'t rename with empty input. Try again</string>
+    <string name="user_defined_list_name_input_hint">List name</string>
+    <string name="list_context_menu_title">List actions</string>
 
     <!--Lists shared-->
     <string name="list_item_deleted_snackbar">The item has been deleted</string>
@@ -128,11 +136,12 @@
     <string name="list_item_creation_empty_input_alert_message">Can\'t add an empty item. Try again</string>
     <string name="list_item_editing_alert_title">Edit list item</string>
     <string name="list_item_editing_empty_input_alert_message">Can\'t update with empty input. Try again</string>
-    <string name="oops_aletr_title">Oops …</string>
-    <string name="movie_info_input_hint">Movie info (name, year, etc.)</string>
-    <string name="music_info_input_hint">Song, artist, album, etc.</string>
     <string name="add_item_fab">Add item</string>
 
     <!--Movies list-->
     <string name="add_movie_fab">Add movie</string>
+    <string name="movie_info_input_hint">Movie info (name, year, etc.)</string>
+
+    <!--Music list-->
+    <string name="music_info_input_hint">Song, artist, album, etc.</string>
 </resources>

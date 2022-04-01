@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.ui.lists.music;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.databinding.SimpleListItemBinding;
-import com.na21k.schedulenotes.ui.shared.viewHolders.SimpleListItemViewHolder;
+import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         SimpleListItemBinding binding = SimpleListItemBinding
                 .inflate(inflater, parent, false);
 
-        return new MusicViewHolder(binding.getRoot(), binding);
+        return new MusicViewHolder(binding);
     }
 
     @Override
@@ -50,12 +49,14 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         notifyDataSetChanged();
     }
 
-    public class MusicViewHolder extends SimpleListItemViewHolder {
+    public class MusicViewHolder extends BaseViewHolder {
 
+        protected final SimpleListItemBinding mBinding;
         private MusicListItem mMusic;
 
-        public MusicViewHolder(@NonNull View itemView, SimpleListItemBinding binding) {
-            super(itemView, binding);
+        public MusicViewHolder(SimpleListItemBinding binding) {
+            super(binding.getRoot(), R.menu.simple_item_long_press_menu, 0);
+            mBinding = binding;
         }
 
         @Override

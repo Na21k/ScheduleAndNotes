@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/page_margin"
+        android:hint="@string/user_defined_list_name_input_hint"
+        android:importantForAutofill="no"
+        android:inputType="textCapSentences"
+        android:scrollbars="vertical" />
+
+</FrameLayout>

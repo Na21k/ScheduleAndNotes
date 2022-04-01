@@ -1,10 +1,7 @@
 package com.na21k.schedulenotes.ui.categories;
 
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,6 +13,7 @@ import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.CategoriesListItemBinding;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
+import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class CategoriesListAdapter
         CategoriesListItemBinding binding = CategoriesListItemBinding
                 .inflate(inflater, parent, false);
 
-        return new CategoryViewHolder(binding.getRoot(), binding);
+        return new CategoryViewHolder(binding);
     }
 
     @Override
@@ -57,27 +55,14 @@ public class CategoriesListAdapter
         notifyDataSetChanged();
     }
 
-    public class CategoryViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class CategoryViewHolder extends BaseViewHolder {
 
         private final CategoriesListItemBinding mBinding;
         private Category mCategory;
 
-        public CategoryViewHolder(@NonNull View itemView, CategoriesListItemBinding binding) {
-            super(itemView);
+        public CategoryViewHolder(CategoriesListItemBinding binding) {
+            super(binding.getRoot(), R.menu.category_long_press_menu, 0);
             mBinding = binding;
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v,
-                                        ContextMenu.ContextMenuInfo menuInfo) {
-            MenuInflater menuInflater = new MenuInflater(v.getContext());
-            menuInflater.inflate(R.menu.category_long_press_menu, menu);
-
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                item.setOnMenuItemClickListener(this);
-            }
         }
 
         @Override

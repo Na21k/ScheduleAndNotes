@@ -1,10 +1,7 @@
 package com.na21k.schedulenotes.ui.lists;
 
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,6 +11,7 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsListItemBinding;
+import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
         ListsListItemBinding binding = ListsListItemBinding
                 .inflate(inflater, parent, false);
 
-        return new ListViewHolder(binding.getRoot(), binding);
+        return new ListViewHolder(binding);
     }
 
     @Override
@@ -52,32 +50,22 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
         notifyDataSetChanged();
     }
 
-    public class ListViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class ListViewHolder extends BaseViewHolder {
 
         private final ListsListItemBinding mBinding;
         private UserDefinedListModel mList;
 
-        public ListViewHolder(@NonNull View itemView, ListsListItemBinding binding) {
-            super(itemView);
+        public ListViewHolder(ListsListItemBinding binding) {
+            super(binding.getRoot(), R.menu.list_long_press_menu, R.string.list_context_menu_title);
             mBinding = binding;
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v,
-                                        ContextMenu.ContextMenuInfo menuInfo) {
-            MenuInflater menuInflater = new MenuInflater(v.getContext());
-            menuInflater.inflate(R.menu.list_long_press_menu, menu);
-
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                item.setOnMenuItemClickListener(this);
-            }
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.list_rename_menu_item:
+                    mOnListActionRequestedListener.onListRenameRequested(mList);
+                    return true;
                 case R.id.list_delete_menu_item:
                     mOnListActionRequestedListener.onListDeletionRequested(mList);
                     return true;
@@ -89,7 +77,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
         private void setData(@NonNull UserDefinedListModel list) {
             mList = list;
             mBinding.listName.setText(list.getTitle());
-            mBinding.listItemsCount.setText(list.getItemsCount());
+            mBinding.listItemsCount.setText(String.valueOf(list.getItemsCount()));
 
             itemView.setOnClickListener(
                     v -> mOnListActionRequestedListener.onListOpenRequested(list));
@@ -101,6 +89,8 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
     public interface OnListActionRequestedListener {
 
         void onListOpenRequested(UserDefinedList list);
+
+        void onListRenameRequested(UserDefinedList list);
 
         void onListDeletionRequested(UserDefinedList list);
     }

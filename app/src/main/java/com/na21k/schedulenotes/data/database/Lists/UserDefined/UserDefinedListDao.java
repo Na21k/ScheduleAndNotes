@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -26,6 +27,9 @@ public interface UserDefinedListDao {
 
     @Query("select count(*) from user_defined_lists_items I where I.list_id = :listId")
     int getListItemsCount(int listId);
+
+    @Update
+    void update(UserDefinedList list);
 
     @Delete
     void delete(UserDefinedList list);
