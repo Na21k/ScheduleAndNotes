@@ -57,6 +57,9 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         public MusicViewHolder(SimpleListItemBinding binding) {
             super(binding.getRoot(), R.menu.simple_item_long_press_menu, 0);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnMusicActionRequestedListener.onMusicUpdateRequested(mMusic));
         }
 
         @Override
@@ -73,11 +76,6 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         private void setData(MusicListItem musicListItem) {
             mMusic = musicListItem;
             mBinding.itemText.setText(musicListItem.getText());
-
-            itemView.setOnClickListener(
-                    v -> mOnMusicActionRequestedListener.onMusicUpdateRequested(musicListItem));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 

@@ -57,6 +57,9 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         public MovieViewHolder(SimpleListItemBinding binding) {
             super(binding.getRoot(), R.menu.simple_item_long_press_menu, 0);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnMovieActionRequestedListener.onMovieUpdateRequested(mMovie));
         }
 
         @Override
@@ -73,11 +76,6 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         private void setData(MoviesListItem movie) {
             mMovie = movie;
             mBinding.itemText.setText(movie.getText());
-
-            itemView.setOnClickListener(
-                    v -> mOnMovieActionRequestedListener.onMovieUpdateRequested(movie));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 

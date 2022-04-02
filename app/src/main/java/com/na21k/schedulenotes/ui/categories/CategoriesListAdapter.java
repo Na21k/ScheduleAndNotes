@@ -63,6 +63,9 @@ public class CategoriesListAdapter
         public CategoryViewHolder(CategoriesListItemBinding binding) {
             super(binding.getRoot(), R.menu.category_long_press_menu, 0);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnCategoryActionRequestedListener.onCategoryOpenRequested(mCategory));
         }
 
         @Override
@@ -80,11 +83,6 @@ public class CategoriesListAdapter
             mCategory = category;
             mBinding.categoryName.setText(category.getTitle());
             mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
-
-            itemView.setOnClickListener(
-                    v -> mOnCategoryActionRequestedListener.onCategoryOpenRequested(category));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
 
         private int getCardColor(Category category) {

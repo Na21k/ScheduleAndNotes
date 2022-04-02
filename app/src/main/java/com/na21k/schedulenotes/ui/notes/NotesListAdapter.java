@@ -123,6 +123,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
         public NoteViewHolder(NotesListItemBinding binding) {
             super(binding.getRoot(), R.menu.note_long_press_menu, R.string.note_context_menu_title);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnNoteActionRequestedListener.onNoteOpenRequested(mNote));
         }
 
         @Override
@@ -165,13 +168,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
 
             int backColor = CategoriesHelper
                     .getNoteCategoryColor(itemView.getContext(), note, mCategories, mIsNightMode);
-
             mBinding.notesListCard.setCardBackgroundColor(backColor);
-
-            itemView.setOnClickListener(
-                    v -> mOnNoteActionRequestedListener.onNoteOpenRequested(note));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 

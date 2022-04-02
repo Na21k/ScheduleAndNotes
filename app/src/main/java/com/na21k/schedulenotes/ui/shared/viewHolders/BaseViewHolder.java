@@ -23,6 +23,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder
         super(itemView);
         mContextMenuRes = contextMenuRes;
         mContextMenuHeaderRes = contextMenuHeaderRes;
+        itemView.setOnCreateContextMenuListener(this);
     }
 
     @Override

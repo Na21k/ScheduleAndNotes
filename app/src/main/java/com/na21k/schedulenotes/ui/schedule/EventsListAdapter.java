@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.ui.schedule;
 
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import com.na21k.schedulenotes.databinding.ScheduleListItemBinding;
 import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
+import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         ScheduleListItemBinding binding = ScheduleListItemBinding
                 .inflate(inflater, parent, false);
 
-        return new EventViewHolder(binding.getRoot(), binding);
+        return new EventViewHolder(binding);
     }
 
     @Override
@@ -71,31 +71,26 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         notifyDataSetChanged();
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class EventViewHolder extends BaseViewHolder {
 
         private final ScheduleListItemBinding mBinding;
         private Event mEvent;
 
-        public EventViewHolder(@NonNull View itemView, ScheduleListItemBinding binding) {
-            super(itemView);
+        public EventViewHolder(ScheduleListItemBinding binding) {
+            super(binding.getRoot(), R.menu.event_long_press_menu, R.string.event_context_menu_title);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnEventActionRequestedListener.onEventOpenRequested(mEvent));
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
                                         ContextMenu.ContextMenuInfo menuInfo) {
-            MenuInflater inflater = new MenuInflater(v.getContext());
-            inflater.inflate(R.menu.event_long_press_menu, menu);
-            menu.setHeaderTitle(R.string.event_context_menu_title);
+            super.onCreateContextMenu(menu, v, menuInfo);
 
             if (mEvent.getCategoryId() == null) {
                 menu.removeItem(R.id.event_remove_category_menu_item);
-            }
-
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                item.setOnMenuItemClickListener(this);
             }
         }
 
@@ -128,11 +123,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     .getEventCategoryColor(itemView.getContext(), event, mCategories, mIsNightMode);
 
             mBinding.scheduleListItemCard.setCardBackgroundColor(backColor);
-
-            itemView.setOnClickListener(
-                    v -> mOnEventActionRequestedListener.onEventOpenRequested(event));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 

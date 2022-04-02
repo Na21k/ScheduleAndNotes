@@ -58,6 +58,9 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
         public ListViewHolder(ListsListItemBinding binding) {
             super(binding.getRoot(), R.menu.list_long_press_menu, R.string.list_context_menu_title);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnListActionRequestedListener.onListOpenRequested(mList));
         }
 
         @Override
@@ -78,11 +81,6 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
             mList = list;
             mBinding.listName.setText(list.getTitle());
             mBinding.listItemsCount.setText(String.valueOf(list.getItemsCount()));
-
-            itemView.setOnClickListener(
-                    v -> mOnListActionRequestedListener.onListOpenRequested(list));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 

@@ -58,6 +58,9 @@ public class UserDefinedListAdapter extends RecyclerView.Adapter<UserDefinedList
             super(binding.getRoot(),
                     R.menu.user_defined_list_item_long_press_menu, 0);
             mBinding = binding;
+
+            itemView.setOnClickListener(
+                    v -> mOnItemActionRequestedListener.onItemUpdateRequested(mItem));
         }
 
         @Override
@@ -74,11 +77,6 @@ public class UserDefinedListAdapter extends RecyclerView.Adapter<UserDefinedList
         private void setData(UserDefinedListItem item) {
             mItem = item;
             mBinding.itemText.setText(item.getText());
-
-            itemView.setOnClickListener(
-                    v -> mOnItemActionRequestedListener.onItemUpdateRequested(item));
-
-            itemView.setOnCreateContextMenuListener(this);
         }
     }
 
