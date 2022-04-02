@@ -3,6 +3,7 @@ package com.na21k.schedulenotes.ui.lists;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import java.util.List;
 public class ListsFragment extends Fragment
         implements ListsListAdapter.OnListActionRequestedListener {
 
+    private static final String RECYCLER_VIEW_STATE_KEY = "recyclerViewState";
     private ListsViewModel mViewModel;
     private ListsFragmentBinding mBinding;
 
@@ -56,8 +58,29 @@ public class ListsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListsListAdapter adapter = setUpRecyclerView();
+
+        if (savedInstanceState != null) {
+            Parcelable recyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE_KEY);
+            RecyclerView.LayoutManager manager = mBinding.includedList.listsList.getLayoutManager();
+
+            if (manager != null) {
+                manager.onRestoreInstanceState(recyclerViewState);
+            }
+        }
+
         setObservers(adapter);
         setListeners();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        RecyclerView.LayoutManager manager = mBinding.includedList.listsList.getLayoutManager();
+
+        if (manager != null) {
+            Parcelable recyclerViewState = manager.onSaveInstanceState();
+            outState.putParcelable(RECYCLER_VIEW_STATE_KEY, recyclerViewState);
+        }
     }
 
     private ListsListAdapter setUpRecyclerView() {
