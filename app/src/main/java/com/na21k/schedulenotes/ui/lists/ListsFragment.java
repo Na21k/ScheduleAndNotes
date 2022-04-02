@@ -56,7 +56,6 @@ public class ListsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListsListAdapter adapter = setUpRecyclerView();
-        //observeLists(adapter);
         setObservers(adapter);
         setListeners();
     }
@@ -105,26 +104,6 @@ public class ListsFragment extends Fragment
         models.sort(Comparator.comparing(UserDefinedListModel::getTitle));
         adapter.setLists(models);
     }
-
-    /*private void observeLists(ListsListAdapter adapter) {
-        mViewModel.getAll().observe(getViewLifecycleOwner(), userDefinedLists -> new Thread(() -> {
-            List<UserDefinedListModel> models = new ArrayList<>();
-
-            for (UserDefinedList list : userDefinedLists) {
-                int listId = list.getId();
-                int itemsCount = mViewModel.getListItemsCount(listId);
-                models.add(new UserDefinedListModel(list, itemsCount));
-            }
-
-            models.sort(Comparator.comparing(UserDefinedListModel::getTitle));
-
-            Activity activity = getActivity();
-
-            if (activity != null) {
-                activity.runOnUiThread(() -> adapter.setLists(models));
-            }
-        }).start());
-    }*/
 
     private void setListeners() {
         mBinding.addListFab.setOnClickListener(v -> newList());
