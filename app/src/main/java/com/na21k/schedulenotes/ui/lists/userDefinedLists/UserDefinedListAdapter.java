@@ -63,7 +63,7 @@ public class UserDefinedListAdapter extends RecyclerView.Adapter<UserDefinedList
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.item_delete_menu_item:
+                case R.id.user_defined_list_item_delete_menu_item:
                     mOnItemActionRequestedListener.onItemDeletionRequested(mItem);
                     return true;
                 default:

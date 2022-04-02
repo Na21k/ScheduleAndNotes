@@ -26,4 +26,16 @@ public class UserDefinedListViewModel extends AndroidViewModel {
     public LiveData<List<UserDefinedListItem>> getItemsByListId(int listId) {
         return mUserDefinedListItemDao.getByListId(listId);
     }
+
+    public void addNew(UserDefinedListItem userDefinedListItem) {
+        new Thread(() -> mUserDefinedListItemDao.insert(userDefinedListItem)).start();
+    }
+
+    public void update(UserDefinedListItem userDefinedListItem) {
+        new Thread(() -> mUserDefinedListItemDao.update(userDefinedListItem)).start();
+    }
+
+    public void delete(UserDefinedListItem userDefinedListItem) {
+        new Thread(() -> mUserDefinedListItemDao.delete(userDefinedListItem)).start();
+    }
 }

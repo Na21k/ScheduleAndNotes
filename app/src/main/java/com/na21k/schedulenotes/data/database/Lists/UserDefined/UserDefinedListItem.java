@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.data.database.Lists.UserDefined;
 
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @Entity(tableName = "user_defined_lists_items",
         indices = {@Index(value = "id"), @Index(value = "list_id")},
         foreignKeys = {@ForeignKey(entity = UserDefinedList.class,
-                parentColumns = "id", childColumns = "list_id")})
+                parentColumns = "id", childColumns = "list_id", onDelete = ForeignKey.CASCADE)})
 public class UserDefinedListItem extends SimpleListItem {
 
     @ColumnInfo(name = "list_id")

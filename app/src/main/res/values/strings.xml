@@ -137,6 +137,8 @@
     <string name="list_item_editing_alert_title">Edit list item</string>
     <string name="list_item_editing_empty_input_alert_message">Can\'t update with empty input. Try again</string>
     <string name="add_item_fab">Add item</string>
+    <string name="add_list_item_input_hint">Add item</string>
+    <string name="add_list_item_btn">Add</string>
 
     <!--Movies list-->
     <string name="add_movie_fab">Add movie</string>
@@ -144,4 +146,7 @@
 
     <!--Music list-->
     <string name="music_info_input_hint">Song, artist, album, etc.</string>
+
+    <!--User defined lists-->
+    <string name="user_defined_list_item_info_input_hint">Item text</string>
 </resources>

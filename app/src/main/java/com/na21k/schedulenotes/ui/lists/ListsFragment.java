@@ -23,7 +23,7 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
-import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertTitleBinding;
+import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
@@ -118,7 +118,7 @@ public class ListsFragment extends Fragment
             builder.setIcon(R.drawable.ic_add_24);
             builder.setTitle(R.string.list_creation_alert_title);
 
-            UserDefinedListInfoAlertTitleBinding viewBinding = UserDefinedListInfoAlertTitleBinding
+            UserDefinedListInfoAlertViewBinding viewBinding = UserDefinedListInfoAlertViewBinding
                     .inflate(getLayoutInflater(), mBinding.getRoot(), false);
             viewBinding.input.requestFocus();
             builder.setView(viewBinding.getRoot());
@@ -185,7 +185,7 @@ public class ListsFragment extends Fragment
             builder.setIcon(R.drawable.ic_edit_24);
             builder.setTitle(R.string.list_rename_alert_title);
 
-            UserDefinedListInfoAlertTitleBinding viewBinding = UserDefinedListInfoAlertTitleBinding
+            UserDefinedListInfoAlertViewBinding viewBinding = UserDefinedListInfoAlertViewBinding
                     .inflate(getLayoutInflater(), mBinding.getRoot(), false);
             viewBinding.input.setText(list.getTitle());
             viewBinding.input.requestFocus();

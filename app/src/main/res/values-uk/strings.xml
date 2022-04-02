@@ -113,4 +113,7 @@
     <string name="list_rename_alert_title">Перейменувати список</string>
     <string name="list_renaming_empty_input_alert_message">Неможливо перейменувати на порожню назву. Спробуйте ще раз</string>
     <string name="list_context_menu_title">Дії зі списком</string>
+    <string name="add_list_item_btn">Додати</string>
+    <string name="add_list_item_input_hint">Додати елемент</string>
+    <string name="user_defined_list_item_info_input_hint">Текст запису</string>
 </resources>
