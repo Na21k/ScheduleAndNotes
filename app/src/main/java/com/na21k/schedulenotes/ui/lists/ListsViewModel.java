@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListDao;
+import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class ListsViewModel extends AndroidViewModel {
 
     private final UserDefinedListDao mListDao;
     private final LiveData<List<UserDefinedList>> mAllLists;
+    private final LiveData<List<UserDefinedListItem>> mAllListItems;
+    private List<UserDefinedList> mListsCache = null;
+    private List<UserDefinedListItem> mListItemsCache = null;
 
     public ListsViewModel(@NonNull Application application) {
         super(application);
@@ -23,14 +27,15 @@ public class ListsViewModel extends AndroidViewModel {
         AppDatabase db = AppDatabase.getInstance(application);
         mListDao = db.userDefinedListDao();
         mAllLists = mListDao.getAll();
+        mAllListItems = db.userDefinedListItemDao().getAll();
     }
 
-    public LiveData<List<UserDefinedList>> getAll() {
+    public LiveData<List<UserDefinedList>> getAllLists() {
         return mAllLists;
     }
 
-    public int getListItemsCount(int listId) {
-        return mListDao.getListItemsCount(listId);
+    public LiveData<List<UserDefinedListItem>> getAllListItems() {
+        return mAllListItems;
     }
 
     public void addNew(UserDefinedList list) {
@@ -43,5 +48,21 @@ public class ListsViewModel extends AndroidViewModel {
 
     public void delete(UserDefinedList list) {
         new Thread(() -> mListDao.delete(list)).start();
+    }
+
+    public List<UserDefinedList> getListsCache() {
+        return mListsCache;
+    }
+
+    public void setListsCache(List<UserDefinedList> listsCache) {
+        mListsCache = listsCache;
+    }
+
+    public List<UserDefinedListItem> getListItemsCache() {
+        return mListItemsCache;
+    }
+
+    public void setListItemsCache(List<UserDefinedListItem> listItemsCache) {
+        mListItemsCache = listItemsCache;
     }
 }

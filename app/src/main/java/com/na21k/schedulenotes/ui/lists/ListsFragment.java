@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.lists;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
+import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
 import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertViewBinding;
@@ -56,7 +56,8 @@ public class ListsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListsListAdapter adapter = setUpRecyclerView();
-        observeLists(adapter);
+        //observeLists(adapter);
+        setObservers(adapter);
         setListeners();
     }
 
@@ -69,7 +70,43 @@ public class ListsFragment extends Fragment
         return adapter;
     }
 
-    private void observeLists(ListsListAdapter adapter) {
+    private void setObservers(ListsListAdapter adapter) {
+        mViewModel.getAllLists().observe(getViewLifecycleOwner(), userDefinedLists -> {
+            mViewModel.setListsCache(userDefinedLists);
+            updateListIfEnoughData(adapter);
+        });
+        mViewModel.getAllListItems().observe(getViewLifecycleOwner(), userDefinedListItems -> {
+            mViewModel.setListItemsCache(userDefinedListItems);
+            updateListIfEnoughData(adapter);
+        });
+    }
+
+    private void updateListIfEnoughData(ListsListAdapter adapter) {
+        List<UserDefinedList> listsCache = mViewModel.getListsCache();
+        List<UserDefinedListItem> listItemsCache = mViewModel.getListItemsCache();
+
+        boolean isEnoughData = listsCache != null && listItemsCache != null;
+
+        if (!isEnoughData) {
+            return;
+        }
+
+        List<UserDefinedListModel> models = new ArrayList<>();
+
+        for (UserDefinedList list : listsCache) {
+            int listId = list.getId();
+            int itemsCount = listItemsCache.stream()
+                    .filter(listItem -> listItem.getListId() == listId)
+                    .mapToInt(value -> 1).sum();
+
+            models.add(new UserDefinedListModel(list, itemsCount));
+        }
+
+        models.sort(Comparator.comparing(UserDefinedListModel::getTitle));
+        adapter.setLists(models);
+    }
+
+    /*private void observeLists(ListsListAdapter adapter) {
         mViewModel.getAll().observe(getViewLifecycleOwner(), userDefinedLists -> new Thread(() -> {
             List<UserDefinedListModel> models = new ArrayList<>();
 
@@ -87,7 +124,7 @@ public class ListsFragment extends Fragment
                 activity.runOnUiThread(() -> adapter.setLists(models));
             }
         }).start());
-    }
+    }*/
 
     private void setListeners() {
         mBinding.addListFab.setOnClickListener(v -> newList());

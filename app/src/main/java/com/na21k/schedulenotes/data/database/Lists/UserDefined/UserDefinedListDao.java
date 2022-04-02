@@ -25,9 +25,6 @@ public interface UserDefinedListDao {
     @Query("select * from user_defined_lists L where L.id = :id")
     LiveData<UserDefinedList> getById(int id);
 
-    @Query("select count(*) from user_defined_lists_items I where I.list_id = :listId")
-    int getListItemsCount(int listId);
-
     @Update
     void update(UserDefinedList list);
 
