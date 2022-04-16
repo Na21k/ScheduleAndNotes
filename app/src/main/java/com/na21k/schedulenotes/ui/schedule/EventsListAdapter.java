@@ -31,6 +31,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                              OnEventActionRequestedListener onEventActionRequestedListener) {
         mIsNightMode = isNightMode;
         mOnEventActionRequestedListener = onEventActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

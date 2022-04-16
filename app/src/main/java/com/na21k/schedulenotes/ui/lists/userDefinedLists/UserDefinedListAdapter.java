@@ -21,6 +21,7 @@ public class UserDefinedListAdapter extends RecyclerView.Adapter<UserDefinedList
 
     public UserDefinedListAdapter(OnItemActionRequestedListener onItemActionRequestedListener) {
         mOnItemActionRequestedListener = onItemActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

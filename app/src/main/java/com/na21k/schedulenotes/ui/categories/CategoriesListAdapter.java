@@ -27,6 +27,7 @@ public class CategoriesListAdapter
     public CategoriesListAdapter(boolean isNightMode, OnCategoryActionRequestedListener onCategoryActionRequestedListener) {
         mIsNightMode = isNightMode;
         mOnCategoryActionRequestedListener = onCategoryActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

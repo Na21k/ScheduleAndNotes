@@ -21,6 +21,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     public ShoppingListAdapter(OnShoppingItemActionRequestedListener onShoppingItemActionRequestedListener) {
         mOnShoppingItemActionRequestedListener = onShoppingItemActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

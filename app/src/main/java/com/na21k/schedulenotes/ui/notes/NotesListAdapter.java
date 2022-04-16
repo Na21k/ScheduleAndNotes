@@ -38,6 +38,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
                             OnNoteActionRequestedListener onNoteActionRequestedListener) {
         mIsNightMode = isNightMode;
         mOnNoteActionRequestedListener = onNoteActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

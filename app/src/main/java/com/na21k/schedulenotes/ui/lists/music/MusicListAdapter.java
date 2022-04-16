@@ -21,6 +21,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
     public MusicListAdapter(OnMusicActionRequestedListener onMusicActionRequestedListener) {
         mOnMusicActionRequestedListener = onMusicActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

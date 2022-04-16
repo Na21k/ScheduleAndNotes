@@ -20,7 +20,8 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
     private List<MoviesListItem> mMovies;
 
     public MoviesListAdapter(OnMovieActionRequestedListener onMovieActionRequestedListener) {
-        this.mOnMovieActionRequestedListener = onMovieActionRequestedListener;
+        mOnMovieActionRequestedListener = onMovieActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull

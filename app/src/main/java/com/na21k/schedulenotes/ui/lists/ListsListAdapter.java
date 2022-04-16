@@ -22,6 +22,7 @@ public class ListsListAdapter extends RecyclerView.Adapter<ListsListAdapter.List
 
     public ListsListAdapter(OnListActionRequestedListener onListActionRequestedListener) {
         mOnListActionRequestedListener = onListActionRequestedListener;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @NonNull
