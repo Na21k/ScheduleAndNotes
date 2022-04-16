@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shopping_list_item_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/page_margin"
+    android:layout_marginVertical="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:hapticFeedbackEnabled="true"
+    android:longClickable="true"
+    android:outlineAmbientShadowColor="@color/shadow_color"
+    android:outlineSpotShadowColor="@color/shadow_color"
+    app:cardBackgroundColor="@color/list_item"
+    app:cardCornerRadius="@dimen/corner_radius"
+    app:cardElevation="@dimen/elevation">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/shopping_list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="14dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textSize="22sp"
+            tools:text="Shopping list item info long text" />
+
+        <TextView
+            android:id="@+id/shopping_list_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="14dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/price_text_color"
+            android:textSize="18sp"
+            tools:text="99.99" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -14,6 +14,7 @@
     <string name="title_lists">Lists</string>
     <string name="title_movies_list">Movies list</string>
     <string name="title_music_list">Music list</string>
+    <string name="title_shopping_list">Shopping list</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
     <!-- Preference Titles -->

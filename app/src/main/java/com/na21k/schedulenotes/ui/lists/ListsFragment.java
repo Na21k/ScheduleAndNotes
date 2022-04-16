@@ -28,6 +28,7 @@ import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
+import com.na21k.schedulenotes.ui.lists.shopping.ShoppingListActivity;
 import com.na21k.schedulenotes.ui.lists.userDefinedLists.UserDefinedListActivity;
 
 import java.util.ArrayList;
@@ -132,6 +133,7 @@ public class ListsFragment extends Fragment
         mBinding.addListFab.setOnClickListener(v -> newList());
         mBinding.moviesListBtnCard.setOnClickListener(v -> openMoviesList());
         mBinding.musicListBtnCard.setOnClickListener(v -> openMusicList());
+        mBinding.shoppingListBtnCard.setOnClickListener(v -> openShoppingList());
 
         mBinding.includedList.listsList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -195,6 +197,15 @@ public class ListsFragment extends Fragment
 
         if (context != null) {
             Intent intent = new Intent(context, MusicListActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void openShoppingList() {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, ShoppingListActivity.class);
             startActivity(intent);
         }
     }
