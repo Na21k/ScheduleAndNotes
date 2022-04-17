@@ -12,19 +12,19 @@ import org.jetbrains.annotations.NotNull;
 public class ShoppingListItem extends SimpleListItem {
 
     @ColumnInfo(name = "price")
-    private Integer price;
+    private Float price;
 
-    public ShoppingListItem(int id, @NotNull String text, Integer price) {
+    public ShoppingListItem(int id, @NotNull String text, Float price) {
         this.id = id;
         this.text = text;
         this.price = price;
     }
 
-    public Integer getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 }

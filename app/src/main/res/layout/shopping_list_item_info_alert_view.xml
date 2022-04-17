@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/page_margin">
+
+    <EditText
+        android:id="@+id/item_text_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_text_field_24"
+        android:drawablePadding="2dp"
+        android:hint="@string/shopping_list_item_text_input_hint"
+        android:imeOptions="actionNext"
+        android:importantForAutofill="no"
+        android:inputType="textCapSentences" />
+
+    <EditText
+        android:id="@+id/item_price_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_money_dollar_sign_24"
+        android:drawablePadding="2dp"
+        android:hint="@string/edit_shopping_list_item_price_input_hint"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="number|numberDecimal"
+        android:selectAllOnFocus="true" />
+
+</LinearLayout>

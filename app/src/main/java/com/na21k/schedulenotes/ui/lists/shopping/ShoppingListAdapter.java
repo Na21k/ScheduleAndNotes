@@ -77,7 +77,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         private void setData(ShoppingListItem item) {
             mItem = item;
             mBinding.shoppingListItemName.setText(item.getText());
-            mBinding.shoppingListItemPrice.setText(item.getPrice());
+            mBinding.shoppingListItemPrice.setText(String.valueOf(item.getPrice()));
         }
     }
 

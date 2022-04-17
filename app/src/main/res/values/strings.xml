@@ -5,6 +5,7 @@
     <string name="cancel">Cancel</string>
     <string name="keep">Keep</string>
     <string name="rename">Rename</string>
+    <string name="undo">Undo</string>
     <string name="oops_aletr_title">Oops …</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
@@ -140,6 +141,7 @@
     <string name="add_item_fab">Add item</string>
     <string name="add_list_item_input_hint">Add item</string>
     <string name="add_list_item_btn">Add</string>
+    <string name="specify_item_text_snackbar">Specify item text</string>
 
     <!--Movies list-->
     <string name="add_movie_fab">Add movie</string>
@@ -152,5 +154,8 @@
     <string name="user_defined_list_item_info_input_hint">Item text</string>
 
     <!--Shopping list-->
-    <string name="add_list_item_price_input_hint">Price</string>
+    <string name="shopping_list_item_text_input_hint">Item text</string>
+    <string name="shopping_list_item_price_input_hint">Price</string>
+    <string name="edit_shopping_list_item_price_input_hint">Price (optional)</string>
+    <string name="price_is_optional_hint">The price is optional</string>
 </resources>
