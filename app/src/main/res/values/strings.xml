@@ -142,6 +142,9 @@
     <string name="add_list_item_input_hint">Add item</string>
     <string name="add_list_item_btn">Add</string>
     <string name="specify_item_text_snackbar">Specify item text</string>
+    <string name="clear_list_menu_item">Clear</string>
+    <string name="clear_list_dialog_button">Clear</string>
+    <string name="list_cleared_snackbar">List cleared</string>
 
     <!--Movies list-->
     <string name="add_movie_fab">Add movie</string>
@@ -158,4 +161,6 @@
     <string name="shopping_list_item_price_input_hint">Price</string>
     <string name="edit_shopping_list_item_price_input_hint">Price (optional)</string>
     <string name="price_is_optional_hint">The price is optional</string>
+    <string name="clear_shopping_list_alert_title">Clear Shopping list</string>
+    <string name="clear_shopping_list_alert_message">Are you sure you want to clear the list? This action can\'t be undone</string>
 </resources>

@@ -2,8 +2,11 @@ package com.na21k.schedulenotes.ui.lists.shopping;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +51,39 @@ public class ShoppingListActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.shopping_list_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_clear) {
+            clearList();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void clearList() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_delete_sweep_24);
+        builder.setTitle(R.string.clear_shopping_list_alert_title);
+        builder.setMessage(R.string.clear_shopping_list_alert_message);
+
+        builder.setPositiveButton(R.string.clear_list_dialog_button, (dialog, which) -> {
+            mViewModel.deleteAll();
+            Snackbar.make(mBinding.getRoot(), R.string.list_cleared_snackbar, 3000)
+                    .setAnchorView(mBinding.itemAdditionLinearLayout).show();
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+        });
+
+        builder.show();
     }
 
     private void setUpList() {
@@ -142,7 +178,7 @@ public class ShoppingListActivity extends AppCompatActivity
     @Override
     public void onShoppingItemDeletionRequested(ShoppingListItem item) {
         mViewModel.delete(item);
-        Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 5000)
+        Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 7000)
                 .setAnchorView(mBinding.itemAdditionLinearLayout)
                 .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
     }

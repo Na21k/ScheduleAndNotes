@@ -123,4 +123,9 @@
     <string name="undo">Скасувати</string>
     <string name="price_is_optional_hint">Ціна є опціональною</string>
     <string name="edit_shopping_list_item_price_input_hint">Ціна (опціонально)</string>
+    <string name="clear_list_menu_item">Очистити</string>
+    <string name="clear_shopping_list_alert_message">Ви впевнені, що бажаєте очистити список? Цю дію не можна скасувати</string>
+    <string name="clear_shopping_list_alert_title">Очистити Список покупок</string>
+    <string name="clear_list_dialog_button">Очистити</string>
+    <string name="list_cleared_snackbar">Список очищено</string>
 </resources>

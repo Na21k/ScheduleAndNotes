@@ -40,4 +40,8 @@ public class ShoppingListViewModel extends AndroidViewModel {
     public void delete(ShoppingListItem item) {
         new Thread(() -> mShoppingListItemDao.delete(item)).start();
     }
+
+    public void deleteAll() {
+        new Thread(mShoppingListItemDao::deleteAll).start();
+    }
 }
