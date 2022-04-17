@@ -150,4 +150,7 @@
 
     <!--User defined lists-->
     <string name="user_defined_list_item_info_input_hint">Item text</string>
+
+    <!--Shopping list-->
+    <string name="add_list_item_price_input_hint">Price</string>
 </resources>

@@ -117,4 +117,5 @@
     <string name="add_list_item_input_hint">Додати елемент</string>
     <string name="user_defined_list_item_info_input_hint">Текст запису</string>
     <string name="title_shopping_list">Список покупок</string>
+    <string name="add_list_item_price_input_hint">Ціна</string>
 </resources>
