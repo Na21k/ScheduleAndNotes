@@ -128,4 +128,6 @@
     <string name="clear_shopping_list_alert_title">Очистити Список покупок</string>
     <string name="clear_list_dialog_button">Очистити</string>
     <string name="list_cleared_snackbar">Список очищено</string>
+    <string name="total_price">Сумарна вартість:</string>
+    <string name="price_not_set">Ціну не вказано</string>
 </resources>

@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.na21k.schedulenotes.R;
@@ -77,7 +78,21 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         private void setData(ShoppingListItem item) {
             mItem = item;
             mBinding.shoppingListItemName.setText(item.getText());
-            mBinding.shoppingListItemPrice.setText(String.valueOf(item.getPrice()));
+
+            float price = item.getPrice();
+            int priceTextColor;
+
+            if (price == 0f) {
+                mBinding.shoppingListItemPrice.setText(R.string.price_not_set);
+                priceTextColor = ContextCompat.getColor(itemView.getContext(),
+                        R.color.warning_text);
+            } else {
+                mBinding.shoppingListItemPrice.setText(String.valueOf(price));
+                priceTextColor = ContextCompat.getColor(itemView.getContext(),
+                        R.color.price_text_color);
+            }
+
+            mBinding.shoppingListItemPrice.setTextColor(priceTextColor);
         }
     }
 

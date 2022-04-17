@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,8 @@ import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.databinding.ActivityShoppingListBinding;
 import com.na21k.schedulenotes.databinding.ShoppingListItemInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
+
+import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity
         implements ShoppingListAdapter.OnShoppingItemActionRequestedListener {
@@ -95,7 +98,10 @@ public class ShoppingListActivity extends AppCompatActivity
     }
 
     private void observeItems(ShoppingListAdapter adapter) {
-        mViewModel.getAll().observe(this, adapter::setGoods);
+        mViewModel.getAll().observe(this, goods -> {
+            adapter.setGoods(goods);
+            updateTotalPrice(goods);
+        });
     }
 
     private void setListeners() {
@@ -134,6 +140,27 @@ public class ShoppingListActivity extends AppCompatActivity
         mBinding.addItemEditText.requestFocus();
     }
 
+    private void updateTotalPrice(List<ShoppingListItem> items) {
+        float totalPrice = 0;
+
+        for (ShoppingListItem item : items) {
+            totalPrice += item.getPrice();
+        }
+
+        mBinding.totalPriceTextView.setText(String.valueOf(totalPrice));
+
+        boolean zeroPricesPresent = items.stream().anyMatch(item -> item.getPrice() == 0f);
+        int textColor;
+
+        if (zeroPricesPresent) {
+            textColor = ContextCompat.getColor(this, R.color.warning_text);
+        } else {
+            textColor = ContextCompat.getColor(this, R.color.price_text_color);
+        }
+
+        mBinding.totalPriceTextView.setTextColor(textColor);
+    }
+
     @Override
     public void onShoppingItemUpdateRequested(ShoppingListItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -144,6 +171,7 @@ public class ShoppingListActivity extends AppCompatActivity
                 .inflate(getLayoutInflater(), mBinding.getRoot(), false);
         viewBinding.itemTextEditText.setText(item.getText());
         viewBinding.itemPriceEditText.setText(String.valueOf(item.getPrice()));
+        viewBinding.itemTextEditText.requestFocus();
         builder.setView(viewBinding.getRoot());
 
         builder.setPositiveButton(R.string.save, (dialog, which) -> {

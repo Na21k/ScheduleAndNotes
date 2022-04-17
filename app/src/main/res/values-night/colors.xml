@@ -7,6 +7,7 @@
     <color name="check_color">#1ECF5F</color>
     <color name="neutral_button">#787878</color>
     <color name="price_text_color">#1ECF5F</color>
+    <color name="warning_text">#E6AF0B</color>
 
     <!--Standard lists colors-->
     <color name="list_movies">#4D7DDF</color>

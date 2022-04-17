@@ -163,4 +163,6 @@
     <string name="price_is_optional_hint">The price is optional</string>
     <string name="clear_shopping_list_alert_title">Clear Shopping list</string>
     <string name="clear_shopping_list_alert_message">Are you sure you want to clear the list? This action can\'t be undone</string>
+    <string name="total_price">Total price:</string>
+    <string name="price_not_set">Price not set</string>
 </resources>
