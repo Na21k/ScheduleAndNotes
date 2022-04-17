@@ -43,6 +43,7 @@ public class MusicListActivity extends AppCompatActivity
         }
 
         setUpList();
+        setListeners();
     }
 
     @Override
@@ -57,7 +58,6 @@ public class MusicListActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         observeMusic(adapter);
-        setListeners();
     }
 
     private void observeMusic(MusicListAdapter adapter) {

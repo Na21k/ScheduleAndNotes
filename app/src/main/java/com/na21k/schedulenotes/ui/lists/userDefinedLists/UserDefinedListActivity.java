@@ -45,6 +45,7 @@ public class UserDefinedListActivity extends AppCompatActivity
 
         updateTitle();
         setUpList();
+        setListeners();
     }
 
     @Override
@@ -59,7 +60,6 @@ public class UserDefinedListActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         observeItems(adapter);
-        setListeners();
     }
 
     private void observeItems(UserDefinedListAdapter adapter) {
