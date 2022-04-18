@@ -6,6 +6,7 @@
     <color name="window_background">#202124</color>
     <color name="navigation_bar">#3A3B3D</color>
     <color name="shadow_color">#ffffff</color>
+    <color name="snackbar">#C3C3C3</color>
 
     <color name="check_color">#1ECF5F</color>
     <color name="neutral_button">#787878</color>

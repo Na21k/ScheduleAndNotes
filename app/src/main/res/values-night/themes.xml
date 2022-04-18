@@ -33,11 +33,11 @@
     </style>
 
     <style name="Widget.App.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="ThemeOverlay.App.Snackbar" parent="">
-        <item name="colorOnSurface">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/snackbar</item>
     </style>
 
     <style name="ShapeAppearanceOverlayExtendedFab" parent="">
