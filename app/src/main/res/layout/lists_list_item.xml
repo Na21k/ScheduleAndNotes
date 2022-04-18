@@ -14,7 +14,7 @@
     android:longClickable="true"
     android:outlineAmbientShadowColor="@color/shadow_color"
     android:outlineSpotShadowColor="@color/shadow_color"
-    app:cardBackgroundColor="@color/neutral_button"
+    app:cardBackgroundColor="@color/list_item"
     app:cardCornerRadius="@dimen/corner_radius"
     app:cardElevation="@dimen/elevation">
 

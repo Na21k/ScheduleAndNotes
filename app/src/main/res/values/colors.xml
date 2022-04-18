@@ -17,12 +17,11 @@
     <color name="navigation_bar">#FFFFFF</color>
 
     <color name="check_color">#20DD65</color>
-    <color name="neutral_button">#D6D6D6</color>
-    <color name="price_text_color">#20DD65</color>
+    <color name="neutral_button">#EAEAEA</color>
     <color name="warning_text">#FFC107</color>
 
     <!--Categories color sets-->
-    <color name="category_gray">#D6D6D6</color>
+    <color name="category_gray">#EAEAEA</color>
     <color name="category_gray_night">#787878</color>
     <color name="category_red">#FF4545</color>
     <color name="category_red_night">#E43C3C</color>
@@ -46,5 +45,6 @@
     <color name="list_music">#FF4545</color>
     <color name="list_shopping">#3DFF67</color>
     <color name="list_languages">#D163FF</color>
-    <color name="list_item">#D6D6D6</color>
+    <color name="list_item">#EAEAEA</color>
+    <color name="price_text_color">#20DD65</color>
 </resources>

@@ -6,7 +6,6 @@
 
     <color name="check_color">#1ECF5F</color>
     <color name="neutral_button">#787878</color>
-    <color name="price_text_color">#1ECF5F</color>
     <color name="warning_text">#E6AF0B</color>
 
     <!--Standard lists colors-->
@@ -15,4 +14,5 @@
     <color name="list_shopping">#33D656</color>
     <color name="list_languages">#B355DA</color>
     <color name="list_item">#787878</color>
+    <color name="price_text_color">#1ECF5F</color>
 </resources>
