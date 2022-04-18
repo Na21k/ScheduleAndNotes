@@ -139,7 +139,8 @@ public class UserDefinedListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(userDefinedListItem);
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000).show();
+            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000)
+                    .setAnchorView(mBinding.itemAdditionLinearLayout).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });
