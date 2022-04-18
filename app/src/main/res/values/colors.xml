@@ -9,9 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="colorPrimary">#FF6544</color>
-    <color name="colorPrimaryDark">#DF583C</color>
+    <color name="colorPrimaryVariant">#DF583C</color>
     <color name="colorAccent">#41D5F4</color>
-    <color name="colorAccentDark">#3CC4E1</color>
     <color name="shadow_color">#000000</color>
     <color name="window_background">#FFFFFF</color>
     <color name="navigation_bar">#FFFFFF</color>

@@ -5,7 +5,7 @@
         <!--<item name="colorPrimary">@color/purple_500</item>-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <!--<item name="colorPrimaryVariant">@color/purple_700</item>-->
-        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <!--<item name="colorPrimaryVariant">@color/colorPrimary</item>-->
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -15,7 +15,7 @@
         <item name="colorSecondaryVariant">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!--Navigation bar color-->
         <item name="android:navigationBarColor">@color/navigation_bar</item>
         <!-- Customize your theme here. -->

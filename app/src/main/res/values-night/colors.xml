@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#DF583C</color>
+    <color name="colorPrimaryVariant">#DF583C</color>
+    <color name="colorAccent">#3CC4E1</color>
     <color name="window_background">#202124</color>
     <color name="navigation_bar">#3A3B3D</color>
     <color name="shadow_color">#ffffff</color>
