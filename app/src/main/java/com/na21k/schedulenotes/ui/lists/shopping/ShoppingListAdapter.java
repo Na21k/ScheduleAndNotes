@@ -81,18 +81,23 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
             float price = item.getPrice();
             int priceTextColor;
+            int count = item.getCount();
 
             if (price == 0f) {
-                mBinding.shoppingListItemPrice.setText(R.string.price_not_set);
+                mBinding.shoppingListItemOverallPrice.setText(R.string.price_not_set);
                 priceTextColor = ContextCompat.getColor(itemView.getContext(),
                         R.color.warning_text);
             } else {
-                mBinding.shoppingListItemPrice.setText(String.valueOf(price));
+                mBinding.shoppingListItemOverallPrice.setText(String.valueOf(price * count));
                 priceTextColor = ContextCompat.getColor(itemView.getContext(),
                         R.color.price_text_color);
             }
 
-            mBinding.shoppingListItemPrice.setTextColor(priceTextColor);
+            mBinding.shoppingListItemOverallPrice.setTextColor(priceTextColor);
+
+            String countFormatted = itemView.getContext().getResources()
+                    .getString(R.string.count_formatted, count);
+            mBinding.shoppingListItemCount.setText(countFormatted);
         }
     }
 

@@ -159,11 +159,14 @@
 
     <!--Shopping list-->
     <string name="shopping_list_item_text_input_hint">Item text</string>
+    <string name="shopping_list_item_count_input_hint">Count</string>
     <string name="shopping_list_item_price_input_hint">Price</string>
+    <string name="edit_shopping_list_item_count_input_hint">Count (defaults to 1)</string>
     <string name="edit_shopping_list_item_price_input_hint">Price (optional)</string>
     <string name="price_is_optional_hint">The price is optional</string>
     <string name="clear_shopping_list_alert_title">Clear Shopping list</string>
     <string name="clear_shopping_list_alert_message">Are you sure you want to clear the list? This action can\'t be undone</string>
     <string name="total_price">Total price:</string>
     <string name="price_not_set">Price not set</string>
+    <string name="count_formatted" translatable="false">x%1$d</string>
 </resources>

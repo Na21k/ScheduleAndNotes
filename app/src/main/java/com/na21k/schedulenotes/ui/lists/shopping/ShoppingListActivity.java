@@ -117,20 +117,28 @@ public class ShoppingListActivity extends AppCompatActivity
 
     private void addItem() {
         String newItemText = mBinding.addItemEditText.getText().toString();
+        String newItemCountStr = mBinding.addItemCountEditText.getText().toString();
         String newItemPriceStr = mBinding.addItemPriceEditText.getText().toString();
 
         if (!newItemText.isEmpty()) {
-            ShoppingListItem newItem = new ShoppingListItem(0, newItemText, 0f);
+            ShoppingListItem newItem = new ShoppingListItem(0, newItemText, 0f, 1);
+
+            try {
+                int newItemCount = Integer.parseInt(newItemCountStr);
+                newItem.setCount(newItemCount > 0 ? newItemCount : 1);
+            } catch (NumberFormatException ignored) {
+            }
 
             try {
                 float newItemPrice = Float.parseFloat(newItemPriceStr);
                 newItem.setPrice(newItemPrice);
             } catch (NumberFormatException ignored) {
-            } finally {
-                mViewModel.addNew(newItem);
             }
 
+            mViewModel.addNew(newItem);
+
             mBinding.addItemEditText.setText("");
+            mBinding.addItemCountEditText.setText("1");
             mBinding.addItemPriceEditText.setText("");
         } else {
             Snackbar.make(mBinding.getRoot(), R.string.specify_item_text_snackbar, 3000)
@@ -144,7 +152,7 @@ public class ShoppingListActivity extends AppCompatActivity
         float totalPrice = 0;
 
         for (ShoppingListItem item : items) {
-            totalPrice += item.getPrice();
+            totalPrice += item.getPrice() * item.getCount();
         }
 
         mBinding.totalPriceTextView.setText(String.valueOf(totalPrice));
@@ -170,16 +178,25 @@ public class ShoppingListActivity extends AppCompatActivity
         ShoppingListItemInfoAlertViewBinding viewBinding = ShoppingListItemInfoAlertViewBinding
                 .inflate(getLayoutInflater(), mBinding.getRoot(), false);
         viewBinding.itemTextEditText.setText(item.getText());
+        viewBinding.itemCountEditText.setText(String.valueOf(item.getCount()));
         viewBinding.itemPriceEditText.setText(String.valueOf(item.getPrice()));
         viewBinding.itemTextEditText.requestFocus();
         builder.setView(viewBinding.getRoot());
 
         builder.setPositiveButton(R.string.save, (dialog, which) -> {
             String itemText = viewBinding.itemTextEditText.getText().toString();
+            String itemCountStr = viewBinding.itemCountEditText.getText().toString();
             String itemPriceStr = viewBinding.itemPriceEditText.getText().toString();
 
             if (!itemText.isEmpty()) {
                 item.setText(itemText);
+
+                try {
+                    int newItemCount = Integer.parseInt(itemCountStr);
+                    item.setCount(newItemCount > 0 ? newItemCount : 1);
+                } catch (NumberFormatException ex) {
+                    item.setCount(1);
+                }
 
                 try {
                     float newItemPrice = Float.parseFloat(itemPriceStr);

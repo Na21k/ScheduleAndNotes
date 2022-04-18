@@ -13,11 +13,14 @@ public class ShoppingListItem extends SimpleListItem {
 
     @ColumnInfo(name = "price")
     private Float price;
+    @ColumnInfo(name = "count")
+    private Integer count;
 
-    public ShoppingListItem(int id, @NotNull String text, Float price) {
+    public ShoppingListItem(int id, @NotNull String text, Float price, Integer count) {
         this.id = id;
         this.text = text;
         this.price = price;
+        this.count = count;
     }
 
     public Float getPrice() {
@@ -26,5 +29,13 @@ public class ShoppingListItem extends SimpleListItem {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

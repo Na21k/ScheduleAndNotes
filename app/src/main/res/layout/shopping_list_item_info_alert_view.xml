@@ -17,6 +17,18 @@
         android:inputType="textCapSentences" />
 
     <EditText
+        android:id="@+id/item_count_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_123_24"
+        android:drawablePadding="2dp"
+        android:hint="@string/edit_shopping_list_item_count_input_hint"
+        android:imeOptions="actionNext"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:selectAllOnFocus="true" />
+
+    <EditText
         android:id="@+id/item_price_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

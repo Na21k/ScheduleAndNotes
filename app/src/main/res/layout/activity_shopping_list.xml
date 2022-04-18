@@ -54,6 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@null"
                 android:drawableStart="@drawable/ic_add_24"
                 android:hint="@string/add_list_item_input_hint"
                 android:imeOptions="actionNext"
@@ -61,11 +62,28 @@
                 android:inputType="textCapSentences" />
 
             <EditText
+                android:id="@+id/add_item_count_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="0.37"
+                android:background="@null"
+                android:drawableStart="@drawable/ic_123_24"
+                android:hint="@string/shopping_list_item_count_input_hint"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:text="1"
+                tools:ignore="HardcodedText" />
+
+            <EditText
                 android:id="@+id/add_item_price_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="0.37"
+                android:background="@null"
                 android:drawableStart="@drawable/ic_money_dollar_sign_24"
                 android:hint="@string/shopping_list_item_price_input_hint"
                 android:imeOptions="actionSend"
