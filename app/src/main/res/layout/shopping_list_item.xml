@@ -14,25 +14,44 @@
     android:longClickable="true"
     android:outlineAmbientShadowColor="@color/shadow_color"
     android:outlineSpotShadowColor="@color/shadow_color"
-    app:cardBackgroundColor="@color/list_item"
     app:cardCornerRadius="@dimen/corner_radius"
-    app:cardElevation="@dimen/elevation">
+    app:cardElevation="@dimen/elevation"
+    tools:cardBackgroundColor="@color/list_item">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/shopping_list_item_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="14dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:textSize="22sp"
-            tools:text="Shopping list item info text" />
+            android:layout_marginVertical="14dp">
+
+            <TextView
+                android:id="@+id/shopping_list_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textSize="22sp"
+                tools:text="Shopping list item info text" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:ignore="UselessLeaf" />
+
+            <CheckBox
+                android:id="@+id/is_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

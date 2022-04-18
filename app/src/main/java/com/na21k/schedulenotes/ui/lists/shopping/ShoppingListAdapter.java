@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -62,6 +63,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
             itemView.setOnClickListener(v ->
                     mOnShoppingItemActionRequestedListener.onShoppingItemUpdateRequested(mItem));
+            mBinding.isChecked.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked != mItem.isChecked()) {
+                    mItem.setChecked(isChecked);
+                    mOnShoppingItemActionRequestedListener
+                            .onShoppingItemSilentUpdateRequested(mItem);
+                }
+            });
         }
 
         @Override
@@ -78,6 +86,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         private void setData(ShoppingListItem item) {
             mItem = item;
             mBinding.shoppingListItemName.setText(item.getText());
+            mBinding.isChecked.setChecked(item.isChecked());
 
             float price = item.getPrice();
             int priceTextColor;
@@ -98,12 +107,41 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             String countFormatted = itemView.getContext().getResources()
                     .getString(R.string.count_formatted, count);
             mBinding.shoppingListItemCount.setText(countFormatted);
+
+            updateTextPaintFlags();
+            updateCardColor();
+        }
+
+        private void updateTextPaintFlags() {
+            int currentPaintFlags = mBinding.shoppingListItemName.getPaintFlags();
+
+            if (mItem.isChecked()) {
+                mBinding.shoppingListItemName
+                        .setPaintFlags(currentPaintFlags | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                mBinding.shoppingListItemName
+                        .setPaintFlags(currentPaintFlags & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+        }
+
+        private void updateCardColor() {
+            int color;
+
+            if (mItem.isChecked()) {
+                color = ContextCompat.getColor(itemView.getContext(), R.color.list_item_grayed_out);
+            } else {
+                color = ContextCompat.getColor(itemView.getContext(), R.color.list_item);
+            }
+
+            mBinding.shoppingListItemCard.setCardBackgroundColor(color);
         }
     }
 
     public interface OnShoppingItemActionRequestedListener {
 
         void onShoppingItemUpdateRequested(ShoppingListItem item);
+
+        void onShoppingItemSilentUpdateRequested(ShoppingListItem item);
 
         void onShoppingItemDeletionRequested(ShoppingListItem item);
     }

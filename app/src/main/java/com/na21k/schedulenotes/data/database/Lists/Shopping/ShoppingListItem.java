@@ -15,12 +15,15 @@ public class ShoppingListItem extends SimpleListItem {
     private Float price;
     @ColumnInfo(name = "count")
     private Integer count;
+    @ColumnInfo(name = "is_checked")
+    private boolean isChecked;
 
     public ShoppingListItem(int id, @NotNull String text, Float price, Integer count) {
         this.id = id;
         this.text = text;
         this.price = price;
         this.count = count;
+        isChecked = false;
     }
 
     public Float getPrice() {
@@ -37,5 +40,13 @@ public class ShoppingListItem extends SimpleListItem {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

@@ -221,6 +221,11 @@ public class ShoppingListActivity extends AppCompatActivity
     }
 
     @Override
+    public void onShoppingItemSilentUpdateRequested(ShoppingListItem item) {
+        mViewModel.update(item);
+    }
+
+    @Override
     public void onShoppingItemDeletionRequested(ShoppingListItem item) {
         mViewModel.delete(item);
         Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 7000)

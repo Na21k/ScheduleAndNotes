@@ -46,5 +46,6 @@
     <color name="list_shopping">#3DFF67</color>
     <color name="list_languages">#D163FF</color>
     <color name="list_item">#EAEAEA</color>
+    <color name="list_item_grayed_out">#8F8F8F</color>
     <color name="price_text_color">#20DD65</color>
 </resources>
