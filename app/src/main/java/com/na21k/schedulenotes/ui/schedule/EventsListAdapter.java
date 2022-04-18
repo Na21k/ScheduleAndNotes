@@ -114,7 +114,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
         private void setData(@NonNull Event event) throws CouldNotFindColorSetModelException {
             mEvent = event;
-            mBinding.eventTitle.setText(event.getTitle());
+
+            if (event.isHidden()) {
+                mBinding.eventTitle.setText(R.string.hidden_event);
+            } else {
+                mBinding.eventTitle.setText(event.getTitle());
+            }
+
             String startsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeStarts());
             String endsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeEnds());
             mBinding.eventStartTime.setText(startsFormatted);
