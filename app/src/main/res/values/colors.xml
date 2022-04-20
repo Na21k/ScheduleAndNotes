@@ -18,7 +18,7 @@
 
     <color name="check_color">#20DD65</color>
     <color name="neutral_button">#EAEAEA</color>
-    <color name="warning_text">#FFC107</color>
+    <color name="warning_text">#FDBE00</color>
 
     <!--Categories color sets-->
     <color name="category_gray">#EAEAEA</color>
