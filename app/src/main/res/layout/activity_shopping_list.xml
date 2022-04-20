@@ -29,6 +29,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:textSize="22sp"
+                android:textStyle="bold"
                 tools:text="199.99" />
 
         </LinearLayout>
