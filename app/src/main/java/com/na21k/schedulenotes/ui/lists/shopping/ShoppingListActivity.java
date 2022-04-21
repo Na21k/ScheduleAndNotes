@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
@@ -100,6 +101,7 @@ public class ShoppingListActivity extends AppCompatActivity
     private void observeItems(ShoppingListAdapter adapter) {
         mViewModel.getAll().observe(this, goods -> {
             adapter.setGoods(goods);
+            updateCheckedPrice(goods);
             updateTotalPrice(goods);
         });
     }
@@ -146,6 +148,26 @@ public class ShoppingListActivity extends AppCompatActivity
         }
 
         mBinding.addItemEditText.requestFocus();
+    }
+
+    private void updateCheckedPrice(List<ShoppingListItem> items) {
+        float checkedPrice = 0;
+
+        for (ShoppingListItem item : items) {
+            if (item.isChecked()) {
+                checkedPrice += item.getPrice() * item.getCount();
+            }
+        }
+
+        mBinding.checkedPriceTextView.setText(String.valueOf(checkedPrice));
+
+        if (checkedPrice == 0f) {
+            mBinding.checkedPriceTextView.setVisibility(View.INVISIBLE);
+            mBinding.slash.setVisibility(View.INVISIBLE);
+        } else {
+            mBinding.checkedPriceTextView.setVisibility(View.VISIBLE);
+            mBinding.slash.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateTotalPrice(List<ShoppingListItem> items) {
