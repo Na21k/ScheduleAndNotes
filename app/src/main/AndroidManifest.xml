@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduleNotes">
         <activity
+            android:name=".ui.lists.languages.LanguagesListActivity"
+            android:exported="false"
+            android:label="@string/title_languages_list" />
+        <activity
             android:name=".ui.lists.shopping.ShoppingListActivity"
             android:exported="false"
             android:label="@string/title_shopping_list" />

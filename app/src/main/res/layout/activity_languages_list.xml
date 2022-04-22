@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.lists.languages.LanguagesListActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/words_and_phrases_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/languages_list_item" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/add_word_or_phrase_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/page_margin"
+        android:outlineAmbientShadowColor="@color/shadow_color"
+        android:outlineSpotShadowColor="@color/shadow_color"
+        android:text="@string/add_item_fab"
+        android:textSize="11sp"
+        app:icon="@drawable/ic_add_24"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtendedFab" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

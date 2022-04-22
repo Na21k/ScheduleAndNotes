@@ -25,6 +25,7 @@ import com.na21k.schedulenotes.data.models.UserDefinedListModel;
 import com.na21k.schedulenotes.databinding.ListsFragmentBinding;
 import com.na21k.schedulenotes.databinding.UserDefinedListInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
+import com.na21k.schedulenotes.ui.lists.languages.LanguagesListActivity;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
 import com.na21k.schedulenotes.ui.lists.shopping.ShoppingListActivity;
@@ -111,6 +112,7 @@ public class ListsFragment extends Fragment
         mBinding.moviesListBtnCard.setOnClickListener(v -> openMoviesList());
         mBinding.musicListBtnCard.setOnClickListener(v -> openMusicList());
         mBinding.shoppingListBtnCard.setOnClickListener(v -> openShoppingList());
+        mBinding.languagesListBtnCard.setOnClickListener(v -> openLanguagesList());
 
         mBinding.includedList.listsList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -183,6 +185,15 @@ public class ListsFragment extends Fragment
 
         if (context != null) {
             Intent intent = new Intent(context, ShoppingListActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void openLanguagesList() {
+        Context context = getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, LanguagesListActivity.class);
             startActivity(intent);
         }
     }

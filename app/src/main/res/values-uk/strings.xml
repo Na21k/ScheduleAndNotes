@@ -133,4 +133,5 @@
     <string name="hidden_event">Прихована подія</string>
     <string name="shopping_list_item_count_input_hint">Кільк.</string>
     <string name="edit_shopping_list_item_count_input_hint">Кількість (1 за замовчуванням)</string>
+    <string name="title_languages_list">Список вивчення мов</string>
 </resources>
