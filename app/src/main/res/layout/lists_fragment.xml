@@ -136,7 +136,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="24dp"
                     android:drawablePadding="8dp"
-                    android:text="@string/Languages_list_btn"
+                    android:text="@string/languages_list_btn"
                     android:textSize="18sp"
                     app:drawableLeftCompat="@drawable/ic_translate_24" />
 

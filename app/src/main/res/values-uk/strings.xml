@@ -26,8 +26,8 @@
     <string name="movies_list_notifications_summary">Отримувати нагадування переглянути випадковий фільм з вашого списку Фільмів</string>
     <string name="music_list_notifications_title">Сповіщення списку Музики</string>
     <string name="music_list_notifications_summary">Занотовуйте групи, альбоми та пісні, які вас цікавлять і отримуйте нагадування прослухати їх</string>
-    <string name="languages_list_notifications_title">Сповіщення списку мов</string>
-    <string name="languages_list_notifications_summary">Пригадуйте вивчені слова і фрази час від часу, додаючи їх до вашого списку Вивчення мов і отримуючи періодичні сповіщення. Це допоможе краще їх запам\'ятати</string>
+    <string name="languages_list_notifications_title">Сповіщення Списку-словника</string>
+    <string name="languages_list_notifications_summary">Пригадуйте вивчені слова і фрази час від часу, додаючи їх до вашого Списку-словника і отримуючи періодичні сповіщення. Це допоможе краще їх запам\'ятати</string>
     <string name="delete_events_older_than_succeeded_snackbar">Обраний діапазон подій успішно видалено</string>
     <string name="backing_up_toast">Створення резервної копії …</string>
     <string name="backing_up_failed_toast">Не вдалось створити резервну копію</string>
@@ -87,7 +87,7 @@
     <string name="movies_list_btn">Фільми</string>
     <string name="music_list_btn">Музика</string>
     <string name="shopping_list_btn">Покупки</string>
-    <string name="Languages_list_btn">Мови</string>
+    <string name="languages_list_btn">Словник</string>
     <string name="list_deleted_snackbar">Список видалено</string>
     <string name="list_deletion_alert_title">Видалити список</string>
     <string name="list_deletion_alert_message">Ви впевнені, що бажаєте видалити цей список? Усі його елементи буде втрачено</string>
@@ -132,5 +132,5 @@
     <string name="hidden_event">Прихована подія</string>
     <string name="shopping_list_item_count_input_hint">Кільк.</string>
     <string name="edit_shopping_list_item_count_input_hint">Кількість (1 за замовчуванням)</string>
-    <string name="title_languages_list">Список вивчення мов</string>
+    <string name="title_languages_list">Список-словник</string>
 </resources>

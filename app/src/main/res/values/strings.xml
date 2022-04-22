@@ -16,7 +16,7 @@
     <string name="title_movies_list">Movies List</string>
     <string name="title_music_list">Music List</string>
     <string name="title_shopping_list">Shopping List</string>
-    <string name="title_languages_list">Languages Learning List</string>
+    <string name="title_languages_list">Vocabulary List</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
     <!-- Preference Titles -->
@@ -42,8 +42,8 @@
     <string name="movies_list_notifications_summary">Receive reminders to watch a random film from your Movies List</string>
     <string name="music_list_notifications_title">Music List notifications</string>
     <string name="music_list_notifications_summary">Note down bands, albums, and songs you are interested in and get reminders to check them out</string>
-    <string name="languages_list_notifications_title">Languages List notifications</string>
-    <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Languages List and receiving periodic notifications. This way you will be able to memorize them better</string>
+    <string name="languages_list_notifications_title">Vocabulary List notifications</string>
+    <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Vocabulary List and receiving periodic notifications. This way you will be able to memorize them better</string>
 
     <!-- Messages Preferences -->
     <!--<string name="signature_title">Your signature</string>
@@ -121,7 +121,7 @@
     <string name="movies_list_btn">Movies</string>
     <string name="music_list_btn">Music</string>
     <string name="shopping_list_btn">Shopping</string>
-    <string name="Languages_list_btn">Languages</string>
+    <string name="languages_list_btn">Vocabulary</string>
     <string name="list_creation_alert_title">Add list</string>
     <string name="list_rename_alert_title">Rename list</string>
     <string name="list_deleted_snackbar">The list has been deleted</string>
