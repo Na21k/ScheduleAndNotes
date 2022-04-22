@@ -35,7 +35,7 @@
     <string name="unexpected_error">Сталась неочікувана помилка</string>
     <string name="importing_from_backup_toast">Імпорт з резервної копії …</string>
     <string name="importing_from_backup_failed_toast">Не вдалось імпортувати дані з резервної копії</string>
-    <string name="add_category_fab">Додати категорію</string>
+    <string name="add_category_fab">Нова категорія</string>
     <string name="category_name_input_hint">Назва категорії</string>
     <string name="title_create_category">Створити категорію</string>
     <string name="title_edit_category">Редагувати категорію</string>
@@ -47,7 +47,7 @@
     <string name="category_name_edit_text_title">Вкажіть назву категорії</string>
     <string name="color_selection_title">Оберіть набір кольорів</string>
     <string name="color_selection_subtitle">Для світлого і темного режиму використовуються різні відтінки кольору</string>
-    <string name="add_note_fab">Додати нотатку</string>
+    <string name="add_note_fab">Нова нотатка</string>
     <string name="note_deleted_snackbar">Нотатку видалено</string>
     <string name="title_create_note">Створити нотатку</string>
     <string name="title_edit_note">Редагувати нотатку</string>
@@ -66,7 +66,7 @@
     <string name="category_deletion_alert_title">Видалити категорію</string>
     <string name="category_deletion_alert_message">Ви впевнені, що бажаєте видалити цю категорію? Усі пов\'язані події розкладу і нотатки перестануть належати до категорії</string>
     <string name="uncategorized_notes_category_placeholder">Без категорії</string>
-    <string name="add_event_fab">Додати подію</string>
+    <string name="add_event_fab">Нова подія</string>
     <string name="prev_date_btn_description">Попередня дата</string>
     <string name="next_date_btn_description">Наступна дата</string>
     <string name="selected_date_btn_description">Обрана дата. Натисність, щоб відкрити календар</string>
@@ -83,7 +83,7 @@
     <string name="title_edit_event">Редагувати подію</string>
     <string name="jump_to_today_snackbar">Переходимо до Сьогодні …</string>
     <string name="event_deleted_snackbar">Подію видалено</string>
-    <string name="add_list_fab">Додати список</string>
+    <string name="add_list_fab">Новий список</string>
     <string name="movies_list_btn">Фільми</string>
     <string name="music_list_btn">Музика</string>
     <string name="shopping_list_btn">Покупки</string>
@@ -91,7 +91,6 @@
     <string name="list_deleted_snackbar">Список видалено</string>
     <string name="list_deletion_alert_title">Видалити список</string>
     <string name="list_deletion_alert_message">Ви впевнені, що бажаєте видалити цей список? Усі його елементи буде втрачено</string>
-    <string name="add_movie_fab">Додати фільм</string>
     <string name="list_item_deleted_snackbar">Елемент видалено</string>
     <string name="list_item_deletion_alert_title">Видалити елемент списку</string>
     <string name="list_item_deletion_alert_message">Ви впевнені, що хочете видалити цей елемент?</string>
@@ -103,7 +102,7 @@
     <string name="oops_aletr_title">Ой …</string>
     <string name="movie_info_input_hint">Фільм (назва, рік або ін.)</string>
     <string name="create_category_dialog_button">Створити</string>
-    <string name="add_item_fab">Додати елемент</string>
+    <string name="add_item_fab">Новий запис</string>
     <string name="music_info_input_hint">Пісня, виконавець, альбом або ін.</string>
     <string name="title_music_list">Список музики</string>
     <string name="list_creation_alert_title">Додати список</string>
