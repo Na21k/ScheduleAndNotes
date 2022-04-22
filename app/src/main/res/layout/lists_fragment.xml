@@ -159,7 +159,6 @@
         android:outlineAmbientShadowColor="@color/shadow_color"
         android:outlineSpotShadowColor="@color/shadow_color"
         android:text="@string/add_list_fab"
-        android:textSize="11sp"
         app:icon="@drawable/ic_add_24"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtendedFab" />
 
