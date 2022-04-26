@@ -23,6 +23,7 @@
 
         <!--Snackbar style-->
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
+        <item name="snackbarTextViewStyle">@style/Widget.App.SnackbarText</item>
         <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>
     </style>
 
@@ -30,6 +31,10 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Snackbar</item>
         <item name="actionTextColorAlpha">1</item>
         <item name="animationMode">slide</item>
+    </style>
+
+    <style name="Widget.App.SnackbarText" parent="Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Widget.App.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
