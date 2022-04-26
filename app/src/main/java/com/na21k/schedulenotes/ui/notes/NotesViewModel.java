@@ -38,6 +38,10 @@ public class NotesViewModel extends AndroidViewModel {
         return mAllCategories;
     }
 
+    public void createNote(Note note) {
+        new Thread(() -> mNoteDao.insert(note)).start();
+    }
+
     public void updateNote(Note note) {
         new Thread(() -> mNoteDao.update(note)).start();
     }

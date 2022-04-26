@@ -17,7 +17,6 @@ import java.util.List;
 public class ScheduleViewModel extends AndroidViewModel {
 
     private final EventDao mEventDao;
-    private final LiveData<List<Event>> mAllEvents;
     private final LiveData<List<Category>> mAllCategories;
     private List<Event> mEventsCache = null;
     private List<Category> mCategoriesCache = null;
@@ -28,12 +27,7 @@ public class ScheduleViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mEventDao = db.eventDao();
-        mAllEvents = mEventDao.getAll();
         mAllCategories = db.categoryDao().getAll();
-    }
-
-    public LiveData<List<Event>> getAllEvents() {
-        return mAllEvents;
     }
 
     public LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy) {
@@ -42,6 +36,10 @@ public class ScheduleViewModel extends AndroidViewModel {
 
     public LiveData<List<Category>> getAllCategories() {
         return mAllCategories;
+    }
+
+    public void createEvent(Event event) {
+        new Thread(() -> mEventDao.insert(event)).start();
     }
 
     public void updateEvent(Event event) {

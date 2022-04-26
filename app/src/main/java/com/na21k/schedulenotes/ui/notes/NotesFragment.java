@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.notes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -234,6 +235,7 @@ public class NotesFragment extends Fragment
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onNoteDeletionRequested(Note note) {
         Context context = getContext();
@@ -246,8 +248,9 @@ public class NotesFragment extends Fragment
 
             builder.setPositiveButton(R.string.delete, (dialog, which) -> {
                 mViewModel.deleteNote(note);
-                Snackbar.make(mBinding.getRoot(), R.string.note_deleted_snackbar, 3000)
-                        .show();
+                Snackbar.make(mBinding.getRoot(), R.string.note_deleted_snackbar,
+                        Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                        .setAction(R.string.undo, v -> mViewModel.createNote(note)).show();
             });
             builder.setNegativeButton(R.string.keep, (dialog, which) -> {
             });

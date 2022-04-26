@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.schedule;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -116,7 +116,8 @@ public class ScheduleFragment extends Fragment
         jumpToDate(today);
 
         if (!isSilentLoad) {
-            showSnackbar(R.string.jump_to_today_snackbar);
+            Snackbar.make(mBinding.scheduleFragmentRoot, R.string.jump_to_today_snackbar,
+                    3000).show();
         }
 
         return true;
@@ -266,6 +267,7 @@ public class ScheduleFragment extends Fragment
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onEventDeletionRequested(Event event) {
         Context context = getContext();
@@ -278,7 +280,9 @@ public class ScheduleFragment extends Fragment
 
             builder.setPositiveButton(R.string.delete, (dialog, which) -> {
                 mViewModel.deleteEvent(event);
-                showSnackbar(R.string.event_deleted_snackbar);
+                Snackbar.make(mBinding.getRoot(), R.string.event_deleted_snackbar,
+                        Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                        .setAction(R.string.undo, v -> mViewModel.createEvent(event)).show();
             });
             builder.setNegativeButton(R.string.keep, (dialog, which) -> {
             });
@@ -291,9 +295,5 @@ public class ScheduleFragment extends Fragment
     public void onRemoveCategoryRequested(Event event) {
         event.setCategoryId(null);
         mViewModel.updateEvent(event);
-    }
-
-    private void showSnackbar(@StringRes int stringResourceId) {
-        Snackbar.make(mBinding.scheduleFragmentRoot, stringResourceId, 3000).show();
     }
 }
