@@ -1,10 +1,12 @@
 package com.na21k.schedulenotes.ui.lists.languages;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -96,10 +98,23 @@ public class LanguagesListActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onItemDeletionRequested(LanguagesListItem item) {
-        mViewModel.delete(item);
-        Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 7000)
-                .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_delete_24);
+        builder.setTitle(R.string.list_item_deletion_alert_title);
+        builder.setMessage(R.string.list_item_deletion_alert_message);
+
+        builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+            mViewModel.delete(item);
+            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                    .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
+        });
+        builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+        });
+
+        builder.show();
     }
 }

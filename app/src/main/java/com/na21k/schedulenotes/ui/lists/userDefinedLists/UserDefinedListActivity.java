@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.userDefinedLists;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -130,6 +131,7 @@ public class UserDefinedListActivity extends AppCompatActivity
         builder.show();
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onItemDeletionRequested(UserDefinedListItem userDefinedListItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -139,8 +141,10 @@ public class UserDefinedListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(userDefinedListItem);
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000)
-                    .setAnchorView(mBinding.itemAdditionLinearLayout).show();
+            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                    .setAnchorView(mBinding.itemAdditionLinearLayout)
+                    .setAction(R.string.undo, v -> mViewModel.addNew(userDefinedListItem)).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });

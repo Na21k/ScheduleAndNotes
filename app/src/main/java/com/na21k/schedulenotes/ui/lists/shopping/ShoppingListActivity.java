@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.databinding.ActivityShoppingListBinding;
@@ -247,10 +249,12 @@ public class ShoppingListActivity extends AppCompatActivity
         mViewModel.update(item);
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onShoppingItemDeletionRequested(ShoppingListItem item) {
         mViewModel.delete(item);
-        Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 7000)
+        Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+                Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                 .setAnchorView(mBinding.itemAdditionLinearLayout)
                 .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
     }

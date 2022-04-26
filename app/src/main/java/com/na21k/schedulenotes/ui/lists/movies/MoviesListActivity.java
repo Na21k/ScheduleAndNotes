@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.movies;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.databinding.ActivityMoviesListBinding;
@@ -147,6 +149,7 @@ public class MoviesListActivity extends AppCompatActivity
         builder.show();
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onMovieDeletionRequested(MoviesListItem movie) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -156,7 +159,9 @@ public class MoviesListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(movie);
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 3000).show();
+            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                    .setAction(R.string.undo, v -> mViewModel.addNew(movie)).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });

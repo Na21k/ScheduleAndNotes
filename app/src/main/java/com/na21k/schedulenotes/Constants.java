@@ -1,5 +1,7 @@
 package com.na21k.schedulenotes;
 
+import androidx.annotation.IntRange;
+
 import com.na21k.schedulenotes.data.models.ColorSet;
 
 public class Constants {
@@ -12,4 +14,6 @@ public class Constants {
     public static final String LIST_TITLE_INTENT_KEY = "listTitle";
     public static final String SELECTED_TIME_MILLIS_INTENT_KEY = "currentTimeMillis";
     public static final ColorSet DEFAULT_COLOR_SET = ColorSet.GRAY;
+    @IntRange(from = 1)
+    public static final int UNDO_DELETE_TIMEOUT_MILLIS = 7000;
 }
