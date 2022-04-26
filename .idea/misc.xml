@@ -49,6 +49,7 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_note_details.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_shopping_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_user_defined_list.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_word_or_phrase_details.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list_item.xml" value="0.27291666666666664" />
@@ -91,6 +92,7 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/shopping_list_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/simple_item_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/user_defined_list_item_long_press_menu.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/word_or_phrase_details_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/xml/root_preferences.xml" value="0.27291666666666664" />
       </map>
     </option>

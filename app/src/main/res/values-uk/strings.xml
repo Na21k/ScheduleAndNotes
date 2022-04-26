@@ -133,4 +133,12 @@
     <string name="shopping_list_item_count_input_hint">Кільк.</string>
     <string name="edit_shopping_list_item_count_input_hint">Кількість (1 за замовчуванням)</string>
     <string name="title_languages_list">Список-словник</string>
+    <string name="word_or_phrase">Слово або фраза</string>
+    <string name="translation">Переклад (опціонально)</string>
+    <string name="explanation">Пояснення (опціонально)</string>
+    <string name="usage_example">Приклад(и) використання (опціонально)</string>
+    <string name="usage_example_images">Додати зображення з прикладами використання</string>
+    <string name="title_create_item">Додати елемент списку</string>
+    <string name="title_edit_item">Редагувати елемент списку</string>
+    <string name="specify_word_or_phrase_snackbar">Вкажіть слово або фразу</string>
 </resources>

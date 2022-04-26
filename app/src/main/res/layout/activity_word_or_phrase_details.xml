@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/page_margin">
+
+            <EditText
+                android:id="@+id/word_or_phrase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/word_or_phrase"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:textSize="34sp" />
+
+            <EditText
+                android:id="@+id/translation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:hint="@string/translation"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/explanation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:hint="@string/explanation"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/usageExample"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:hint="@string/usage_example"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/usage_example_images"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

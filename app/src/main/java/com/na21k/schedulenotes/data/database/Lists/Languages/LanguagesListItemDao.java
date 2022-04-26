@@ -30,4 +30,7 @@ public interface LanguagesListItemDao {
 
     @Delete
     void delete(LanguagesListItem item);
+
+    @Query("delete from languages_list_items where id = :id")
+    void delete(int id);
 }

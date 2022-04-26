@@ -60,14 +60,14 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             mBinding = binding;
 
             itemView.setOnClickListener(v ->
-                    mOnLanguagesItemActionRequestedListener.onShoppingItemUpdateRequested(mItem));
+                    mOnLanguagesItemActionRequestedListener.onItemUpdateRequested(mItem));
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.item_delete_menu_item:
-                    mOnLanguagesItemActionRequestedListener.onShoppingItemDeletionRequested(mItem);
+                    mOnLanguagesItemActionRequestedListener.onItemDeletionRequested(mItem);
                     return true;
                 default:
                     return false;
@@ -85,8 +85,8 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
 
     public interface OnLanguagesItemActionRequestedListener {
 
-        void onShoppingItemUpdateRequested(LanguagesListItem item);
+        void onItemUpdateRequested(LanguagesListItem item);
 
-        void onShoppingItemDeletionRequested(LanguagesListItem item);
+        void onItemDeletionRequested(LanguagesListItem item);
     }
 }

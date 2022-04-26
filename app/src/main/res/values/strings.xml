@@ -169,4 +169,14 @@
     <string name="total_price">Total price:</string>
     <string name="price_not_set">Price not set</string>
     <string name="count_formatted" translatable="false">x%1$d</string>
+
+    <!--Languages list-->
+    <string name="title_create_item">Add list item</string>
+    <string name="title_edit_item">Edit list item</string>
+    <string name="word_or_phrase">Word pr phrase</string>
+    <string name="translation">Translation(s) (optional)</string>
+    <string name="explanation">Explanation (optional)</string>
+    <string name="usage_example">Usage example(s) (optional)</string>
+    <string name="usage_example_images">Add usage example images</string>
+    <string name="specify_word_or_phrase_snackbar">Specify word or phrase</string>
 </resources>

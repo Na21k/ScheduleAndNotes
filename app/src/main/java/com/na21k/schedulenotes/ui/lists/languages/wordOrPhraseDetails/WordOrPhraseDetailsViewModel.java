@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.ui.lists.languages;
+package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails;
 
 import android.app.Application;
 
@@ -10,27 +10,34 @@ import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
 
-import java.util.List;
-
-public class LanguagesListViewModel extends AndroidViewModel {
+public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
 
     private final LanguagesListItemDao mLanguagesListItemDao;
-    private final LiveData<List<LanguagesListItem>> mAllItems;
+    private LiveData<LanguagesListItem> mItem;
+    private int mItemId;
 
-    public LanguagesListViewModel(@NonNull Application application) {
+    public WordOrPhraseDetailsViewModel(@NonNull Application application) {
         super(application);
 
         AppDatabase db = AppDatabase.getInstance(application);
         mLanguagesListItemDao = db.languagesListItemDao();
-        mAllItems = mLanguagesListItemDao.getAll();
     }
 
-    public LiveData<List<LanguagesListItem>> getAll() {
-        return mAllItems;
+    public LiveData<LanguagesListItem> getById(int id) {
+        if (mItemId != id) {
+            mItem = mLanguagesListItemDao.getById(id);
+            mItemId = id;
+        }
+
+        return mItem;
     }
 
     public void addNew(LanguagesListItem item) {
         new Thread(() -> mLanguagesListItemDao.insert(item)).start();
+    }
+
+    public void update(LanguagesListItem item) {
+        new Thread(() -> mLanguagesListItemDao.update(item)).start();
     }
 
     public void delete(LanguagesListItem item) {

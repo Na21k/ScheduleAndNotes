@@ -1,5 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.languages;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -10,9 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.databinding.ActivityLanguagesListBinding;
+import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
 
 public class LanguagesListActivity extends AppCompatActivity
         implements LanguagesListAdapter.OnLanguagesItemActionRequestedListener {
@@ -78,16 +81,23 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     private void addItem() {
-
+        Intent intent = new Intent(this, WordOrPhraseDetailsActivity.class);
+        startActivity(intent);
     }
 
     @Override
-    public void onShoppingItemUpdateRequested(LanguagesListItem item) {
+    public void onItemUpdateRequested(LanguagesListItem item) {
+        Intent intent = new Intent(this, WordOrPhraseDetailsActivity.class);
 
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY, item.getId());
+        intent.putExtras(bundle);
+
+        startActivity(intent);
     }
 
     @Override
-    public void onShoppingItemDeletionRequested(LanguagesListItem item) {
+    public void onItemDeletionRequested(LanguagesListItem item) {
         mViewModel.delete(item);
         Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar, 7000)
                 .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
