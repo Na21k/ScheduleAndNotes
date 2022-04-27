@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -17,7 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.na21k.schedulenotes.helpers.CategoriesHelper;
+import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
@@ -25,6 +24,7 @@ import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.ActivityCategoryDetailsBinding;
 import com.na21k.schedulenotes.databinding.ColorPickerItemBinding;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 
 import java.util.List;
 
@@ -87,8 +87,6 @@ public class CategoryDetailsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_save:
-                /*if (isEditing()) updateCategory();
-                else createCategory();*/
                 saveCategory();
                 break;
             case R.id.menu_cancel:
@@ -176,38 +174,10 @@ public class CategoryDetailsActivity extends AppCompatActivity
 
             finish();
         } else {
-            Toast.makeText(this, R.string.specify_category_name_toast,
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(mBinding.getRoot(), R.string.specify_category_name_snackbar, 3000)
+                    .show();
         }
     }
-
-    /*private void createCategory() {
-        Editable editable = mBinding.categoryNameInput.getText();
-
-        if (editable != null && !editable.toString().isEmpty()) {
-            Category category = new Category(0, editable.toString(), mSelectedColorSet);
-            mViewModel.createCategory(category);
-
-            finish();
-        } else {
-            Toast.makeText(this, R.string.specify_category_name_toast,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void updateCategory() {
-        Editable editable = mBinding.categoryNameInput.getText();
-
-        if (editable != null && !editable.toString().isEmpty()) {
-            Category category = new Category(0, editable.toString(), mSelectedColorSet);
-            mViewModel.updateCurrentCategory(category);
-
-            finish();
-        } else {
-            Toast.makeText(this, R.string.specify_category_name_toast,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
     private void deleteCategory() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -39,7 +39,7 @@
     <string name="category_name_input_hint">Назва категорії</string>
     <string name="title_create_category">Створити категорію</string>
     <string name="title_edit_category">Редагувати категорію</string>
-    <string name="specify_category_name_toast">Вкажіть назву категорії</string>
+    <string name="specify_category_name_snackbar">Вкажіть назву категорії</string>
     <string name="save">Зберегти</string>
     <string name="delete">Видалити</string>
     <string name="cancel">Скасувати</string>

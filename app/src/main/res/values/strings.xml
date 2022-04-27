@@ -70,7 +70,7 @@
     <string name="category_name_edit_text_title">Specify category name</string>
     <string name="color_selection_title">Pick a color set</string>
     <string name="color_selection_subtitle">Different color shades are used for light and dark mode</string>
-    <string name="specify_category_name_toast">Specify category name</string>
+    <string name="specify_category_name_snackbar">Specify category name</string>
     <string name="category_deleted_snackbar">The category has been deleted</string>
     <string name="category_deletion_alert_title">Delete category</string>
     <string name="category_deletion_alert_message">Are you sure you want to delete this category? All the schedule events and notes that belong to it will not anymore</string>
