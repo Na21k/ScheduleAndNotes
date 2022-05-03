@@ -17,7 +17,7 @@ public interface LanguagesListItemDao {
     int getCount();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(LanguagesListItem languagesListItem);
+    long insert(LanguagesListItem languagesListItem);
 
     @Query("select * from languages_list_items")
     LiveData<List<LanguagesListItem>> getAll();

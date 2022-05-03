@@ -20,10 +20,6 @@ public class LanguagesListItem extends SimpleListItem {
     @ColumnInfo(name = "usage_example_text")
     private String usageExampleText;
 
-    //TODO: add images support (create a converter) (usage example image
-    // (or maybe use an array of images)
-
-
     public LanguagesListItem(int id, @NotNull String text, String translation, String explanation,
                              String usageExampleText) {
         this.id = id;

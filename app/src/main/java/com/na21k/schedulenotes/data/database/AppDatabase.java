@@ -10,6 +10,8 @@ import androidx.room.TypeConverters;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
+import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
+import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImageDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItemDao;
@@ -28,8 +30,9 @@ import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 
 @Database(entities = {Category.class, Note.class, Event.class,
         UserDefinedList.class, UserDefinedListItem.class,
-        ShoppingListItem.class, MoviesListItem.class, MusicListItem.class, LanguagesListItem.class},
-        version = 1, exportSchema = false)
+        ShoppingListItem.class, MoviesListItem.class, MusicListItem.class,
+        LanguagesListItem.class, LanguagesListItemAttachedImage.class},
+        version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -51,6 +54,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract LanguagesListItemDao languagesListItemDao();
 
+    public abstract LanguagesListItemAttachedImageDao languagesListItemAttachedImageDao();
+
     private static volatile AppDatabase appDatabaseInstance;
 
     public static AppDatabase getInstance(final Context context) {
@@ -58,7 +63,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (appDatabaseInstance == null) {
                     appDatabaseInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "app_database").build();
+                            AppDatabase.class, "app_database")
+                            .fallbackToDestructiveMigrationFrom(1).build();
                 }
             }
         }

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_add_24.xml" value="0.1835" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_add_photo_alternate_192.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_baseline_file_download_24.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_cancel_24.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_categories_24.xml" value="0.1835" />
@@ -50,12 +51,16 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_shopping_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_user_defined_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/activity_word_or_phrase_details.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/attached_images_list_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/categories_list_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/color_picker_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/grouped_list_header_item.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/images_list.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/images_list_add_image_footer.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/images_list_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/languages_list_item.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/lists_fragment.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/layout/lists_list.xml" value="0.27291666666666664" />
@@ -85,6 +90,7 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/category_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/event_details_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/event_long_press_menu.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/image_long_press_menu.xml" value="0.1723684210526316" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/list_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/movie_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/note_details_menu.xml" value="0.27291666666666664" />

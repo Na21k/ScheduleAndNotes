@@ -179,4 +179,10 @@
     <string name="usage_example">Usage example(s) (optional)</string>
     <string name="usage_example_images">Add usage example images</string>
     <string name="specify_word_or_phrase_snackbar">Specify word or phrase</string>
+    <string name="attached_image_content_description">Attached image</string>
+    <string name="attach_image_content_description">Add image</string>
+    <string name="importing_image_toast">Importing image …</string>
+    <string name="importing_image_failed_toast">Couldn\'t import the selected image</string>
+    <string name="loading_attached_images_snackbar">Loading attached images. Please wait</string>
+    <string name="cant_attach_more_images_snackbar">Can\'t attach more than %1$d images</string>
 </resources>
