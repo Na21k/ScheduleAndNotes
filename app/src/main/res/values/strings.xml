@@ -186,4 +186,5 @@
     <string name="importing_image_failed_toast">Couldn\'t import the selected image</string>
     <string name="loading_attached_images_snackbar">Loading attached images. Please wait</string>
     <string name="cant_attach_more_images_snackbar">Can\'t attach more than %1$d images</string>
+    <string name="list_item_scheduled_for_deletion_snackbar">Scheduled for deletion …</string>
 </resources>

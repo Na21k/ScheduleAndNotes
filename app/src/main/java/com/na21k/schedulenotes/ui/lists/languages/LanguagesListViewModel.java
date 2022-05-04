@@ -26,7 +26,7 @@ public class LanguagesListViewModel extends AndroidViewModel {
         AppDatabase db = AppDatabase.getInstance(application);
         mLanguagesListItemDao = db.languagesListItemDao();
         mAllItems = mLanguagesListItemDao.getAll();
-        mAllAttachedImagesListItemIds = mLanguagesListItemDao.getAllAttachedImagesListItemIds();
+        mAllAttachedImagesListItemIds = db.languagesListItemAttachedImageDao().getAllListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getAll() {

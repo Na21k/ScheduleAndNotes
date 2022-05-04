@@ -20,6 +20,9 @@ public interface LanguagesListItemAttachedImageDao {
             "where I.languages_list_item_id = :listItemId")
     LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId);
 
+    @Query("select languages_list_item_id from languages_list_items_attached_images")
+    LiveData<List<Integer>> getAllListItemIds();
+
     @Update
     void update(LanguagesListItemAttachedImage attachedImage);
 

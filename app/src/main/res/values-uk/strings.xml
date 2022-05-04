@@ -148,4 +148,5 @@
     <string name="cant_attach_more_images_snackbar">Не можна прикріпити більше %1$d зображень</string>
     <string name="loading_attached_images_snackbar">Завантеження прикріплених зображень. Будь ласка зачекайте</string>
     <string name="transcription">Транскрипція (опціонально)</string>
+    <string name="list_item_scheduled_for_deletion_snackbar">У черзі на видалення …</string>
 </resources>

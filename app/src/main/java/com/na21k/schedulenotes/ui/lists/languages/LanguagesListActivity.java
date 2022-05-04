@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -143,10 +144,19 @@ public class LanguagesListActivity extends AppCompatActivity
         builder.setMessage(R.string.list_item_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            mViewModel.delete(item);
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+            Handler deletionHandler = new Handler();
+            Runnable deletionRunnable = () -> {
+                mViewModel.delete(item);
+                Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
+                        3000).show();
+            };
+            deletionHandler.postDelayed(deletionRunnable,
+                    Constants.UNDO_DELETE_TIMEOUT_MILLIS + 300);
+
+            Snackbar.make(mBinding.getRoot(), R.string.list_item_scheduled_for_deletion_snackbar,
                     Constants.UNDO_DELETE_TIMEOUT_MILLIS)
-                    .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
+                    .setAction(R.string.cancel, v -> deletionHandler.removeCallbacks(deletionRunnable))
+                    .show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });

@@ -128,6 +128,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
                 mBinding.translation.setText(item.getTranslation());
                 mBinding.explanation.setText(item.getExplanation());
                 mBinding.usageExample.setText(item.getUsageExampleText());
+            } else {
+                finish();
             }
         });
 
