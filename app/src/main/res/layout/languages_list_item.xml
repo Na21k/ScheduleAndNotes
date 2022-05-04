@@ -35,6 +35,16 @@
             tools:text="Word or phrase" />
 
         <TextView
+            android:id="@+id/languages_list_item_transcription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="16sp"
+            tools:text="transcription" />
+
+        <TextView
             android:id="@+id/languages_list_item_translation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

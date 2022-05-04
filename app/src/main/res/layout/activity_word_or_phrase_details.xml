@@ -35,6 +35,18 @@
                     android:textSize="34sp" />
 
                 <EditText
+                    android:id="@+id/transcription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@null"
+                    android:hint="@string/transcription"
+                    android:imeOptions="actionNext"
+                    android:importantForAutofill="no"
+                    android:inputType="textPhonetic"
+                    android:textSize="20sp" />
+
+                <EditText
                     android:id="@+id/translation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

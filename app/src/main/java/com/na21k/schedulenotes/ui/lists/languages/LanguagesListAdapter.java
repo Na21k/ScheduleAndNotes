@@ -78,6 +78,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         private void setData(LanguagesListItemModel item) {
             mItem = item;
             mBinding.languagesListItemWordOrPhrase.setText(item.getText());
+            mBinding.languagesListItemTranscription.setText(item.getTranscription());
             mBinding.languagesListItemTranslation.setText(item.getTranslation());
             mBinding.languagesListItemExplanation.setText(item.getExplanation());
             mBinding.languagesListItemAttachedImagesCount
@@ -87,10 +88,13 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         }
 
         private void updateViewsVisibility() {
+            boolean showTranscription = !mItem.getTranscription().isEmpty();
             boolean showTranslation = !mItem.getTranslation().isEmpty();
             boolean showExplanation = !mItem.getExplanation().isEmpty();
             boolean showAttachedImagesCount = mItem.getAttachedImagesCount() > 0;
 
+            mBinding.languagesListItemTranscription
+                    .setVisibility(showTranscription ? View.VISIBLE : View.GONE);
             mBinding.languagesListItemTranslation
                     .setVisibility(showTranslation ? View.VISIBLE : View.GONE);
             mBinding.languagesListItemExplanation

@@ -124,6 +124,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             if (item != null) {
                 mItem = item;
                 mBinding.wordOrPhrase.setText(item.getText());
+                mBinding.transcription.setText(item.getTranscription());
                 mBinding.translation.setText(item.getTranslation());
                 mBinding.explanation.setText(item.getExplanation());
                 mBinding.usageExample.setText(item.getUsageExampleText());
@@ -151,19 +152,21 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             return;
         }
 
+        String transcription = mBinding.transcription.getText().toString();
         String translation = mBinding.translation.getText().toString();
         String explanation = mBinding.explanation.getText().toString();
         String usageExample = mBinding.usageExample.getText().toString();
 
         if (isEditing() && mItem != null) {
             mItem.setText(wordOrPhrase);
+            mItem.setTranscription(transcription);
             mItem.setTranslation(translation);
             mItem.setExplanation(explanation);
             mItem.setUsageExampleText(usageExample);
 
             mViewModel.update(mItem);
         } else {
-            mViewModel.addNew(new LanguagesListItem(0, wordOrPhrase,
+            mViewModel.addNew(new LanguagesListItem(0, wordOrPhrase, transcription,
                     translation, explanation, usageExample));
         }
 
