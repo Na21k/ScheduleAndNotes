@@ -22,6 +22,9 @@ public interface LanguagesListItemDao {
     @Query("select * from languages_list_items")
     LiveData<List<LanguagesListItem>> getAll();
 
+    @Query("select languages_list_item_id from languages_list_items_attached_images")
+    LiveData<List<Integer>> getAllAttachedImagesListItemIds();
+
     @Query("select * from languages_list_items I where I.id = :id")
     LiveData<LanguagesListItem> getById(int id);
 

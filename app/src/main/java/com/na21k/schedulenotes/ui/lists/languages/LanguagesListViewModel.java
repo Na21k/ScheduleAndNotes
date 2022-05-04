@@ -16,6 +16,9 @@ public class LanguagesListViewModel extends AndroidViewModel {
 
     private final LanguagesListItemDao mLanguagesListItemDao;
     private final LiveData<List<LanguagesListItem>> mAllItems;
+    private final LiveData<List<Integer>> mAllAttachedImagesListItemIds;
+    private List<LanguagesListItem> mAllItemsCache;
+    private List<Integer> mAttachedImagesListItemIdsCache;
 
     public LanguagesListViewModel(@NonNull Application application) {
         super(application);
@@ -23,6 +26,7 @@ public class LanguagesListViewModel extends AndroidViewModel {
         AppDatabase db = AppDatabase.getInstance(application);
         mLanguagesListItemDao = db.languagesListItemDao();
         mAllItems = mLanguagesListItemDao.getAll();
+        mAllAttachedImagesListItemIds = mLanguagesListItemDao.getAllAttachedImagesListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getAll() {
@@ -35,5 +39,25 @@ public class LanguagesListViewModel extends AndroidViewModel {
 
     public void delete(LanguagesListItem item) {
         new Thread(() -> mLanguagesListItemDao.delete(item)).start();
+    }
+
+    public LiveData<List<Integer>> getAllAttachedImagesListItemIds() {
+        return mAllAttachedImagesListItemIds;
+    }
+
+    public List<LanguagesListItem> getAllItemsCache() {
+        return mAllItemsCache;
+    }
+
+    public void setAllItemsCache(List<LanguagesListItem> allItemsCache) {
+        mAllItemsCache = allItemsCache;
+    }
+
+    public List<Integer> getAttachedImagesListItemIdsCache() {
+        return mAttachedImagesListItemIdsCache;
+    }
+
+    public void setAttachedImagesListItemIdsCache(List<Integer> attachedImagesListItemIdsCache) {
+        mAttachedImagesListItemIdsCache = attachedImagesListItemIdsCache;
     }
 }

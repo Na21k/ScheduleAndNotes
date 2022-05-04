@@ -2,13 +2,14 @@ package com.na21k.schedulenotes.ui.lists.languages;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
+import com.na21k.schedulenotes.data.models.LanguagesListItemModel;
 import com.na21k.schedulenotes.databinding.LanguagesListItemBinding;
 import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdapter.WordViewHolder> {
 
     private final OnLanguagesItemActionRequestedListener mOnLanguagesItemActionRequestedListener;
-    private List<LanguagesListItem> mItems;
+    private List<LanguagesListItemModel> mItems;
 
     public LanguagesListAdapter(OnLanguagesItemActionRequestedListener onLanguagesItemActionRequestedListener) {
         mOnLanguagesItemActionRequestedListener = onLanguagesItemActionRequestedListener;
@@ -36,7 +37,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
 
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
-        LanguagesListItem item = mItems.get(position);
+        LanguagesListItemModel item = mItems.get(position);
         holder.setData(item);
     }
 
@@ -45,7 +46,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         return mItems != null ? mItems.size() : 0;
     }
 
-    public void setData(List<LanguagesListItem> items) {
+    public void setData(List<LanguagesListItemModel> items) {
         mItems = items;
         notifyDataSetChanged();
     }
@@ -53,7 +54,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     public class WordViewHolder extends BaseViewHolder {
 
         private final LanguagesListItemBinding mBinding;
-        private LanguagesListItem mItem;
+        private LanguagesListItemModel mItem;
 
         public WordViewHolder(LanguagesListItemBinding binding) {
             super(binding.getRoot(), R.menu.simple_item_long_press_menu, 0);
@@ -74,19 +75,35 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             }
         }
 
-        private void setData(LanguagesListItem item) {
+        private void setData(LanguagesListItemModel item) {
             mItem = item;
             mBinding.languagesListItemWordOrPhrase.setText(item.getText());
             mBinding.languagesListItemTranslation.setText(item.getTranslation());
             mBinding.languagesListItemExplanation.setText(item.getExplanation());
-            mBinding.languagesListItemAttachedImagesCount.setText("TODO");
+            mBinding.languagesListItemAttachedImagesCount
+                    .setText(String.valueOf(item.getAttachedImagesCount()));
+
+            updateViewsVisibility();
+        }
+
+        private void updateViewsVisibility() {
+            boolean showTranslation = !mItem.getTranslation().isEmpty();
+            boolean showExplanation = !mItem.getExplanation().isEmpty();
+            boolean showAttachedImagesCount = mItem.getAttachedImagesCount() > 0;
+
+            mBinding.languagesListItemTranslation
+                    .setVisibility(showTranslation ? View.VISIBLE : View.GONE);
+            mBinding.languagesListItemExplanation
+                    .setVisibility(showExplanation ? View.VISIBLE : View.GONE);
+            mBinding.languagesListItemAttachedImagesCount
+                    .setVisibility(showAttachedImagesCount ? View.VISIBLE : View.GONE);
         }
     }
 
     public interface OnLanguagesItemActionRequestedListener {
 
-        void onItemUpdateRequested(LanguagesListItem item);
+        void onItemUpdateRequested(LanguagesListItemModel item);
 
-        void onItemDeletionRequested(LanguagesListItem item);
+        void onItemDeletionRequested(LanguagesListItemModel item);
     }
 }

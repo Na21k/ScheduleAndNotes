@@ -16,8 +16,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
+import com.na21k.schedulenotes.data.models.LanguagesListItemModel;
 import com.na21k.schedulenotes.databinding.ActivityLanguagesListBinding;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class LanguagesListActivity extends AppCompatActivity
         implements LanguagesListAdapter.OnLanguagesItemActionRequestedListener {
@@ -56,11 +61,42 @@ public class LanguagesListActivity extends AppCompatActivity
         LanguagesListAdapter adapter = new LanguagesListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        observeItems(adapter);
+        setObservers(adapter);
     }
 
-    private void observeItems(LanguagesListAdapter adapter) {
-        mViewModel.getAll().observe(this, adapter::setData);
+    private void setObservers(LanguagesListAdapter adapter) {
+        mViewModel.getAll().observe(this, items -> {
+            mViewModel.setAllItemsCache(items);
+            updateListIfEnoughData(adapter);
+        });
+        mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
+            mViewModel.setAttachedImagesListItemIdsCache(integers);
+            updateListIfEnoughData(adapter);
+        });
+    }
+
+    private void updateListIfEnoughData(LanguagesListAdapter adapter) {
+        List<LanguagesListItem> itemsCache = mViewModel.getAllItemsCache();
+        List<Integer> attachedImagesListItemIdsCache = mViewModel.getAttachedImagesListItemIdsCache();
+
+        boolean isEnoughData = itemsCache != null && attachedImagesListItemIdsCache != null;
+
+        if (!isEnoughData) {
+            return;
+        }
+
+        List<LanguagesListItemModel> models = new ArrayList<>();
+
+        for (LanguagesListItem item : itemsCache) {
+            int itemId = item.getId();
+            int attachedImagesCount = attachedImagesListItemIdsCache.stream()
+                    .filter(integer -> integer == itemId).mapToInt(value -> 1).sum();
+
+            models.add(new LanguagesListItemModel(item, attachedImagesCount));
+        }
+
+        models.sort(Comparator.comparing(LanguagesListItemModel::getText));
+        adapter.setData(models);
     }
 
     private void setListeners() {
@@ -88,7 +124,7 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemUpdateRequested(LanguagesListItem item) {
+    public void onItemUpdateRequested(LanguagesListItemModel item) {
         Intent intent = new Intent(this, WordOrPhraseDetailsActivity.class);
 
         Bundle bundle = new Bundle();
@@ -100,7 +136,7 @@ public class LanguagesListActivity extends AppCompatActivity
 
     @SuppressLint("WrongConstant")
     @Override
-    public void onItemDeletionRequested(LanguagesListItem item) {
+    public void onItemDeletionRequested(LanguagesListItemModel item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_delete_24);
         builder.setTitle(R.string.list_item_deletion_alert_title);
