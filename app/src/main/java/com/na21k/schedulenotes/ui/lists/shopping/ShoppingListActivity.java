@@ -30,6 +30,9 @@ import java.util.List;
 public class ShoppingListActivity extends AppCompatActivity
         implements ShoppingListAdapter.OnShoppingItemActionRequestedListener {
 
+    private static final int mLandscapeColumnCount = 2;
+    private static final int mPortraitColumnCountTablet = 2;
+    private static final int mLandscapeColumnCountTablet = 3;
     private ShoppingListViewModel mViewModel;
     private ActivityShoppingListBinding mBinding;
 
@@ -96,7 +99,9 @@ public class ShoppingListActivity extends AppCompatActivity
         RecyclerView recyclerView = mBinding.shoppingListRecyclerView;
         ShoppingListAdapter adapter = new ShoppingListAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
+                mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
+        recyclerView.setLayoutManager(layoutManager);
         observeItems(adapter);
     }
 

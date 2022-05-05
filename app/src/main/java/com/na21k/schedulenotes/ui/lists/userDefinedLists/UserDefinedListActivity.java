@@ -25,6 +25,9 @@ import java.util.Comparator;
 public class UserDefinedListActivity extends AppCompatActivity
         implements UserDefinedListAdapter.OnItemActionRequestedListener {
 
+    private static final int mLandscapeColumnCount = 2;
+    private static final int mPortraitColumnCountTablet = 2;
+    private static final int mLandscapeColumnCountTablet = 3;
     private UserDefinedListViewModel mViewModel;
     private ActivityUserDefinedListBinding mBinding;
 
@@ -59,7 +62,9 @@ public class UserDefinedListActivity extends AppCompatActivity
         RecyclerView recyclerView = mBinding.includedList.simpleList;
         UserDefinedListAdapter adapter = new UserDefinedListAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
+                mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
+        recyclerView.setLayoutManager(layoutManager);
         observeItems(adapter);
     }
 

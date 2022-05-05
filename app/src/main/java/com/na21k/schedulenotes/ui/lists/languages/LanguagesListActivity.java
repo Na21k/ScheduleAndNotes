@@ -19,6 +19,7 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.models.LanguagesListItemModel;
 import com.na21k.schedulenotes.databinding.ActivityLanguagesListBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ import java.util.List;
 public class LanguagesListActivity extends AppCompatActivity
         implements LanguagesListAdapter.OnLanguagesItemActionRequestedListener {
 
+    private static final int mLandscapeColumnCount = 2;
+    private static final int mPortraitColumnCountTablet = 2;
+    private static final int mLandscapeColumnCountTablet = 3;
     private LanguagesListViewModel mViewModel;
     private ActivityLanguagesListBinding mBinding;
 
@@ -61,7 +65,9 @@ public class LanguagesListActivity extends AppCompatActivity
         RecyclerView recyclerView = mBinding.wordsAndPhrasesListRecyclerView;
         LanguagesListAdapter adapter = new LanguagesListAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
+                mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
+        recyclerView.setLayoutManager(layoutManager);
         setObservers(adapter);
     }
 

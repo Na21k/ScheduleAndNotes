@@ -25,6 +25,9 @@ import java.util.Comparator;
 public class MoviesListActivity extends AppCompatActivity
         implements MoviesListAdapter.OnMovieActionRequestedListener {
 
+    private static final int mLandscapeColumnCount = 2;
+    private static final int mPortraitColumnCountTablet = 2;
+    private static final int mLandscapeColumnCountTablet = 3;
     private MoviesListViewModel mViewModel;
     private ActivityMoviesListBinding mBinding;
 
@@ -58,7 +61,9 @@ public class MoviesListActivity extends AppCompatActivity
         RecyclerView recyclerView = mBinding.includedList.simpleList;
         MoviesListAdapter adapter = new MoviesListAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
+                mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
+        recyclerView.setLayoutManager(layoutManager);
         observeMovies(adapter);
     }
 

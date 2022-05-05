@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.ui.categories;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,29 +60,8 @@ public class CategoriesFragment extends Fragment
         CategoriesListAdapter adapter =
                 new CategoriesListAdapter(UiHelper.isInDarkMode(this), this);
         recyclerView.setAdapter(adapter);
-
-        int orientation = getResources().getConfiguration().orientation;
-        boolean isTablet = UiHelper.isTablet(getResources());
-
-        if (!isTablet && orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            return adapter;
-        }
-
-        int columnCount;
-
-        if (isTablet) {
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                columnCount = mLandscapeColumnCountTablet;
-            } else {
-                columnCount = mPortraitColumnCountTablet;
-            }
-        } else {
-            columnCount = mLandscapeColumnCount;
-        }
-
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columnCount);
+        LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(requireContext(),
+                mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
         recyclerView.setLayoutManager(layoutManager);
 
         return adapter;

@@ -5,10 +5,14 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.na21k.schedulenotes.R;
 
@@ -39,5 +43,62 @@ public class UiHelper {
         });
 
         builder.show();
+    }
+
+    @NonNull
+    public static LinearLayoutManager getRecyclerViewLayoutManager(@NonNull Context context,
+                                                                   int landscapeColumnCountTablet,
+                                                                   int portraitColumnCountTablet,
+                                                                   int landscapeColumnCount) {
+        return getRecyclerViewLayoutManager(context, landscapeColumnCountTablet,
+                portraitColumnCountTablet, landscapeColumnCount,
+                null, null);
+    }
+
+    @NonNull
+    public static LinearLayoutManager getRecyclerViewLayoutManager(@NonNull Context context,
+                                                                   int landscapeColumnCountTablet,
+                                                                   int portraitColumnCountTablet,
+                                                                   int landscapeColumnCount,
+                                                                   @Nullable Integer headerViewType,
+                                                                   @Nullable Adapter viewTypeSupplier) {
+        Resources resources = context.getResources();
+        int orientation = resources.getConfiguration().orientation;
+        boolean isTablet = isTablet(resources);
+
+        if (!isTablet && orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            return new LinearLayoutManager(context);
+        }
+
+        int columnCount;
+
+        if (isTablet) {
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                columnCount = landscapeColumnCountTablet;
+            } else {
+                columnCount = portraitColumnCountTablet;
+            }
+        } else {
+            columnCount = landscapeColumnCount;
+        }
+
+        GridLayoutManager layoutManager = new GridLayoutManager(context, columnCount);
+
+        if (headerViewType != null && viewTypeSupplier != null) {
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    int viewType = viewTypeSupplier.getItemViewType(position);
+
+                    if (viewType == headerViewType) {
+                        return columnCount;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+
+        return layoutManager;
     }
 }
