@@ -34,9 +34,9 @@ public class CategoriesViewModel extends AndroidViewModel {
         return mAllCategories;
     }
 
-    /*public LiveData<Category> getById(int id) {
-        return mCategoryDao.getById(id);
-    }*/
+    public LiveData<List<Category>> getCategoriesSearch(String searchQuery) {
+        return mCategoryDao.search(searchQuery);
+    }
 
     public LiveData<List<Category>> search(String search) {
         return mCategoryDao.search(search);
@@ -45,8 +45,4 @@ public class CategoriesViewModel extends AndroidViewModel {
     public void delete(Category category) {
         new Thread(() -> mCategoryDao.delete(category)).start();
     }
-
-    /*public void deleteAll() {
-        new Thread(mCategoryDao::deleteAll).start();
-    }*/
 }

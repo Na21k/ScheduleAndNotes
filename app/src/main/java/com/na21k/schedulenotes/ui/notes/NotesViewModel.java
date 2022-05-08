@@ -34,6 +34,10 @@ public class NotesViewModel extends AndroidViewModel {
         return mAllNotes;
     }
 
+    public LiveData<List<Note>> getNotesSearch(String searchQuery) {
+        return mNoteDao.search(searchQuery);
+    }
+
     public LiveData<List<Category>> getAllCategories() {
         return mAllCategories;
     }

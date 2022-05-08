@@ -4,10 +4,16 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +27,7 @@ import com.na21k.schedulenotes.databinding.UserDefinedListItemInfoAlertViewBindi
 import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class UserDefinedListActivity extends AppCompatActivity
         implements UserDefinedListAdapter.OnItemActionRequestedListener {
@@ -28,8 +35,17 @@ public class UserDefinedListActivity extends AppCompatActivity
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<UserDefinedListItem>> mItemsObserver = new Observer<List<UserDefinedListItem>>() {
+        @Override
+        public void onChanged(List<UserDefinedListItem> userDefinedListItems) {
+            userDefinedListItems.sort(Comparator.comparing(UserDefinedListItem::getText));
+            mListAdapter.setItems(userDefinedListItems);
+        }
+    };
     private UserDefinedListViewModel mViewModel;
     private ActivityUserDefinedListBinding mBinding;
+    private UserDefinedListAdapter mListAdapter;
+    private LiveData<List<UserDefinedListItem>> mLastLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +69,43 @@ public class UserDefinedListActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.simple_list_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mBinding.itemAdditionLinearLayout.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mBinding.itemAdditionLinearLayout.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceItemsObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
@@ -60,19 +113,24 @@ public class UserDefinedListActivity extends AppCompatActivity
 
     private void setUpList() {
         RecyclerView recyclerView = mBinding.includedList.simpleList;
-        UserDefinedListAdapter adapter = new UserDefinedListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mListAdapter = new UserDefinedListAdapter(this);
+        recyclerView.setAdapter(mListAdapter);
         LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
                 mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
         recyclerView.setLayoutManager(layoutManager);
-        observeItems(adapter);
+        observeItems();
     }
 
-    private void observeItems(UserDefinedListAdapter adapter) {
-        mViewModel.getItemsByListId(getListId()).observe(this, userDefinedListItems -> {
-            userDefinedListItems.sort(Comparator.comparing(UserDefinedListItem::getText));
-            adapter.setItems(userDefinedListItems);
-        });
+    private void observeItems() {
+        mLastLiveData = mViewModel.getItemsByListId(getListId());
+        mLastLiveData.observe(this, mItemsObserver);
+    }
+
+    private void replaceItemsObserverAccordingToSearchQuery(String query) {
+        mLastLiveData.removeObservers(this);
+
+        mLastLiveData = mViewModel.getItemsSearch(getListId(), query);
+        mLastLiveData.observe(this, mItemsObserver);
     }
 
     private void setListeners() {

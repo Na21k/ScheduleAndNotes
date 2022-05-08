@@ -34,6 +34,10 @@ public class ScheduleViewModel extends AndroidViewModel {
         return mEventDao.getByDate(hasStartedBefore, hasNotEndedBy);
     }
 
+    public LiveData<List<Event>> getEventsSearch(String searchQuery) {
+        return mEventDao.search(searchQuery);
+    }
+
     public LiveData<List<Category>> getAllCategories() {
         return mAllCategories;
     }

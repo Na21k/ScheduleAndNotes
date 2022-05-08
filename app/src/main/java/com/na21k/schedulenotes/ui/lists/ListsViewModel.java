@@ -34,6 +34,10 @@ public class ListsViewModel extends AndroidViewModel {
         return mAllLists;
     }
 
+    public LiveData<List<UserDefinedList>> getListsSearch(String searchQuery) {
+        return mListDao.search(searchQuery);
+    }
+
     public LiveData<List<UserDefinedListItem>> getAllListItems() {
         return mAllListItems;
     }
@@ -42,8 +46,10 @@ public class ListsViewModel extends AndroidViewModel {
         new Thread(() -> mListDao.insert(list)).start();
     }
 
-    public void update(UserDefinedList list) {
-        new Thread(() -> mListDao.update(list)).start();
+    public void update(UserDefinedList list, Thread.UncaughtExceptionHandler exceptionHandler) {
+        Thread t = new Thread(() -> mListDao.update(list));
+        t.setUncaughtExceptionHandler(exceptionHandler);
+        t.start();
     }
 
     public void delete(UserDefinedList list) {

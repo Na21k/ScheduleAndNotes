@@ -33,6 +33,10 @@ public class LanguagesListViewModel extends AndroidViewModel {
         return mAllItems;
     }
 
+    public LiveData<List<LanguagesListItem>> getItemsSearch(String searchQuery) {
+        return mLanguagesListItemDao.search(searchQuery);
+    }
+
     public void addNew(LanguagesListItem item) {
         new Thread(() -> mLanguagesListItemDao.insert(item)).start();
     }

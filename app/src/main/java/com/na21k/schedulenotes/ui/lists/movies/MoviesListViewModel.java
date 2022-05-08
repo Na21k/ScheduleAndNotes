@@ -29,6 +29,10 @@ public class MoviesListViewModel extends AndroidViewModel {
         return mAllMovies;
     }
 
+    public LiveData<List<MoviesListItem>> getItemsSearch(String stringQuery) {
+        return mMoviesListItemDao.search(stringQuery);
+    }
+
     public void addNew(MoviesListItem moviesListItem) {
         new Thread(() -> mMoviesListItemDao.insert(moviesListItem)).start();
     }

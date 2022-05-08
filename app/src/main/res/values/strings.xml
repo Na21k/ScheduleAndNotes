@@ -6,6 +6,7 @@
     <string name="keep">Keep</string>
     <string name="rename">Rename</string>
     <string name="undo">Undo</string>
+    <string name="search">Search</string>
     <string name="oops_aletr_title">Oops …</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
@@ -131,6 +132,7 @@
     <string name="list_renaming_empty_input_alert_message">Can\'t rename with empty input. Try again</string>
     <string name="user_defined_list_name_input_hint">List name</string>
     <string name="list_context_menu_title">List actions</string>
+    <string name="such_list_already_exists_alert_message">Such a list already exists. Try another name</string>
 
     <!--Lists shared-->
     <string name="list_item_deleted_snackbar">The item has been deleted</string>

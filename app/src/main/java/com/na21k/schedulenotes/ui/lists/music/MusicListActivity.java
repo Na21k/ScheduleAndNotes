@@ -4,10 +4,15 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +26,7 @@ import com.na21k.schedulenotes.databinding.MusicInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class MusicListActivity extends AppCompatActivity
         implements MusicListAdapter.OnMusicActionRequestedListener {
@@ -28,8 +34,18 @@ public class MusicListActivity extends AppCompatActivity
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<MusicListItem>> mItemsObserver = new Observer<List<MusicListItem>>() {
+        @Override
+        public void onChanged(List<MusicListItem> musicListItems) {
+            musicListItems.sort(Comparator.comparing(MusicListItem::getText));
+            mListAdapter.setMusic(musicListItems);
+        }
+    };
     private MusicListViewModel mViewModel;
     private ActivityMusicListBinding mBinding;
+    private MusicListAdapter mListAdapter;
+    private LiveData<List<MusicListItem>> mLastSearchLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +68,45 @@ public class MusicListActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.simple_list_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addMusicFab.hide();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addMusicFab.show();
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceItemsObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
@@ -59,19 +114,27 @@ public class MusicListActivity extends AppCompatActivity
 
     private void setUpList() {
         RecyclerView recyclerView = mBinding.includedList.simpleList;
-        MusicListAdapter adapter = new MusicListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mListAdapter = new MusicListAdapter(this);
+        recyclerView.setAdapter(mListAdapter);
         LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
                 mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
         recyclerView.setLayoutManager(layoutManager);
-        observeMusic(adapter);
+        observeMusic();
     }
 
-    private void observeMusic(MusicListAdapter adapter) {
-        mViewModel.getAll().observe(this, musicListItems -> {
-            musicListItems.sort(Comparator.comparing(MusicListItem::getText));
-            adapter.setMusic(musicListItems);
-        });
+    private void observeMusic() {
+        mViewModel.getAll().observe(this, mItemsObserver);
+    }
+
+    private void replaceItemsObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAll().removeObservers(this);
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(this);
+        }
+
+        mLastSearchLiveData = mViewModel.getItemsSearch(query);
+        mLastSearchLiveData.observe(this, mItemsObserver);
     }
 
     private void setListeners() {
@@ -79,6 +142,10 @@ public class MusicListActivity extends AppCompatActivity
 
         mBinding.includedList.simpleList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addMusicFab.extend();
                     } else {

@@ -29,6 +29,10 @@ public class ShoppingListViewModel extends AndroidViewModel {
         return mAllItems;
     }
 
+    public LiveData<List<ShoppingListItem>> getItemsSearch(String searchQuery) {
+        return mShoppingListItemDao.search(searchQuery);
+    }
+
     public void addNew(ShoppingListItem item) {
         new Thread(() -> mShoppingListItemDao.insert(item)).start();
     }

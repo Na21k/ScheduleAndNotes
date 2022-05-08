@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/total_price_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/page_margin"
@@ -58,64 +59,72 @@
             tools:listitem="@layout/shopping_list_item" />
 
         <LinearLayout
-            android:id="@+id/item_addition_linear_layout"
+            android:id="@+id/item_addition_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/page_margin"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/add_item_edit_text"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/item_addition_linear_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:drawableStart="@drawable/ic_add_24"
-                android:hint="@string/add_list_item_input_hint"
-                android:imeOptions="actionNext"
-                android:importantForAutofill="no"
-                android:inputType="textCapSentences" />
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/add_item_count_edit_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="0.37"
-                android:background="@null"
-                android:drawableStart="@drawable/ic_123_24"
-                android:hint="@string/shopping_list_item_count_input_hint"
-                android:imeOptions="actionNext"
-                android:importantForAutofill="no"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                android:text="1"
-                tools:ignore="HardcodedText" />
+                <EditText
+                    android:id="@+id/add_item_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableStart="@drawable/ic_add_24"
+                    android:hint="@string/add_list_item_input_hint"
+                    android:imeOptions="actionNext"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences" />
 
-            <EditText
-                android:id="@+id/add_item_price_edit_text"
-                android:layout_width="0dp"
+                <EditText
+                    android:id="@+id/add_item_count_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="0.37"
+                    android:background="@null"
+                    android:drawableStart="@drawable/ic_123_24"
+                    android:hint="@string/shopping_list_item_count_input_hint"
+                    android:imeOptions="actionNext"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:text="1"
+                    tools:ignore="HardcodedText" />
+
+                <EditText
+                    android:id="@+id/add_item_price_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="0.37"
+                    android:background="@null"
+                    android:drawableStart="@drawable/ic_money_dollar_sign_24"
+                    android:hint="@string/shopping_list_item_price_input_hint"
+                    android:imeOptions="actionSend"
+                    android:importantForAutofill="no"
+                    android:inputType="number|numberDecimal" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="0.37"
-                android:background="@null"
-                android:drawableStart="@drawable/ic_money_dollar_sign_24"
-                android:hint="@string/shopping_list_item_price_input_hint"
-                android:imeOptions="actionSend"
-                android:importantForAutofill="no"
-                android:inputType="number|numberDecimal" />
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginBottom="8dp"
+                android:text="@string/price_is_optional_hint"
+                android:textSize="11sp" />
 
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="@dimen/page_margin"
-            android:layout_marginBottom="8dp"
-            android:text="@string/price_is_optional_hint"
-            android:textSize="11sp" />
 
     </LinearLayout>
 

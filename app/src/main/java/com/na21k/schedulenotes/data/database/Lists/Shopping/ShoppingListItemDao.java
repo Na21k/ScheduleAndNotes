@@ -22,6 +22,9 @@ public interface ShoppingListItemDao {
     @Query("select * from shopping_list_items")
     LiveData<List<ShoppingListItem>> getAll();
 
+    @Query("select * from shopping_list_items I where I.text like '%'||:search||'%'")
+    LiveData<List<ShoppingListItem>> search(String search);
+
     @Query("select * from shopping_list_items I where I.id = :id")
     LiveData<ShoppingListItem> getById(int id);
 

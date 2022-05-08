@@ -12,7 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +36,18 @@ public class ShoppingListActivity extends AppCompatActivity
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<ShoppingListItem>> mItemsObserver = new Observer<List<ShoppingListItem>>() {
+        @Override
+        public void onChanged(List<ShoppingListItem> goods) {
+            mListAdapter.setGoods(goods);
+            updateCheckedPrice(goods);
+            updateTotalPrice(goods);
+        }
+    };
     private ShoppingListViewModel mViewModel;
     private ActivityShoppingListBinding mBinding;
+    private ShoppingListAdapter mListAdapter;
+    private LiveData<List<ShoppingListItem>> mLastSearchLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +70,40 @@ public class ShoppingListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.shopping_list_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                mBinding.totalPriceArea.setVisibility(View.GONE);
+                mBinding.itemAdditionArea.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mBinding.totalPriceArea.setVisibility(View.VISIBLE);
+                mBinding.itemAdditionArea.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceItemsObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -76,6 +115,12 @@ public class ShoppingListActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     private void clearList() {
@@ -97,20 +142,27 @@ public class ShoppingListActivity extends AppCompatActivity
 
     private void setUpList() {
         RecyclerView recyclerView = mBinding.shoppingListRecyclerView;
-        ShoppingListAdapter adapter = new ShoppingListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mListAdapter = new ShoppingListAdapter(this);
+        recyclerView.setAdapter(mListAdapter);
         LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
                 mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
         recyclerView.setLayoutManager(layoutManager);
-        observeItems(adapter);
+        observeItems();
     }
 
-    private void observeItems(ShoppingListAdapter adapter) {
-        mViewModel.getAll().observe(this, goods -> {
-            adapter.setGoods(goods);
-            updateCheckedPrice(goods);
-            updateTotalPrice(goods);
-        });
+    private void observeItems() {
+        mViewModel.getAll().observe(this, mItemsObserver);
+    }
+
+    private void replaceItemsObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAll().removeObservers(this);
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(this);
+        }
+
+        mLastSearchLiveData = mViewModel.getItemsSearch(query);
+        mLastSearchLiveData.observe(this, mItemsObserver);
     }
 
     private void setListeners() {

@@ -27,6 +27,10 @@ public class UserDefinedListViewModel extends AndroidViewModel {
         return mUserDefinedListItemDao.getByListId(listId);
     }
 
+    public LiveData<List<UserDefinedListItem>> getItemsSearch(int listId, String searchQuery) {
+        return mUserDefinedListItemDao.searchInList(listId, searchQuery);
+    }
+
     public void addNew(UserDefinedListItem userDefinedListItem) {
         new Thread(() -> mUserDefinedListItemDao.insert(userDefinedListItem)).start();
     }

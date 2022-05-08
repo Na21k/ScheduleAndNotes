@@ -13,6 +13,7 @@
         android:baselineAligned="false">
 
         <LinearLayout
+            android:id="@+id/default_lists_area"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"

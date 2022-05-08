@@ -149,4 +149,6 @@
     <string name="loading_attached_images_snackbar">Завантеження прикріплених зображень. Будь ласка зачекайте</string>
     <string name="transcription">Транскрипція (опціонально)</string>
     <string name="list_item_scheduled_for_deletion_snackbar">У черзі на видалення …</string>
+    <string name="search">Пошук</string>
+    <string name="such_list_already_exists_alert_message">Такий список уже існує. Спробуйте іншу назву</string>
 </resources>

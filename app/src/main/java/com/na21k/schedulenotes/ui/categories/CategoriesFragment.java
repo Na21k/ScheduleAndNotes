@@ -4,13 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +30,7 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class CategoriesFragment extends Fragment
         implements CategoriesListAdapter.OnCategoryActionRequestedListener {
@@ -31,12 +38,23 @@ public class CategoriesFragment extends Fragment
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<Category>> mCategoriesObserver = new Observer<List<Category>>() {
+        @Override
+        public void onChanged(List<Category> categories) {
+            categories.sort(Comparator.comparing(Category::getTitle));
+            mListAdapter.setCategories(categories);
+        }
+    };
     private CategoriesViewModel mViewModel;
     private CategoriesFragmentBinding mBinding;
+    private CategoriesListAdapter mListAdapter;
+    private LiveData<List<Category>> mLastSearchLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
     }
 
@@ -50,9 +68,48 @@ public class CategoriesFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        CategoriesListAdapter adapter = setUpRecyclerView();
-        observeCategories(adapter);
+        mListAdapter = setUpRecyclerView();
+        observeCategories();
         setListeners();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.categories_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addCategoryFab.hide();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addCategoryFab.show();
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceCategoriesObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private CategoriesListAdapter setUpRecyclerView() {
@@ -67,11 +124,19 @@ public class CategoriesFragment extends Fragment
         return adapter;
     }
 
-    private void observeCategories(CategoriesListAdapter adapter) {
-        mViewModel.getAll().observe(getViewLifecycleOwner(), categories -> {
-            categories.sort(Comparator.comparing(Category::getTitle));
-            adapter.setCategories(categories);
-        });
+    private void observeCategories() {
+        mViewModel.getAll().observe(getViewLifecycleOwner(), mCategoriesObserver);
+    }
+
+    private void replaceCategoriesObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAll().removeObservers(getViewLifecycleOwner());
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(getViewLifecycleOwner());
+        }
+
+        mLastSearchLiveData = mViewModel.getCategoriesSearch(query);
+        mLastSearchLiveData.observe(getViewLifecycleOwner(), mCategoriesObserver);
     }
 
     private void setListeners() {
@@ -79,6 +144,10 @@ public class CategoriesFragment extends Fragment
 
         mBinding.includedList.categoriesList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addCategoryFab.extend();
                     } else {

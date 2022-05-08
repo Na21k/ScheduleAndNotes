@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,6 +17,7 @@ import android.widget.DatePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -44,10 +48,12 @@ public class ScheduleFragment extends Fragment
     private ScheduleFragmentBinding mBinding;
     private EventsListAdapter mAdapter;
     private LiveData<List<Event>> mScheduleListLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
     }
 
@@ -64,6 +70,52 @@ public class ScheduleFragment extends Fragment
         mAdapter = setUpRecyclerView();
         setObservers();
         setListeners();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.schedule_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addEventFab.hide();
+                mBinding.dateSelectionArea.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addEventFab.show();
+                mBinding.dateSelectionArea.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    jumpToDate(mViewModel.getSelectedDate());
+                } else {
+                    replaceEventsObserverAccordingToSearchQuery(newText);
+                }
+
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private EventsListAdapter setUpRecyclerView() {
@@ -89,6 +141,13 @@ public class ScheduleFragment extends Fragment
         } else {
             jumpToToday(true);
         }
+    }
+
+    private void replaceEventsObserverAccordingToSearchQuery(String query) {
+        unsubscribeFromLiveData();
+
+        mScheduleListLiveData = mViewModel.getEventsSearch(query);
+        mScheduleListLiveData.observe(getViewLifecycleOwner(), this);
     }
 
     private void updateListIfEnoughData() {
@@ -192,6 +251,10 @@ public class ScheduleFragment extends Fragment
 
         mBinding.includedList.scheduleList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addEventFab.extend();
                     } else {

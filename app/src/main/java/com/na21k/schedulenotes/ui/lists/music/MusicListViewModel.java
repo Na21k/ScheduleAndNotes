@@ -29,6 +29,10 @@ public class MusicListViewModel extends AndroidViewModel {
         return mAllMusic;
     }
 
+    public LiveData<List<MusicListItem>> getItemsSearch(String searchQuery) {
+        return mMusicListItemDao.search(searchQuery);
+    }
+
     public void addNew(MusicListItem musicListItem) {
         new Thread(() -> mMusicListItemDao.insert(musicListItem)).start();
     }

@@ -22,6 +22,9 @@ public interface MoviesListItemDao {
     @Query("select * from movies_list_items")
     LiveData<List<MoviesListItem>> getAll();
 
+    @Query("select * from movies_list_items I where I.text like '%'||:search||'%'")
+    LiveData<List<MoviesListItem>> search(String search);
+
     @Query("select * from movies_list_items I where I.id = :id")
     LiveData<MoviesListItem> getById(int id);
 

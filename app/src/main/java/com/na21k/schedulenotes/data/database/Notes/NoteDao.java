@@ -26,7 +26,9 @@ public interface NoteDao {
     LiveData<Note> getById(int id);
 
     @Query("select * from notes N where N.title like '%'||:search||'%'" +
-            "or N.details like '%'||:search||'%'")
+            "or N.details like '%'||:search||'%'" +
+            "or N.category_id in" +
+            "(select C.id from categories C where C.title like '%'||:search||'%')")
     LiveData<List<Note>> search(String search);
 
     @Update

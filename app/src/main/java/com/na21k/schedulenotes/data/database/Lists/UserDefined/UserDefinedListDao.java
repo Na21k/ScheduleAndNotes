@@ -22,6 +22,9 @@ public interface UserDefinedListDao {
     @Query("select * from user_defined_lists")
     LiveData<List<UserDefinedList>> getAll();
 
+    @Query("select * from user_defined_lists E where E.title like '%'||:search||'%'")
+    LiveData<List<UserDefinedList>> search(String search);
+
     @Query("select * from user_defined_lists L where L.id = :id")
     LiveData<UserDefinedList> getById(int id);
 

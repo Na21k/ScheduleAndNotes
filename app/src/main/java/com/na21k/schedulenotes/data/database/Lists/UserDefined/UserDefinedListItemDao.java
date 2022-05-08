@@ -28,6 +28,10 @@ public interface UserDefinedListItemDao {
     @Query("select * from user_defined_lists_items I where I.list_id = :listId")
     LiveData<List<UserDefinedListItem>> getByListId(int listId);
 
+    @Query("select * from user_defined_lists_items I where I.list_id = :listId " +
+            "and I.text like '%'||:search||'%'")
+    LiveData<List<UserDefinedListItem>> searchInList(int listId, String search);
+
     @Update
     void update(UserDefinedListItem userDefinedListItem);
 

@@ -22,6 +22,9 @@ public interface MusicListItemDao {
     @Query("select * from music_list_items")
     LiveData<List<MusicListItem>> getAll();
 
+    @Query("select * from music_list_items I where I.text like '%'||:search||'%'")
+    LiveData<List<MusicListItem>> search(String search);
+
     @Query("select * from music_list_items I where I.id = :id")
     LiveData<MusicListItem> getById(int id);
 

@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,8 +37,18 @@ public class LanguagesListActivity extends AppCompatActivity
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<LanguagesListItem>> mItemsObserver = new Observer<List<LanguagesListItem>>() {
+        @Override
+        public void onChanged(List<LanguagesListItem> items) {
+            mViewModel.setAllItemsCache(items);
+            updateListIfEnoughData();
+        }
+    };
     private LanguagesListViewModel mViewModel;
     private ActivityLanguagesListBinding mBinding;
+    private LanguagesListAdapter mListAdapter;
+    private LiveData<List<LanguagesListItem>> mLastSearchLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +71,45 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.languages_list_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addWordOrPhraseFab.hide();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addWordOrPhraseFab.show();
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceItemsObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
@@ -63,26 +117,34 @@ public class LanguagesListActivity extends AppCompatActivity
 
     private void setUpList() {
         RecyclerView recyclerView = mBinding.wordsAndPhrasesListRecyclerView;
-        LanguagesListAdapter adapter = new LanguagesListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mListAdapter = new LanguagesListAdapter(this);
+        recyclerView.setAdapter(mListAdapter);
         LinearLayoutManager layoutManager = UiHelper.getRecyclerViewLayoutManager(this,
                 mLandscapeColumnCountTablet, mPortraitColumnCountTablet, mLandscapeColumnCount);
         recyclerView.setLayoutManager(layoutManager);
-        setObservers(adapter);
+        setObservers();
     }
 
-    private void setObservers(LanguagesListAdapter adapter) {
-        mViewModel.getAll().observe(this, items -> {
-            mViewModel.setAllItemsCache(items);
-            updateListIfEnoughData(adapter);
-        });
+    private void setObservers() {
+        mViewModel.getAll().observe(this, mItemsObserver);
         mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
             mViewModel.setAttachedImagesListItemIdsCache(integers);
-            updateListIfEnoughData(adapter);
+            updateListIfEnoughData();
         });
     }
 
-    private void updateListIfEnoughData(LanguagesListAdapter adapter) {
+    private void replaceItemsObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAll().removeObservers(this);
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(this);
+        }
+
+        mLastSearchLiveData = mViewModel.getItemsSearch(query);
+        mLastSearchLiveData.observe(this, mItemsObserver);
+    }
+
+    private void updateListIfEnoughData() {
         List<LanguagesListItem> itemsCache = mViewModel.getAllItemsCache();
         List<Integer> attachedImagesListItemIdsCache = mViewModel.getAttachedImagesListItemIdsCache();
 
@@ -103,7 +165,7 @@ public class LanguagesListActivity extends AppCompatActivity
         }
 
         models.sort(Comparator.comparing(LanguagesListItemModel::getText));
-        adapter.setData(models);
+        mListAdapter.setData(models);
     }
 
     private void setListeners() {
@@ -111,6 +173,10 @@ public class LanguagesListActivity extends AppCompatActivity
 
         mBinding.wordsAndPhrasesListRecyclerView.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addWordOrPhraseFab.extend();
                     } else {

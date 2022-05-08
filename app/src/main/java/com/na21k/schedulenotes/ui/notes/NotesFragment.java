@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,7 +15,10 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,12 +46,24 @@ public class NotesFragment extends Fragment
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
+    private final Observer<List<Note>> mNotesObserver = new Observer<List<Note>>() {
+        @Override
+        public void onChanged(List<Note> notes) {
+            notes.sort(Comparator.comparing(Note::getTitle));
+            mViewModel.setNotesCache(notes);
+            updateListIfEnoughData();
+        }
+    };
     private NotesViewModel mViewModel;
     private NotesFragmentBinding mBinding;
+    private NotesListAdapter mListAdapter;
+    private LiveData<List<Note>> mLastSearchLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
     }
 
@@ -59,9 +77,48 @@ public class NotesFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotesListAdapter adapter = setUpRecyclerView();
-        setObservers(adapter);
+        mListAdapter = setUpRecyclerView();
+        setObservers();
         setListeners();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.notes_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addNoteFab.hide();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addNoteFab.show();
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceNotesObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private NotesListAdapter setUpRecyclerView() {
@@ -77,20 +134,27 @@ public class NotesFragment extends Fragment
         return adapter;
     }
 
-    private void setObservers(NotesListAdapter adapter) {
-        mViewModel.getAllNotes().observe(getViewLifecycleOwner(), notes -> {
-            notes.sort(Comparator.comparing(Note::getTitle));
-            mViewModel.setNotesCache(notes);
-            updateListIfEnoughData(adapter);
-        });
+    private void setObservers() {
+        mViewModel.getAllNotes().observe(getViewLifecycleOwner(), mNotesObserver);
 
         mViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
             mViewModel.setCategoriesCache(categories);
-            updateListIfEnoughData(adapter);
+            updateListIfEnoughData();
         });
     }
 
-    private void updateListIfEnoughData(NotesListAdapter adapter) {
+    private void replaceNotesObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAllNotes().removeObservers(getViewLifecycleOwner());
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(getViewLifecycleOwner());
+        }
+
+        mLastSearchLiveData = mViewModel.getNotesSearch(query);
+        mLastSearchLiveData.observe(getViewLifecycleOwner(), mNotesObserver);
+    }
+
+    private void updateListIfEnoughData() {
         List<Note> notesCache = mViewModel.getNotesCache();
         List<Category> categoriesCache = mViewModel.getCategoriesCache();
         boolean isEnoughData = notesCache != null && categoriesCache != null;
@@ -125,7 +189,7 @@ public class NotesFragment extends Fragment
             groupedNotes.put(noCategory, uncategorizedNotes);
         }
 
-        adapter.setData(groupedNotes);
+        mListAdapter.setData(groupedNotes);
     }
 
     private void setListeners() {
@@ -133,6 +197,10 @@ public class NotesFragment extends Fragment
 
         mBinding.includedList.notesList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addNoteFab.extend();
                     } else {

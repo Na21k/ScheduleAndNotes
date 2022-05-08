@@ -22,6 +22,13 @@ public interface LanguagesListItemDao {
     @Query("select * from languages_list_items")
     LiveData<List<LanguagesListItem>> getAll();
 
+    @Query("select * from languages_list_items I where I.text like '%'||:search||'%'" +
+            "or I.transcription like '%'||:search||'%'" +
+            "or I.translation like '%'||:search||'%'" +
+            "or I.explanation like '%'||:search||'%'" +
+            "or I.usage_example_text like '%'||:search||'%'")
+    LiveData<List<LanguagesListItem>> search(String search);
+
     @Query("select * from languages_list_items I where I.id = :id")
     LiveData<LanguagesListItem> getById(int id);
 

@@ -1,17 +1,25 @@
 package com.na21k.schedulenotes.ui.lists;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,12 +46,23 @@ import java.util.List;
 public class ListsFragment extends Fragment
         implements ListsListAdapter.OnListActionRequestedListener {
 
+    private final Observer<List<UserDefinedList>> mListsObserver = new Observer<List<UserDefinedList>>() {
+        @Override
+        public void onChanged(List<UserDefinedList> userDefinedLists) {
+            mViewModel.setListsCache(userDefinedLists);
+            updateListIfEnoughData();
+        }
+    };
     private ListsViewModel mViewModel;
     private ListsFragmentBinding mBinding;
+    private ListsListAdapter mListAdapter;
+    private LiveData<List<UserDefinedList>> mLastSearchLiveData;
+    private boolean isSearchMode = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(ListsViewModel.class);
     }
 
@@ -57,9 +76,50 @@ public class ListsFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ListsListAdapter adapter = setUpRecyclerView();
-        setObservers(adapter);
+        mListAdapter = setUpRecyclerView();
+        setObservers();
         setListeners();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.lists_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.menu_search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                isSearchMode = true;
+                mBinding.addListFab.hide();
+                mBinding.defaultListsArea.setVisibility(View.GONE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                isSearchMode = false;
+                mBinding.addListFab.show();
+                mBinding.defaultListsArea.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                replaceListsObserverAccordingToSearchQuery(newText);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private ListsListAdapter setUpRecyclerView() {
@@ -71,18 +131,26 @@ public class ListsFragment extends Fragment
         return adapter;
     }
 
-    private void setObservers(ListsListAdapter adapter) {
-        mViewModel.getAllLists().observe(getViewLifecycleOwner(), userDefinedLists -> {
-            mViewModel.setListsCache(userDefinedLists);
-            updateListIfEnoughData(adapter);
-        });
+    private void setObservers() {
+        mViewModel.getAllLists().observe(getViewLifecycleOwner(), mListsObserver);
         mViewModel.getAllListItems().observe(getViewLifecycleOwner(), userDefinedListItems -> {
             mViewModel.setListItemsCache(userDefinedListItems);
-            updateListIfEnoughData(adapter);
+            updateListIfEnoughData();
         });
     }
 
-    private void updateListIfEnoughData(ListsListAdapter adapter) {
+    private void replaceListsObserverAccordingToSearchQuery(String query) {
+        mViewModel.getAllLists().removeObservers(getViewLifecycleOwner());
+
+        if (mLastSearchLiveData != null) {
+            mLastSearchLiveData.removeObservers(getViewLifecycleOwner());
+        }
+
+        mLastSearchLiveData = mViewModel.getListsSearch(query);
+        mLastSearchLiveData.observe(getViewLifecycleOwner(), mListsObserver);
+    }
+
+    private void updateListIfEnoughData() {
         List<UserDefinedList> listsCache = mViewModel.getListsCache();
         List<UserDefinedListItem> listItemsCache = mViewModel.getListItemsCache();
 
@@ -104,7 +172,7 @@ public class ListsFragment extends Fragment
         }
 
         models.sort(Comparator.comparing(UserDefinedListModel::getTitle));
-        adapter.setLists(models);
+        mListAdapter.setLists(models);
     }
 
     private void setListeners() {
@@ -116,6 +184,10 @@ public class ListsFragment extends Fragment
 
         mBinding.includedList.listsList.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (isSearchMode) {
+                        return;
+                    }
+
                     if (scrollY <= oldScrollY) {
                         mBinding.addListFab.extend();
                     } else {
@@ -234,8 +306,26 @@ public class ListsFragment extends Fragment
 
                 if (listNameEditable != null && !listNameEditable.toString().isEmpty()) {
                     String listName = listNameEditable.toString();
+                    String titleOld = list.getTitle();
                     list.setTitle(listName);
-                    mViewModel.update(list);
+
+                    mViewModel.update(list, (t, e) -> {
+                        if (e.getClass().equals(SQLiteConstraintException.class)) {
+                            Activity activity = getActivity();
+
+                            if (activity != null) {
+                                activity.runOnUiThread(() -> {
+                                    list.setTitle(titleOld);
+
+                                    onListRenameRequested(list);
+                                    UiHelper.showErrorDialog(context,
+                                            R.string.such_list_already_exists_alert_message);
+                                });
+                            }
+                        } else {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 } else {
                     onListRenameRequested(list);
                     UiHelper.showErrorDialog(context,
