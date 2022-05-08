@@ -9,4 +9,24 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|withText|collapseActionView" />
 
+    <item android:title="@string/sort_by_options_menu_item">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/menu_sort_by_word_or_phrase"
+                    android:title="@string/sort_by_word_options_menu_item" />
+
+                <item
+                    android:id="@+id/menu_sort_by_translation"
+                    android:title="@string/sort_by_translation_options_menu_item" />
+
+            </group>
+
+        </menu>
+
+    </item>
+
 </menu>

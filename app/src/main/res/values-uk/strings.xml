@@ -151,4 +151,10 @@
     <string name="list_item_scheduled_for_deletion_snackbar">У черзі на видалення …</string>
     <string name="search">Пошук</string>
     <string name="such_list_already_exists_alert_message">Такий список уже існує. Спробуйте іншу назву</string>
+    <string name="sort_by_options_menu_item">Сортувати за</string>
+    <string name="sort_by_word_options_menu_item">Словом</string>
+    <string name="sort_by_translation_options_menu_item">Перекладом</string>
+    <string name="languages_list_sorting_order_word">За словом</string>
+    <string name="languages_list_sorting_order_translation">За перекладом</string>
+    <string name="languages_list_sorting_order_title">Сортування Списку-словника</string>
 </resources>

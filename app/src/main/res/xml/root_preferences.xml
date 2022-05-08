@@ -70,6 +70,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:icon="@drawable/ic_more_horiz_24"
+        app:title="Other">
+
+        <DropDownPreference
+            app:defaultValue="Word"
+            app:entries="@array/languages_list_sorting_entries"
+            app:entryValues="@array/languages_list_sorting_values"
+            app:icon="@drawable/ic_sort_24"
+            app:key="languages_list_sorting_order"
+            app:title="@string/languages_list_sorting_order_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
     <!--<PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference

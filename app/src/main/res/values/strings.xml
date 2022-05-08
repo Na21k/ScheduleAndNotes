@@ -46,6 +46,11 @@
     <string name="languages_list_notifications_title">Vocabulary List notifications</string>
     <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Vocabulary List and receiving periodic notifications. This way you will be able to memorize them better</string>
 
+    <!--Other preferences-->
+    <string name="languages_list_sorting_order_title">Vocabulary List sorting order</string>
+    <string name="languages_list_sorting_order_word">By word</string>
+    <string name="languages_list_sorting_order_translation">By translation</string>
+
     <!-- Messages Preferences -->
     <!--<string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>-->
@@ -189,4 +194,7 @@
     <string name="loading_attached_images_snackbar">Loading attached images. Please wait</string>
     <string name="cant_attach_more_images_snackbar">Can\'t attach more than %1$d images</string>
     <string name="list_item_scheduled_for_deletion_snackbar">Scheduled for deletion …</string>
+    <string name="sort_by_options_menu_item">Sort by</string>
+    <string name="sort_by_word_options_menu_item">Word</string>
+    <string name="sort_by_translation_options_menu_item">Translation</string>
 </resources>

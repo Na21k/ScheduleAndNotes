@@ -9,4 +9,15 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <!--Languages List sorting-->
+    <string-array name="languages_list_sorting_entries">
+        <item>@string/languages_list_sorting_order_word</item>
+        <item>@string/languages_list_sorting_order_translation</item>
+    </string-array>
+
+    <string-array name="languages_list_sorting_values">
+        <item>Word</item>
+        <item>Translation</item>
+    </string-array>
 </resources>

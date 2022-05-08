@@ -18,4 +18,5 @@ public class Constants {
     public static final int UNDO_DELETE_TIMEOUT_MILLIS = 7000;
     public static final int ATTACHED_IMAGES_COUNT_LIMIT = 5;
     public static final String OPEN_IMAGE_TMP_FILE_NAME = "openImageTmpFile";
+    public static final String LANGUAGES_LIST_SORTING_ORDER_PREFERENCE_KEY = "languages_list_sorting_order";
 }

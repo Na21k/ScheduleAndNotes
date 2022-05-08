@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +16,13 @@ import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
+import com.na21k.schedulenotes.LanguagesListItemsSortingOrder;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.models.LanguagesListItemModel;
@@ -110,6 +113,40 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (getSortingOrder()) {
+            case Word:
+                menu.findItem(R.id.menu_sort_by_word_or_phrase).setChecked(true);
+                break;
+            case Translation:
+                menu.findItem(R.id.menu_sort_by_translation).setChecked(true);
+                break;
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        LanguagesListItemsSortingOrder order;
+
+        switch (item.getItemId()) {
+            case R.id.menu_sort_by_word_or_phrase:
+                order = LanguagesListItemsSortingOrder.Word;
+                setSortingOrder(order);
+                updateListIfEnoughData();
+                break;
+            case R.id.menu_sort_by_translation:
+                order = LanguagesListItemsSortingOrder.Translation;
+                setSortingOrder(order);
+                updateListIfEnoughData();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
@@ -164,7 +201,15 @@ public class LanguagesListActivity extends AppCompatActivity
             models.add(new LanguagesListItemModel(item, attachedImagesCount));
         }
 
-        models.sort(Comparator.comparing(LanguagesListItemModel::getText));
+        switch (getSortingOrder()) {
+            case Word:
+                models.sort(Comparator.comparing(LanguagesListItemModel::getText));
+                break;
+            case Translation:
+                models.sort(Comparator.comparing(LanguagesListItemModel::getTranslation));
+                break;
+        }
+
         mListAdapter.setData(models);
     }
 
@@ -234,5 +279,18 @@ public class LanguagesListActivity extends AppCompatActivity
         });
 
         builder.show();
+    }
+
+    private LanguagesListItemsSortingOrder getSortingOrder() {
+        String orderStr = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(Constants.LANGUAGES_LIST_SORTING_ORDER_PREFERENCE_KEY,
+                        LanguagesListItemsSortingOrder.Word.toString());
+        return LanguagesListItemsSortingOrder.valueOf(orderStr);
+    }
+
+    private void setSortingOrder(LanguagesListItemsSortingOrder sortingOrder) {
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putString(Constants.LANGUAGES_LIST_SORTING_ORDER_PREFERENCE_KEY,
+                        sortingOrder.toString()).apply();
     }
 }
