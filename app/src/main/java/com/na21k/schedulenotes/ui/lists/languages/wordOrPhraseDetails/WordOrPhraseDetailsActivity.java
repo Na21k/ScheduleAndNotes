@@ -216,7 +216,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             file.delete();
             out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | SecurityException e) {
             e.printStackTrace();
 
             Snackbar.make(mBinding.getRoot(), R.string.unexpected_error, 3000).show();
