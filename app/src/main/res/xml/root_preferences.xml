@@ -72,7 +72,7 @@
 
     <PreferenceCategory
         app:icon="@drawable/ic_more_horiz_24"
-        app:title="Other">
+        app:title="@string/other_header">
 
         <DropDownPreference
             app:defaultValue="Word"

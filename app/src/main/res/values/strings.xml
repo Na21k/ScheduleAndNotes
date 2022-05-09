@@ -24,6 +24,7 @@
     <!--<string name="messages_header">Messages</string>-->
     <string name="manage_data_header">Manage data</string>
     <string name="notifications_header">Notifications</string>
+    <string name="other_header">Other</string>
 
     <!--Data management preferences-->
     <string name="import_title">Import</string>
@@ -120,7 +121,7 @@
     <string name="remove_category_menu_item">Exclude from category</string>
     <string name="is_hidden_checkbox">Hidden</string>
     <string name="is_hidden_checkbox_description">Use this to hide this events title in the schedule list so that others won\'t be able to see it when you scroll through the list. \"Hidden event\" text will be shown instead. Tap on the event in the list to see its info</string>
-    <string name="start_time_less_than_end_time_snackbar">The start time can not be later than the end one</string>
+    <string name="start_time_less_than_end_time_snackbar">The start time cannot be later than the end time</string>
 
     <!--Lists-->
     <string name="add_list_fab">Add list</string>

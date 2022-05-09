@@ -157,4 +157,5 @@
     <string name="languages_list_sorting_order_word">За словом</string>
     <string name="languages_list_sorting_order_translation">За перекладом</string>
     <string name="languages_list_sorting_order_title">Сортування Списку-словника</string>
+    <string name="other_header">Інше</string>
 </resources>
