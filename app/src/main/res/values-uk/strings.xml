@@ -16,7 +16,7 @@
     <string name="export_title">Експорт</string>
     <string name="export_summary">Експорт даних (включаючи налаштування) у файл</string>
     <string name="delete_events_older_than_title">Видалити події старші за …</string>
-    <string name="delete_events_older_than_summary">Видалити події по обрану дату включно</string>
+    <string name="delete_events_older_than_summary">Видалити події, які закінчились до обраної дати (включно)</string>
     <string name="receive_notifications_title">Отримувати сповіщення</string>
     <string name="receive_notifications_summary_on">Ви отримуватимете обрані сповіщення</string>
     <string name="receive_notifications_summary_off">Ви не отримуватимете жодних сповіщень</string>

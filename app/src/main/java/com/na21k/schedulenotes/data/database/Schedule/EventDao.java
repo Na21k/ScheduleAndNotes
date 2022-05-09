@@ -45,6 +45,6 @@ public interface EventDao {
             "(select C.id from categories C where C.title like '%'||:search||'%')")
     LiveData<List<Event>> search(String search);
 
-    @Query("delete from events where date_time_starts <= :date")
+    @Query("delete from events where date_time_ends <= :date")
     void deleteOlderThan(Date date);
 }

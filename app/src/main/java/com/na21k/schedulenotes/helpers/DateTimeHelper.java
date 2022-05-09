@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateTimeHelper {
 
@@ -29,6 +30,11 @@ public class DateTimeHelper {
 
     public static String getScheduleFormattedDate(Date date) {
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        return dateFormat.format(date);
+    }
+
+    public static String getScheduleShortFormattedDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("E, d MMM", Locale.getDefault());
         return dateFormat.format(date);
     }
 

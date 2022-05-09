@@ -18,6 +18,7 @@ import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
+import java.util.Date;
 import java.util.List;
 
 public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.EventViewHolder> {
@@ -26,6 +27,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private final OnEventActionRequestedListener mOnEventActionRequestedListener;
     private List<Category> mCategories = null;
     private List<Event> mEvents;
+    private Date mSelectedDate;
 
     public EventsListAdapter(boolean isNightMode,
                              OnEventActionRequestedListener onEventActionRequestedListener) {
@@ -66,9 +68,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         return mEvents != null ? mEvents.size() : 0;
     }
 
-    public void setEvents(List<Event> events, List<Category> categories) {
+    public void setData(List<Event> events, List<Category> categories, Date selectedDate) {
         mEvents = events;
         mCategories = categories;
+        mSelectedDate = selectedDate;
         notifyDataSetChanged();
     }
 
@@ -121,8 +124,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 mBinding.eventTitle.setText(event.getTitle());
             }
 
-            String startsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeStarts());
-            String endsFormatted = DateTimeHelper.getScheduleFormattedTime(event.getDateTimeEnds());
+            String startsFormatted = getTimeFormatted(event.getDateTimeStarts());
+            String endsFormatted = getTimeFormatted(event.getDateTimeEnds());
             mBinding.eventStartTime.setText(startsFormatted);
             mBinding.eventEndTime.setText(endsFormatted);
 
@@ -130,6 +133,16 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     .getEventCategoryColor(itemView.getContext(), event, mCategories, mIsNightMode);
 
             mBinding.scheduleListItemCard.setCardBackgroundColor(backColor);
+        }
+
+        private String getTimeFormatted(Date dateTime) {
+            Date dateOnly = DateTimeHelper.truncateToDateOnly(dateTime);
+
+            if (dateOnly.equals(mSelectedDate)) {
+                return DateTimeHelper.getScheduleFormattedTime(dateTime);
+            } else {
+                return DateTimeHelper.getScheduleShortFormattedDate(dateTime);
+            }
         }
     }
 

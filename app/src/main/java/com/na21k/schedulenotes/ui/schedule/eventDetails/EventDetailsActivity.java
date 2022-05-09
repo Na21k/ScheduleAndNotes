@@ -152,13 +152,13 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             return;
         }
 
-        if (Objects.requireNonNull(starts).compareTo(ends) > 0) {
+        if (starts.compareTo(ends) > 0) {
             showSnackbar(R.string.start_time_less_than_end_time_snackbar);
             return;
         }
 
         Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
-                mCurrentEventsCategoryId, starts, Objects.requireNonNull(ends), isHidden);
+                mCurrentEventsCategoryId, starts, ends, isHidden);
 
         if (isEditing()) {
             mViewModel.updateCurrentEvent(event);

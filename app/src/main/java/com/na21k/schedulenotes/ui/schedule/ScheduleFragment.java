@@ -159,7 +159,7 @@ public class ScheduleFragment extends Fragment
             return;
         }
 
-        mAdapter.setEvents(eventsCache, categoriesCache);
+        mAdapter.setData(eventsCache, categoriesCache, mViewModel.getSelectedDate());
         updateSelectedDateText();
     }
 
