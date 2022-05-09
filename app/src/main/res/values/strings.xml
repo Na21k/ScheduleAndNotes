@@ -32,7 +32,7 @@
     <string name="export_title">Export</string>
     <string name="export_summary">Export data (including settings) to a file</string>
     <string name="delete_events_older_than_title">Delete events older than …</string>
-    <string name="delete_events_older_than_summary">Delete events that have ended by a selected date (inclusive)</string>
+    <string name="delete_events_older_than_summary">Delete events that end by a selected date (inclusive)</string>
 
     <!--Notifications preferences-->
     <string name="receive_notifications_title">Receive notifications</string>
