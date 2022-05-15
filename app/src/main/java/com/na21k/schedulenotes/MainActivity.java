@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannels();
         ensureRecommendationsWorkerIsScheduled();
-        showTestNotification();
     }
 
     private void ensureRecommendationsWorkerIsScheduled() {
@@ -117,44 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 .addTag(Constants.RECOMMENDATIONS_WORKER_TAG);
     }
 
-    private void showTestNotification() {
-        /*Data inputData = new Data.Builder()
-                .putInt(TestNotificationWorker.EVENT_ID_INPUT_DATA_KEY, 1).build();
-
-        WorkRequest request = new OneTimeWorkRequest
-                .Builder(TestNotificationWorker.class)
-                .setInputData(inputData)
-                .setInitialDelay(2, TimeUnit.MINUTES)
-                .setBackoffCriteria(
-                        BackoffPolicy.LINEAR,
-                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                        TimeUnit.MILLISECONDS)
-                .build();
-
-        String requestId = request.getId().toString();
-
-        WorkManager.getInstance(this).enqueue(request);*/
-        /*Data inputData = new Data.Builder()
-                .putInt(EventNotificationWorker.EVENT_ID_INPUT_DATA_KEY, 12)
-                .build();
-
-        WorkRequest request = new OneTimeWorkRequest
-                .Builder(EventNotificationWorker.class)
-                .setInputData(inputData)
-                .setInitialDelay(3, TimeUnit.SECONDS)
-                .setBackoffCriteria(
-                        BackoffPolicy.LINEAR,
-                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                        TimeUnit.MILLISECONDS)
-                .build();
-
-        String requestId = request.getId().toString();
-
-        WorkManager.getInstance(this).enqueue(request);*/
-    }
-
     private void createNotificationChannels() {
-        NotificationsHelper.addTestNotificationChannel(this);
         NotificationsHelper.addEventsNotificationChannel(this);
         NotificationsHelper.addMoviesNotificationChannel(this);
         NotificationsHelper.addMusicNotificationChannel(this);

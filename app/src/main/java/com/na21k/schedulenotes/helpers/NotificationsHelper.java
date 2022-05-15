@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.na21k.schedulenotes.Constants;
-import com.na21k.schedulenotes.MainActivity;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
@@ -19,7 +18,6 @@ import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 
 public class NotificationsHelper {
-    private static final String TEST_NOTIFICATION_CHANNEL_ID = "testNotificationChannelId";
     private static final String EVENT_NOTIFICATIONS_CHANNEL_ID = "eventNotificationsChannelId";
     private static final String MOVIES_LIST_NOTIFICATIONS_CHANNEL_ID = "moviesListNotificationsChannelId";
     private static final String MUSIC_LIST_NOTIFICATIONS_CHANNEL_ID = "musicListNotificationsChannelId";
@@ -124,49 +122,6 @@ public class NotificationsHelper {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(Constants.LANGUAGES_LIST_NOTIFICATION_ID, builder.build());
-    }
-
-    public static void addTestNotificationChannel(Context context) {
-        String name = "Test";
-        String description = "The first notification channel for testing";
-        int importance = NotificationManagerCompat.IMPORTANCE_HIGH;
-
-        NotificationChannelCompat notificationChannel = new NotificationChannelCompat
-                .Builder(TEST_NOTIFICATION_CHANNEL_ID, importance)
-                .setName(name)
-                .setDescription(description)
-                .setVibrationEnabled(true)
-                .setLightsEnabled(true)
-                .build();
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.createNotificationChannel(notificationChannel);
-    }
-
-    public static void showTestNotification(Context context, String title, String text,
-                                            int notificationId) {
-        PendingIntent intent = getTestPendingIntent(context);
-
-        NotificationCompat.Builder builder = new NotificationCompat
-                .Builder(context, TEST_NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_24)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setCategory(NotificationCompat.CATEGORY_EVENT)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-                .setContentIntent(intent)
-                .setAutoCancel(true);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(notificationId, builder.build());
-    }
-
-    private static PendingIntent getTestPendingIntent(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE, null);
     }
 
     private static PendingIntent getEventNotificationPendingIntent(Context context, int eventId) {
