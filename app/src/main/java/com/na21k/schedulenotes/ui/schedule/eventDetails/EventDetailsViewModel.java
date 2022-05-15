@@ -6,18 +6,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.work.BackoffPolicy;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
+import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotification;
+import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotificationDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
+import com.na21k.schedulenotes.helpers.WorkersHelper;
+import com.na21k.schedulenotes.workers.EventNotificationWorker;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class EventDetailsViewModel extends AndroidViewModel {
 
     private final EventDao mEventDao;
+    private final ScheduledNotificationDao mNotificationDao;
     private final LiveData<List<Category>> mCategories;
     private List<Category> mCategoriesCache = null;
     private LiveData<Event> mEvent;
@@ -30,6 +41,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mEventDao = db.eventDao();
+        mNotificationDao = db.scheduledNotificationDao();
         mCategories = db.categoryDao().getAll();
     }
 
@@ -47,7 +59,13 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public void createEvent(Event event) {
-        new Thread(() -> mEventDao.insert(event)).start();
+        new Thread(() -> {
+            long id = mEventDao.insert(event);
+            event.setId((int) id);
+            String notificationRequestId = scheduleNotificationBlocking(event);
+            event.setLastNotificationRequestId(notificationRequestId);
+            mEventDao.update(event);
+        }).start();
     }
 
     public void deleteCurrentEvent() {
@@ -56,7 +74,13 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void updateCurrentEvent(Event event) {
         event.setId(mEventId);
-        new Thread(() -> mEventDao.update(event)).start();
+        new Thread(() -> {
+            mEventDao.update(event);
+            WorkersHelper.cancelRequest(event.getLastNotificationRequestId(), getApplication());
+            String notificationRequestId = scheduleNotificationBlocking(event);
+            event.setLastNotificationRequestId(notificationRequestId);
+            mEventDao.update(event);
+        }).start();
     }
 
     @Nullable
@@ -88,5 +112,34 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void setCategoriesCache(List<Category> categoriesCache) {
         mCategoriesCache = categoriesCache;
+    }
+
+    @NonNull
+    private String scheduleNotificationBlocking(@NonNull Event event) {
+        Date starts = event.getDateTimeStarts();
+        Date now = new Date();
+
+        Data inputData = new Data.Builder()
+                .putInt(EventNotificationWorker.EVENT_ID_INPUT_DATA_KEY, event.getId())
+                .build();
+
+        long delayMillis = starts.getTime() - now.getTime();
+
+        WorkRequest request = new OneTimeWorkRequest
+                .Builder(EventNotificationWorker.class)
+                .setInputData(inputData)
+                .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
+                .setBackoffCriteria(
+                        BackoffPolicy.LINEAR,
+                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                        TimeUnit.MILLISECONDS)
+                .build();
+
+        String requestId = request.getId().toString();
+        mNotificationDao.insert(new ScheduledNotification(0, requestId));
+
+        WorkManager.getInstance(getApplication()).enqueue(request);
+
+        return requestId;
     }
 }

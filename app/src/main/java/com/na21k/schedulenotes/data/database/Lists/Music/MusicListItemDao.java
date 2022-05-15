@@ -28,6 +28,9 @@ public interface MusicListItemDao {
     @Query("select * from music_list_items I where I.id = :id")
     LiveData<MusicListItem> getById(int id);
 
+    @Query("select * from music_list_items order by random() limit 1")
+    MusicListItem getRandomBlocking();
+
     @Update
     void update(MusicListItem musicListItem);
 

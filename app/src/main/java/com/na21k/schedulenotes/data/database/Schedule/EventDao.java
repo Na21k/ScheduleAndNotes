@@ -18,13 +18,16 @@ public interface EventDao {
     int getCount();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Event event);
+    long insert(Event event);
 
     @Query("select * from events")
     LiveData<List<Event>> getAll();
 
     @Query("select * from events E where E.id = :id")
     LiveData<Event> getById(int id);
+
+    @Query("select * from events E where E.id = :id")
+    Event getByIdBlocking(int id);
 
     @Query("select * from events E where E.date_time_starts < :hasStartedBefore " +
             "and E.date_time_ends >= :hasNotEndedBy")

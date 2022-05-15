@@ -25,14 +25,17 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListIt
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItemDao;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Notes.NoteDao;
+import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotification;
+import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotificationDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 
 @Database(entities = {Category.class, Note.class, Event.class,
+        ScheduledNotification.class,
         UserDefinedList.class, UserDefinedListItem.class,
         ShoppingListItem.class, MoviesListItem.class, MusicListItem.class,
         LanguagesListItem.class, LanguagesListItemAttachedImage.class},
-        version = 3, exportSchema = false)
+        version = 5, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -41,6 +44,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract NoteDao noteDao();
 
     public abstract EventDao eventDao();
+
+    public abstract ScheduledNotificationDao scheduledNotificationDao();
 
     public abstract UserDefinedListDao userDefinedListDao();
 
@@ -63,8 +68,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (appDatabaseInstance == null) {
                     appDatabaseInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "app_database")
-                            .fallbackToDestructiveMigrationFrom(1, 2).build();
+                                    AppDatabase.class, "app_database")
+                            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4).build();
                 }
             }
         }

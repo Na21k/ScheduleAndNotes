@@ -158,4 +158,7 @@
     <string name="languages_list_sorting_order_translation">За перекладом</string>
     <string name="languages_list_sorting_order_title">Сортування Списку-словника</string>
     <string name="other_header">Інше</string>
+    <string name="event_started_title">%1$s - почалось</string>
+    <string name="movie_notification_text">Ви хотіли переглянути цей фільм. Можливо, саме час це зробити?</string>
+    <string name="music_notification_text">Ви планували прослухати цю (пісню/виконавця/альбом/ін.). Можливо, саме час це зробити?</string>
 </resources>

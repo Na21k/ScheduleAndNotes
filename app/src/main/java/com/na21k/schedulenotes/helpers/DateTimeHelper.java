@@ -51,6 +51,14 @@ public class DateTimeHelper {
         return calendar.getTime();
     }
 
+    public static Date addHours(Date date, int amount) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, amount);
+
+        return calendar.getTime();
+    }
+
     public static Date getTimeOnly(Date dateTime) {
         Calendar calendarDateTime = Calendar.getInstance();
         calendarDateTime.setTime(dateTime);

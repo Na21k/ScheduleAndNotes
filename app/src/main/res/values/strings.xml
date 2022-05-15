@@ -47,6 +47,11 @@
     <string name="languages_list_notifications_title">Vocabulary List notifications</string>
     <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Vocabulary List and receiving periodic notifications. This way you will be able to memorize them better</string>
 
+    <!--Notifications text-->
+    <string name="event_started_title">%1$s - has started</string>
+    <string name="movie_notification_text">You wanted to watch this movie. Maybe it\'s time to do it?</string>
+    <string name="music_notification_text">You wanted to check this (song/artist/album/etc.) out. Maybe it\'s time to do it?</string>
+
     <!--Other preferences-->
     <string name="languages_list_sorting_order_title">Vocabulary List sorting order</string>
     <string name="languages_list_sorting_order_word">By word</string>

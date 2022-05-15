@@ -28,6 +28,9 @@ public interface MoviesListItemDao {
     @Query("select * from movies_list_items I where I.id = :id")
     LiveData<MoviesListItem> getById(int id);
 
+    @Query("select * from movies_list_items order by random() limit 1")
+    MoviesListItem getRandomBlocking();
+
     @Delete
     void delete(MoviesListItem moviesListItem);
 

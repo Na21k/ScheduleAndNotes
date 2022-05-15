@@ -41,6 +41,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     private EventDetailsViewModel mViewModel;
     private ActivityEventDetailsBinding mBinding;
     private Integer mCurrentEventsCategoryId;
+    private String mLastNotificationRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,13 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         setPickersListeners();
         Bundle bundle = getIntent().getExtras();
 
+        //when navigated from notification
+        //but the event has been deleted after the notification fired
+        if (bundle == null) {
+            finish();
+            return;
+        }
+
         if (isEditing()) {
             setTitle(R.string.title_edit_event);
 
@@ -78,6 +86,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     @Override
     public void onChanged(Event event) {
+        mLastNotificationRequestId = event.getLastNotificationRequestId();
         mBinding.eventTitle.setText(event.getTitle());
         mBinding.eventDetails.setText(event.getDetails());
         mCurrentEventsCategoryId = event.getCategoryId();
@@ -159,6 +168,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
         Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
                 mCurrentEventsCategoryId, starts, ends, isHidden);
+        event.setLastNotificationRequestId(mLastNotificationRequestId);
 
         if (isEditing()) {
             mViewModel.updateCurrentEvent(event);

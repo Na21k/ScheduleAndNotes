@@ -38,6 +38,9 @@ public class Event extends Identifiable {
     @ColumnInfo(name = "is_hidden", defaultValue = "false")
     private boolean isHidden;
 
+    @ColumnInfo(name = "last_notification_request_id")
+    private String lastNotificationRequestId;
+
     public Event(int id, @NotNull String title, String details, Integer categoryId,
                  @NotNull Date dateTimeStarts, @NotNull Date dateTimeEnds, boolean isHidden) {
         this.id = id;
@@ -98,5 +101,13 @@ public class Event extends Identifiable {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
+    }
+
+    public String getLastNotificationRequestId() {
+        return lastNotificationRequestId;
+    }
+
+    public void setLastNotificationRequestId(String lastNotificationRequestId) {
+        this.lastNotificationRequestId = lastNotificationRequestId;
     }
 }

@@ -32,6 +32,9 @@ public interface LanguagesListItemDao {
     @Query("select * from languages_list_items I where I.id = :id")
     LiveData<LanguagesListItem> getById(int id);
 
+    @Query("select * from languages_list_items order by random() limit 1")
+    LanguagesListItem getRandomBlocking();
+
     @Update
     void update(LanguagesListItem item);
 
