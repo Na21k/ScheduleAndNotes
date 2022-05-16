@@ -10,6 +10,7 @@ import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
+import com.na21k.schedulenotes.helpers.WorkersHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -51,6 +52,11 @@ public class ScheduleViewModel extends AndroidViewModel {
     }
 
     public void deleteEvent(Event event) {
+        WorkersHelper.cancelRequest(event.getLastStartsNotificationRequestId(),
+                getApplication());
+        WorkersHelper.cancelRequest(event.getLastStartsSoonNotificationRequestId(),
+                getApplication());
+
         new Thread(() -> mEventDao.delete(event)).start();
     }
 

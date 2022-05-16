@@ -3,7 +3,9 @@ package com.na21k.schedulenotes.data.database;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 
-public abstract class Identifiable {
+import java.io.Serializable;
+
+public abstract class Identifiable implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

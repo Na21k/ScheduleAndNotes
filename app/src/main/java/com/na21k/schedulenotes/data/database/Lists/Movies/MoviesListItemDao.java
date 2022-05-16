@@ -19,8 +19,14 @@ public interface MoviesListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MoviesListItem moviesListItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<MoviesListItem> moviesListItems);
+
     @Query("select * from movies_list_items")
     LiveData<List<MoviesListItem>> getAll();
+
+    @Query("select * from movies_list_items")
+    List<MoviesListItem> getAllBlocking();
 
     @Query("select * from movies_list_items I where I.text like '%'||:search||'%'")
     LiveData<List<MoviesListItem>> search(String search);
@@ -36,4 +42,7 @@ public interface MoviesListItemDao {
 
     @Update
     void update(MoviesListItem moviesListItem);
+
+    @Query("delete from movies_list_items")
+    void deleteAll();
 }

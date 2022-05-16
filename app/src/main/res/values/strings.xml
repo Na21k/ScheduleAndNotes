@@ -7,6 +7,7 @@
     <string name="rename">Rename</string>
     <string name="undo">Undo</string>
     <string name="search">Search</string>
+    <string name="proceed">Proceed</string>
     <string name="oops_aletr_title">Oops …</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
@@ -49,6 +50,7 @@
 
     <!--Notifications text-->
     <string name="event_started_title">%1$s - has started</string>
+    <string name="event_starts_soon_title">%1$s - starts soon</string>
     <string name="movie_notification_text">You wanted to watch this movie. Maybe it\'s time to do it?</string>
     <string name="music_notification_text">You wanted to check this (song/artist/album/etc.) out. Maybe it\'s time to do it?</string>
 
@@ -68,7 +70,10 @@
     <string name="backing_up_toast">Backing up …</string>
     <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
     <string name="backup_created_successfully_toast">Backup created successfully</string>
+    <string name="import_alert_title">Import alert</string>
+    <string name="import_alert_message">Importing implies loss of all the existing data. Are you sure you want to proceed?</string>
     <string name="importing_from_backup_toast">Importing from backup …</string>
+    <string name="successfully_imported_from_backup_toast">Successfully imported from backup</string>
     <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
 
     <!--Snackbar and Toast messages-->

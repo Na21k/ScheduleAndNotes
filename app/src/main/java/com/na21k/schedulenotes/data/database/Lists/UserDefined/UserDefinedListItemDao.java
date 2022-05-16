@@ -19,8 +19,14 @@ public interface UserDefinedListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UserDefinedListItem userDefinedListItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<UserDefinedListItem> userDefinedListItems);
+
     @Query("select * from user_defined_lists_items")
     LiveData<List<UserDefinedListItem>> getAll();
+
+    @Query("select * from user_defined_lists_items")
+    List<UserDefinedListItem> getAllBlocking();
 
     @Query("select * from user_defined_lists_items I where I.id = :id")
     LiveData<UserDefinedListItem> getById(int id);

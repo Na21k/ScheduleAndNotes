@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -54,8 +55,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
         Context context = getContext();
 
         if (context != null) {
-            Intent importActivityIntent = new Intent(context, ImportActivity.class);
-            startActivity(importActivityIntent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_warning_24);
+            builder.setTitle(R.string.import_alert_title);
+            builder.setMessage(R.string.import_alert_message);
+
+            builder.setPositiveButton(R.string.proceed, (dialog, which) -> {
+                Intent importActivityIntent = new Intent(context, ImportActivity.class);
+                startActivity(importActivityIntent);
+            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            });
+
+            builder.show();
         }
     }
 

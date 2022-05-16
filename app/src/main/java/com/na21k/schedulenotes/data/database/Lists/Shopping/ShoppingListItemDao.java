@@ -19,8 +19,14 @@ public interface ShoppingListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ShoppingListItem shoppingListItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<ShoppingListItem> shoppingListItems);
+
     @Query("select * from shopping_list_items")
     LiveData<List<ShoppingListItem>> getAll();
+
+    @Query("select * from shopping_list_items")
+    List<ShoppingListItem> getAllBlocking();
 
     @Query("select * from shopping_list_items I where I.text like '%'||:search||'%'")
     LiveData<List<ShoppingListItem>> search(String search);

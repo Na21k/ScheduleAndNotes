@@ -19,8 +19,14 @@ public interface UserDefinedListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UserDefinedList userDefinedList);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<UserDefinedList> userDefinedLists);
+
     @Query("select * from user_defined_lists")
     LiveData<List<UserDefinedList>> getAll();
+
+    @Query("select * from user_defined_lists")
+    List<UserDefinedList> getAllBlocking();
 
     @Query("select * from user_defined_lists E where E.title like '%'||:search||'%'")
     LiveData<List<UserDefinedList>> search(String search);
@@ -33,4 +39,7 @@ public interface UserDefinedListDao {
 
     @Delete
     void delete(UserDefinedList list);
+
+    @Query("delete from user_defined_lists")
+    void deleteAll();
 }

@@ -31,6 +31,7 @@ public class Constants {
     public static final int MUSIC_LIST_NOTIFICATION_ID = -2;
     public static final int LANGUAGES_LIST_NOTIFICATION_ID = -3;
     public static final String RECOMMENDATIONS_WORKER_TAG = "recommendationsWorkerTag";
+    public static final String EVENT_NOTIFICATION_WORKER_TAG = "eventNotificationWorkerTag";
 
     public static Date getRecommendationsTime() {
         return DateTimeHelper.addHours(DateTimeHelper.truncateToDateOnly(new Date()), 17);

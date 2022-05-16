@@ -20,8 +20,14 @@ public interface EventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Event event);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<Event> events);
+
     @Query("select * from events")
     LiveData<List<Event>> getAll();
+
+    @Query("select * from events")
+    List<Event> getAllBlocking();
 
     @Query("select * from events E where E.id = :id")
     LiveData<Event> getById(int id);
@@ -50,4 +56,7 @@ public interface EventDao {
 
     @Query("delete from events where date_time_ends <= :date")
     void deleteOlderThan(Date date);
+
+    @Query("delete from events")
+    void deleteAll();
 }

@@ -6,24 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.work.BackoffPolicy;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotification;
 import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotificationDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.WorkersHelper;
-import com.na21k.schedulenotes.workers.EventNotificationWorker;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class EventDetailsViewModel extends AndroidViewModel {
 
@@ -62,9 +54,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
         new Thread(() -> {
             long id = mEventDao.insert(event);
             event.setId((int) id);
-            String notificationRequestId = scheduleNotificationBlocking(event);
-            event.setLastNotificationRequestId(notificationRequestId);
-            mEventDao.update(event);
+            scheduleNotificationsAndUpdateBlocking(event);
         }).start();
     }
 
@@ -75,11 +65,11 @@ public class EventDetailsViewModel extends AndroidViewModel {
     public void updateCurrentEvent(Event event) {
         event.setId(mEventId);
         new Thread(() -> {
-            mEventDao.update(event);
-            WorkersHelper.cancelRequest(event.getLastNotificationRequestId(), getApplication());
-            String notificationRequestId = scheduleNotificationBlocking(event);
-            event.setLastNotificationRequestId(notificationRequestId);
-            mEventDao.update(event);
+            WorkersHelper.cancelRequest(event.getLastStartsNotificationRequestId(),
+                    getApplication());
+            WorkersHelper.cancelRequest(event.getLastStartsSoonNotificationRequestId(),
+                    getApplication());
+            scheduleNotificationsAndUpdateBlocking(event);
         }).start();
     }
 
@@ -114,25 +104,26 @@ public class EventDetailsViewModel extends AndroidViewModel {
         mCategoriesCache = categoriesCache;
     }
 
-    @NonNull
+    /*@NonNull
     private String scheduleNotificationBlocking(@NonNull Event event) {
         Date starts = event.getDateTimeStarts();
         Date now = new Date();
 
         Data inputData = new Data.Builder()
-                .putInt(EventNotificationWorker.EVENT_ID_INPUT_DATA_KEY, event.getId())
+                .putInt(EventStartsNotificationWorker.EVENT_ID_INPUT_DATA_KEY, event.getId())
                 .build();
 
         long delayMillis = starts.getTime() - now.getTime();
 
         WorkRequest request = new OneTimeWorkRequest
-                .Builder(EventNotificationWorker.class)
+                .Builder(EventStartsNotificationWorker.class)
                 .setInputData(inputData)
                 .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
                 .setBackoffCriteria(
                         BackoffPolicy.LINEAR,
                         OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
                         TimeUnit.MILLISECONDS)
+                .addTag(Constants.EVENT_NOTIFICATION_WORKER_TAG)
                 .build();
 
         String requestId = request.getId().toString();
@@ -141,5 +132,10 @@ public class EventDetailsViewModel extends AndroidViewModel {
         WorkManager.getInstance(getApplication()).enqueue(request);
 
         return requestId;
+    }*/
+
+    private void scheduleNotificationsAndUpdateBlocking(@NonNull Event event) {
+        WorkersHelper.scheduleEventNotificationsBlocking(event, mNotificationDao, getApplication());
+        mEventDao.update(event);
     }
 }

@@ -13,4 +13,7 @@ public interface ScheduledNotificationDao {
 
     @Query("select * from scheduled_notifications N where N.request_id = :requestId")
     ScheduledNotification getByRequestIdBlocking(String requestId);
+
+    @Query("delete from scheduled_notifications")
+    void deleteAll();
 }

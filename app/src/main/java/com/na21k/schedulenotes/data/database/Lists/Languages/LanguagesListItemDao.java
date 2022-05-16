@@ -19,8 +19,14 @@ public interface LanguagesListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LanguagesListItem languagesListItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<LanguagesListItem> languagesListItems);
+
     @Query("select * from languages_list_items")
     LiveData<List<LanguagesListItem>> getAll();
+
+    @Query("select * from languages_list_items")
+    List<LanguagesListItem> getAllBlocking();
 
     @Query("select * from languages_list_items I where I.text like '%'||:search||'%'" +
             "or I.transcription like '%'||:search||'%'" +
@@ -43,4 +49,7 @@ public interface LanguagesListItemDao {
 
     @Query("delete from languages_list_items where id = :id")
     void delete(int id);
+
+    @Query("delete from languages_list_items")
+    void deleteAll();
 }

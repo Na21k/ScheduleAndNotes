@@ -19,11 +19,17 @@ public interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Category category);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<Category> categories);
+
     @Update
     void update(Category category);
 
     @Query("select * from categories")
     LiveData<List<Category>> getAll();
+
+    @Query("select * from categories")
+    List<Category> getAllBlocking();
 
     @Query("select * from categories C where C.id = :id")
     LiveData<Category> getById(int id);
@@ -36,4 +42,7 @@ public interface CategoryDao {
 
     @Query("delete from categories where id = :id")
     void delete(int id);
+
+    @Query("delete from categories")
+    void deleteAll();
 }

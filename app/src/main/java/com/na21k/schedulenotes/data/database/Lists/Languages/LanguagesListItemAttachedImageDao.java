@@ -16,9 +16,16 @@ public interface LanguagesListItemAttachedImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(LanguagesListItemAttachedImage attachedImage);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<LanguagesListItemAttachedImage> attachedImages);
+
     @Query("select * from languages_list_items_attached_images I " +
             "where I.languages_list_item_id = :listItemId")
     LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId);
+
+    @Query("select * from languages_list_items_attached_images I " +
+            "where I.languages_list_item_id = :listItemId")
+    List<LanguagesListItemAttachedImage> getByListItemIdBlocking(int listItemId);
 
     @Query("select languages_list_item_id from languages_list_items_attached_images")
     LiveData<List<Integer>> getAllListItemIds();

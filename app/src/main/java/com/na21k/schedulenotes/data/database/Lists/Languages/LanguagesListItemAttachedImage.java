@@ -1,6 +1,7 @@
 package com.na21k.schedulenotes.data.database.Lists.Languages;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 
 import androidx.room.ColumnInfo;
@@ -13,6 +14,9 @@ import com.na21k.schedulenotes.data.database.Identifiable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 @Entity(tableName = "languages_list_items_attached_images",
         indices = {@Index(value = "id"), @Index(value = "languages_list_item_id")},
         foreignKeys = {@ForeignKey(entity = LanguagesListItem.class, parentColumns = "id",
@@ -24,10 +28,10 @@ public class LanguagesListItemAttachedImage extends Identifiable {
 
     @NotNull
     @ColumnInfo(name = "binary_data")
-    private Bitmap bitmapData;
+    private transient Bitmap bitmapData;
 
     @Ignore
-    private Bitmap thumbnailBitmap;
+    private transient Bitmap thumbnailBitmap;
 
     @Ignore
     public LanguagesListItemAttachedImage(int id, @NotNull Bitmap bitmapData) {
@@ -55,10 +59,6 @@ public class LanguagesListItemAttachedImage extends Identifiable {
         return bitmapData;
     }
 
-    public void setBitmapData(@NotNull Bitmap bitmapData) {
-        this.bitmapData = bitmapData;
-    }
-
     public Bitmap getThumbnailBitmap() {
         if (thumbnailBitmap == null) {
             int width = bitmapData.getWidth();
@@ -75,5 +75,24 @@ public class LanguagesListItemAttachedImage extends Identifiable {
         }
 
         return thumbnailBitmap;
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException {
+        out.defaultWriteObject();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmapData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+
+        out.writeObject(bytes);
+    }
+
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
+        byte[] bytes = (byte[]) in.readObject();
+        bitmapData = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }

@@ -19,8 +19,14 @@ public interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Note note);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<Note> notes);
+
     @Query("select * from notes")
     LiveData<List<Note>> getAll();
+
+    @Query("select * from notes")
+    List<Note> getAllBlocking();
 
     @Query("select * from notes N where n.id = :id")
     LiveData<Note> getById(int id);
@@ -39,4 +45,7 @@ public interface NoteDao {
 
     @Query("delete from notes where id = :id")
     void delete(int id);
+
+    @Query("delete from notes")
+    void deleteAll();
 }

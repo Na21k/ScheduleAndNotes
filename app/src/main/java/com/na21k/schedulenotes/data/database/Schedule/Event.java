@@ -38,8 +38,11 @@ public class Event extends Identifiable {
     @ColumnInfo(name = "is_hidden", defaultValue = "false")
     private boolean isHidden;
 
-    @ColumnInfo(name = "last_notification_request_id")
-    private String lastNotificationRequestId;
+    @ColumnInfo(name = "last_starts_notification_request_id")
+    private String lastStartsNotificationRequestId;
+
+    @ColumnInfo(name = "last_starts_soon_notification_request_id")
+    private String lastStartsSoonNotificationRequestId;
 
     public Event(int id, @NotNull String title, String details, Integer categoryId,
                  @NotNull Date dateTimeStarts, @NotNull Date dateTimeEnds, boolean isHidden) {
@@ -103,11 +106,19 @@ public class Event extends Identifiable {
         isHidden = hidden;
     }
 
-    public String getLastNotificationRequestId() {
-        return lastNotificationRequestId;
+    public String getLastStartsNotificationRequestId() {
+        return lastStartsNotificationRequestId;
     }
 
-    public void setLastNotificationRequestId(String lastNotificationRequestId) {
-        this.lastNotificationRequestId = lastNotificationRequestId;
+    public void setLastStartsNotificationRequestId(String lastStartsNotificationRequestId) {
+        this.lastStartsNotificationRequestId = lastStartsNotificationRequestId;
+    }
+
+    public String getLastStartsSoonNotificationRequestId() {
+        return lastStartsSoonNotificationRequestId;
+    }
+
+    public void setLastStartsSoonNotificationRequestId(String lastStartsSoonNotificationRequestId) {
+        this.lastStartsSoonNotificationRequestId = lastStartsSoonNotificationRequestId;
     }
 }

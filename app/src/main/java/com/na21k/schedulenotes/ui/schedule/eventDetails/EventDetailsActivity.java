@@ -41,7 +41,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     private EventDetailsViewModel mViewModel;
     private ActivityEventDetailsBinding mBinding;
     private Integer mCurrentEventsCategoryId;
-    private String mLastNotificationRequestId;
+    private String mLastStartsNotificationRequestId;
+    private String mLastStartsSoonNotificationRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     @Override
     public void onChanged(Event event) {
-        mLastNotificationRequestId = event.getLastNotificationRequestId();
+        mLastStartsNotificationRequestId = event.getLastStartsNotificationRequestId();
+        mLastStartsSoonNotificationRequestId = event.getLastStartsSoonNotificationRequestId();
         mBinding.eventTitle.setText(event.getTitle());
         mBinding.eventDetails.setText(event.getDetails());
         mCurrentEventsCategoryId = event.getCategoryId();
@@ -168,7 +170,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
         Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
                 mCurrentEventsCategoryId, starts, ends, isHidden);
-        event.setLastNotificationRequestId(mLastNotificationRequestId);
+        event.setLastStartsNotificationRequestId(mLastStartsNotificationRequestId);
+        event.setLastStartsSoonNotificationRequestId(mLastStartsSoonNotificationRequestId);
 
         if (isEditing()) {
             mViewModel.updateCurrentEvent(event);

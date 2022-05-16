@@ -19,8 +19,14 @@ public interface MusicListItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MusicListItem musicListItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<MusicListItem> musicListItems);
+
     @Query("select * from music_list_items")
     LiveData<List<MusicListItem>> getAll();
+
+    @Query("select * from music_list_items")
+    List<MusicListItem> getAllBlocking();
 
     @Query("select * from music_list_items I where I.text like '%'||:search||'%'")
     LiveData<List<MusicListItem>> search(String search);
@@ -36,4 +42,7 @@ public interface MusicListItemDao {
 
     @Delete
     void delete(MusicListItem musicListItem);
+
+    @Query("delete from music_list_items")
+    void deleteAll();
 }
