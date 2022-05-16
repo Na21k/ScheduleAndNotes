@@ -129,9 +129,10 @@ public class NotificationsHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
+        intent.putExtras(bundle);
 
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE, bundle);
+        return PendingIntent.getActivity(context, eventId, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private static PendingIntent getMovieNotificationPendingIntent(Context context) {

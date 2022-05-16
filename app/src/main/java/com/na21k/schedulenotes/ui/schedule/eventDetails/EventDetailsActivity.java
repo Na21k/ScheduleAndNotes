@@ -63,13 +63,6 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         setPickersListeners();
         Bundle bundle = getIntent().getExtras();
 
-        //when navigated from notification
-        //but the event has been deleted after the notification fired
-        if (bundle == null) {
-            finish();
-            return;
-        }
-
         if (isEditing()) {
             setTitle(R.string.title_edit_event);
 
