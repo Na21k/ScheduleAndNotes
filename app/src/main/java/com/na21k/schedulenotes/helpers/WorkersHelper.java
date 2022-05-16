@@ -58,6 +58,11 @@ public class WorkersHelper {
         Date starts = event.getDateTimeStarts();
         Date startsSoon = DateTimeHelper.addMinutes(starts, -30);
         Date now = new Date();
+
+        if (now.after(starts)) {
+            return;
+        }
+
         long startsDelayMillis = starts.getTime() - now.getTime();
         long startsSoonDelayMillis = startsSoon.getTime() - now.getTime();
 

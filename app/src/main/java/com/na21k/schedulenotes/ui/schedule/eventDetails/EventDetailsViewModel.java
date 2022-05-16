@@ -104,36 +104,6 @@ public class EventDetailsViewModel extends AndroidViewModel {
         mCategoriesCache = categoriesCache;
     }
 
-    /*@NonNull
-    private String scheduleNotificationBlocking(@NonNull Event event) {
-        Date starts = event.getDateTimeStarts();
-        Date now = new Date();
-
-        Data inputData = new Data.Builder()
-                .putInt(EventStartsNotificationWorker.EVENT_ID_INPUT_DATA_KEY, event.getId())
-                .build();
-
-        long delayMillis = starts.getTime() - now.getTime();
-
-        WorkRequest request = new OneTimeWorkRequest
-                .Builder(EventStartsNotificationWorker.class)
-                .setInputData(inputData)
-                .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
-                .setBackoffCriteria(
-                        BackoffPolicy.LINEAR,
-                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                        TimeUnit.MILLISECONDS)
-                .addTag(Constants.EVENT_NOTIFICATION_WORKER_TAG)
-                .build();
-
-        String requestId = request.getId().toString();
-        mNotificationDao.insert(new ScheduledNotification(0, requestId));
-
-        WorkManager.getInstance(getApplication()).enqueue(request);
-
-        return requestId;
-    }*/
-
     private void scheduleNotificationsAndUpdateBlocking(@NonNull Event event) {
         WorkersHelper.scheduleEventNotificationsBlocking(event, mNotificationDao, getApplication());
         mEventDao.update(event);
