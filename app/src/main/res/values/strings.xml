@@ -9,6 +9,7 @@
     <string name="search">Search</string>
     <string name="proceed">Proceed</string>
     <string name="oops_aletr_title">Oops …</string>
+    <string name="please_wait">Please wait</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
     <string name="title_home">Home</string>
@@ -75,6 +76,7 @@
     <string name="importing_from_backup_toast">Importing from backup …</string>
     <string name="successfully_imported_from_backup_toast">Successfully imported from backup</string>
     <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
+    <string name="images_processing_might_take_long_time">Attached images may take a long time to process</string>
 
     <!--Snackbar and Toast messages-->
     <string name="unexpected_error">An unexpected error occurred</string>

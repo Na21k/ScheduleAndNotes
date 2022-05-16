@@ -166,4 +166,6 @@
     <string name="import_alert_title">Повідомлення про імпорт</string>
     <string name="import_alert_message">Імпорт передбачає втрату всіх існуючих даних. Ви впевнені, що бажаєте продовжити?</string>
     <string name="proceed">Продовжити</string>
+    <string name="please_wait">Будь ласка, зачекайте</string>
+    <string name="images_processing_might_take_long_time">Обробка прикріплених зображень може зайняти багато часу</string>
 </resources>
