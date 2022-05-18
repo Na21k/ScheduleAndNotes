@@ -60,6 +60,9 @@ public class WorkersHelper {
         Date now = new Date();
 
         if (now.after(starts)) {
+            event.setLastStartsNotificationRequestId(null);
+            event.setLastStartsSoonNotificationRequestId(null);
+
             return;
         }
 

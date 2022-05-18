@@ -35,7 +35,7 @@ import com.na21k.schedulenotes.data.database.Schedule.EventDao;
         UserDefinedList.class, UserDefinedListItem.class,
         ShoppingListItem.class, MoviesListItem.class, MusicListItem.class,
         LanguagesListItem.class, LanguagesListItemAttachedImage.class},
-        version = 6, exportSchema = false)
+        version = 7, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -69,7 +69,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (appDatabaseInstance == null) {
                     appDatabaseInstance = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "app_database")
-                            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5).build();
+                            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6).build();
                 }
             }
         }
