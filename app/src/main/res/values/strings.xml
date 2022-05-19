@@ -55,6 +55,13 @@
     <string name="movie_notification_text">You wanted to watch this movie. Maybe it\'s time to do it?</string>
     <string name="music_notification_text">You wanted to check this (song/artist/album/etc.) out. Maybe it\'s time to do it?</string>
 
+    <!--Notification channels-->
+    <string name="schedule_events_notification_channel_name">Schedule events</string>
+    <string name="schedule_events_notification_channel_description">Schedule events notifications</string>
+    <string name="languages_list_notification_channel_name">Vocabulary List</string>
+    <string name="movies_list_notification_channel_name">Movies List</string>
+    <string name="music_list_notification_channel_name">Music List</string>
+
     <!--Other preferences-->
     <string name="languages_list_sorting_order_title">Vocabulary List sorting order</string>
     <string name="languages_list_sorting_order_word">By word</string>

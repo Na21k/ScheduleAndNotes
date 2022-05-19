@@ -168,4 +168,9 @@
     <string name="proceed">Продовжити</string>
     <string name="please_wait">Будь ласка, зачекайте</string>
     <string name="images_processing_might_take_long_time">Обробка прикріплених зображень може зайняти багато часу</string>
+    <string name="languages_list_notification_channel_name">Список-словник</string>
+    <string name="movies_list_notification_channel_name">Список фільмів</string>
+    <string name="music_list_notification_channel_name">Список музики</string>
+    <string name="schedule_events_notification_channel_name">Події розкладу</string>
+    <string name="schedule_events_notification_channel_description">Сповіщення подій розкладу</string>
 </resources>

@@ -3,6 +3,7 @@ package com.na21k.schedulenotes.helpers;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,8 +25,10 @@ public class NotificationsHelper {
     private static final String LANGUAGES_LIST_NOTIFICATIONS_CHANNEL_ID = "languagesListNotificationsChannelId";
 
     public static void addEventsNotificationChannel(Context context) {
-        String name = "Events";
-        String description = "Schedule events Notifications";
+        Resources resources = context.getResources();
+
+        String name = resources.getString(R.string.schedule_events_notification_channel_name);
+        String description = resources.getString(R.string.schedule_events_notification_channel_description);
         int importance = NotificationManagerCompat.IMPORTANCE_HIGH;
 
         NotificationChannelCompat notificationChannel = new NotificationChannelCompat
@@ -41,7 +44,9 @@ public class NotificationsHelper {
     }
 
     public static void addMoviesNotificationChannel(Context context) {
-        String name = "Movies List";
+        Resources resources = context.getResources();
+
+        String name = resources.getString(R.string.movies_list_notification_channel_name);
         int importance = NotificationManagerCompat.IMPORTANCE_LOW;
 
         NotificationChannelCompat notificationChannel = new NotificationChannelCompat
@@ -54,7 +59,9 @@ public class NotificationsHelper {
     }
 
     public static void addMusicNotificationChannel(Context context) {
-        String name = "Music List";
+        Resources resources = context.getResources();
+
+        String name = resources.getString(R.string.music_list_notification_channel_name);
         int importance = NotificationManagerCompat.IMPORTANCE_LOW;
 
         NotificationChannelCompat notificationChannel = new NotificationChannelCompat
@@ -67,7 +74,9 @@ public class NotificationsHelper {
     }
 
     public static void addLanguagesListNotificationChannel(Context context) {
-        String name = "Vocabulary List";
+        Resources resources = context.getResources();
+
+        String name = resources.getString(R.string.languages_list_notification_channel_name);
         int importance = NotificationManagerCompat.IMPORTANCE_LOW;
 
         NotificationChannelCompat notificationChannel = new NotificationChannelCompat
