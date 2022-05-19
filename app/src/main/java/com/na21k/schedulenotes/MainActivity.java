@@ -13,7 +13,6 @@ import androidx.work.BackoffPolicy;
 import androidx.work.ListenableWorker;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.na21k.schedulenotes.databinding.ActivityMainBinding;
@@ -72,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
         long delay = notifyTime.getTime() - now.getTime();
 
-        WorkRequest movieNotificationWorkRequest = getMovieNotificationWorkRequest(delay);
-        WorkRequest musicNotificationWorkRequest = getMusicNotificationWorkRequest(delay);
-        WorkRequest wordNotificationWorkRequest = getWordOrPhraseNotificationWorkRequest(delay);
+        PeriodicWorkRequest movieNotificationWorkRequest = getMovieNotificationWorkRequest(delay);
+        PeriodicWorkRequest musicNotificationWorkRequest = getMusicNotificationWorkRequest(delay);
+        PeriodicWorkRequest wordNotificationWorkRequest = getWordOrPhraseNotificationWorkRequest(delay);
 
         WorkManager manager = WorkManager.getInstance(this);
 
@@ -84,19 +83,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private static WorkRequest getMovieNotificationWorkRequest(long delay) {
+    private static PeriodicWorkRequest getMovieNotificationWorkRequest(long delay) {
         return getRecommendationsWorkRequestBuilderForWorker(MovieNotificationWorker.class, delay)
                 .build();
     }
 
     @NonNull
-    private static WorkRequest getMusicNotificationWorkRequest(long delay) {
+    private static PeriodicWorkRequest getMusicNotificationWorkRequest(long delay) {
         return getRecommendationsWorkRequestBuilderForWorker(MusicNotificationWorker.class, delay)
                 .build();
     }
 
     @NonNull
-    private static WorkRequest getWordOrPhraseNotificationWorkRequest(long delay) {
+    private static PeriodicWorkRequest getWordOrPhraseNotificationWorkRequest(long delay) {
         return getRecommendationsWorkRequestBuilderForWorker(WordOrPhraseNotificationWorker.class,
                 delay)
                 .build();
@@ -105,9 +104,7 @@ public class MainActivity extends AppCompatActivity {
     @NonNull
     private static PeriodicWorkRequest.Builder getRecommendationsWorkRequestBuilderForWorker(
             @NonNull Class<? extends ListenableWorker> workerClass, long delayMillis) {
-        return new PeriodicWorkRequest.Builder(workerClass,
-                1, TimeUnit.DAYS,
-                1, TimeUnit.HOURS)
+        return new PeriodicWorkRequest.Builder(workerClass, 1, TimeUnit.DAYS)
                 .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
                 .setBackoffCriteria(
                         BackoffPolicy.LINEAR,

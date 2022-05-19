@@ -1,6 +1,7 @@
 package com.na21k.schedulenotes;
 
 import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
@@ -33,7 +34,8 @@ public class Constants {
     public static final String RECOMMENDATIONS_WORKER_TAG = "recommendationsWorkerTag";
     public static final String EVENT_NOTIFICATION_WORKER_TAG = "eventNotificationWorkerTag";
 
+    @NonNull
     public static Date getRecommendationsTime() {
-        return DateTimeHelper.addHours(DateTimeHelper.truncateToDateOnly(new Date()), 17);
+        return DateTimeHelper.addHours(DateTimeHelper.truncateToDateOnly(new Date()), 15);
     }
 }
