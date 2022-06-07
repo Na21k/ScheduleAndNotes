@@ -166,9 +166,10 @@ public class NotificationsHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY, wordId);
+        intent.putExtras(bundle);
 
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE, bundle);
+        return PendingIntent.getActivity(context, wordId, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @NonNull
