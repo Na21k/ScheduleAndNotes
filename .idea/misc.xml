@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_add_24.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_add_photo_alternate_192.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/drawable/ic_baseline_file_download_24.xml" value="0.1835" />
@@ -110,6 +111,8 @@
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/simple_list_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/user_defined_list_item_long_press_menu.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/menu/word_or_phrase_details_menu.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1835" />
+        <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1835" />
         <entry key="..\:/Users/hulev/Documents/AndroidStudioProjects/ScheduleAndNotes/app/src/main/res/xml/root_preferences.xml" value="0.27291666666666664" />
       </map>
     </option>
