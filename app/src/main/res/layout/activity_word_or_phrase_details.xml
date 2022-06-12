@@ -65,9 +65,9 @@
                     android:layout_marginTop="16dp"
                     android:background="@null"
                     android:hint="@string/explanation"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="flagNavigateNext"
                     android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:textSize="20sp" />
 
                 <EditText
