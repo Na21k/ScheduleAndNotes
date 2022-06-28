@@ -16,4 +16,19 @@
         android:icon="@drawable/ic_category_crossed_out_24"
         android:title="@string/remove_category_menu_item" />
 
+    <item
+        android:id="@+id/event_postpone_to_next_day_menu_item"
+        android:icon="@drawable/ic_clock_24"
+        android:title="@string/postpone_to_next_day_menu_item" />
+
+    <item
+        android:id="@+id/event_postpone_to_tomorrow_menu_item"
+        android:icon="@drawable/ic_clock_24"
+        android:title="@string/postpone_to_tomorrow_menu_item" />
+
+    <item
+        android:id="@+id/event_postpone_to_date_menu_item"
+        android:icon="@drawable/ic_clock_24"
+        android:title="@string/postpone_to_date_menu_item" />
+
 </menu>

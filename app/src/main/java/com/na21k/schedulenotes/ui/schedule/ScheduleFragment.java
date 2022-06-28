@@ -344,7 +344,7 @@ public class ScheduleFragment extends Fragment
             builder.setPositiveButton(R.string.delete, (dialog, which) -> {
                 mViewModel.deleteEvent(event);
                 Snackbar.make(mBinding.getRoot(), R.string.event_deleted_snackbar,
-                        Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                                Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                         .setAction(R.string.undo, v -> mViewModel.createEvent(event)).show();
             });
             builder.setNegativeButton(R.string.keep, (dialog, which) -> {
@@ -352,6 +352,32 @@ public class ScheduleFragment extends Fragment
 
             builder.show();
         }
+    }
+
+    @Override
+    public void onPostponeToNextDayRequested(Event event) {
+        mViewModel.postponeToNextDay(event);
+        jumpToNextDay();
+    }
+
+    @Override
+    public void onPostponeToTomorrowRequested(Event event) {
+        mViewModel.postponeToTomorrow(event);
+
+        Date tomorrow = DateTimeHelper.addDays(new Date(), 1);
+        jumpToDate(tomorrow);
+    }
+
+    @Override
+    public void onPostponeRequested(Event event) {
+        createDatePicker((view, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            Date date = calendar.getTime();
+
+            mViewModel.postponeTo(event, date);
+            jumpToDate(date);
+        }).show();
     }
 
     @Override

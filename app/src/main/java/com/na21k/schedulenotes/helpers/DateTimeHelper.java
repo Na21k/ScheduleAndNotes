@@ -67,6 +67,14 @@ public class DateTimeHelper {
         return calendar.getTime();
     }
 
+    public static Date addDates(Date a, Date b) {
+        long aMillis = a.getTime();
+        long bMillis = b.getTime();
+        long totalMillis = aMillis + bMillis;
+
+        return new Date(totalMillis);
+    }
+
     public static Date getTimeOnly(Date dateTime) {
         Calendar calendarDateTime = Calendar.getInstance();
         calendarDateTime.setTime(dateTime);
@@ -78,5 +86,13 @@ public class DateTimeHelper {
         long millisDiff = calendarDateTime.getTimeInMillis() - calendarDateOnly.getTimeInMillis();
 
         return new Date(millisDiff);
+    }
+
+    public static Date getDifference(Date a, Date b) {
+        long aMillis = a.getTime();
+        long bMillis = b.getTime();
+        long diff = bMillis - aMillis;
+
+        return new Date(diff);
     }
 }

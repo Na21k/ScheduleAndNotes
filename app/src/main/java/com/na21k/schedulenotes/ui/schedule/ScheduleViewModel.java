@@ -10,6 +10,7 @@ import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
+import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.WorkersHelper;
 
 import java.util.Date;
@@ -58,6 +59,44 @@ public class ScheduleViewModel extends AndroidViewModel {
                 getApplication());
 
         new Thread(() -> mEventDao.delete(event)).start();
+    }
+
+    public void postponeToNextDay(Event event) {
+        Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
+        Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);
+
+        postponeTo(event, newStartsDateOnly);
+    }
+
+    public void postponeToTomorrow(Event event) {
+        Date tomorrow = DateTimeHelper.addDays(new Date(), 1);
+        Date tomorrowDateOnly = DateTimeHelper.truncateToDateOnly(tomorrow);
+
+        postponeTo(event, tomorrowDateOnly);
+    }
+
+    public void postponeTo(Event event, Date dateOnly) {
+        Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(dateOnly);
+        Date oldStartsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeStarts());
+        Date oldEndsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeEnds());
+
+        Date postponeDaysDiff = DateTimeHelper.getDifference(oldStartsDateOnly, newStartsDateOnly);
+        Date newEndsDateOnly = DateTimeHelper.addDates(oldEndsDateOnly, postponeDaysDiff);
+
+        Date startsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeStarts());
+        Date endsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeEnds());
+
+        Date newDateTimeStarts = DateTimeHelper.addDates(newStartsDateOnly, startsTimeOnly);
+        Date newDateTimeEnds = DateTimeHelper.addDates(newEndsDateOnly, endsTimeOnly);
+
+        postponeTo(event, newDateTimeStarts, newDateTimeEnds);
+    }
+
+    private void postponeTo(Event event, Date newDateTimeStarts, Date newDateTimeEnds) {
+        event.setDateTimeStarts(newDateTimeStarts);
+        event.setDateTimeEnds(newDateTimeEnds);
+
+        updateEvent(event);
     }
 
     public List<Event> getEventsCache() {

@@ -110,6 +110,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 case R.id.event_remove_category_menu_item:
                     mOnEventActionRequestedListener.onRemoveCategoryRequested(mEvent);
                     return true;
+                case R.id.event_postpone_to_next_day_menu_item:
+                    mOnEventActionRequestedListener.onPostponeToNextDayRequested(mEvent);
+                    return true;
+                case R.id.event_postpone_to_tomorrow_menu_item:
+                    mOnEventActionRequestedListener.onPostponeToTomorrowRequested(mEvent);
+                    return true;
+                case R.id.event_postpone_to_date_menu_item:
+                    mOnEventActionRequestedListener.onPostponeRequested(mEvent);
+                    return true;
                 default:
                     return false;
             }
@@ -155,5 +164,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         void onEventDeletionRequested(Event event);
 
         void onRemoveCategoryRequested(Event event);
+
+        void onPostponeToNextDayRequested(Event event);
+
+        void onPostponeToTomorrowRequested(Event event);
+
+        void onPostponeRequested(Event event);
     }
 }

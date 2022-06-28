@@ -130,6 +130,9 @@
     <string name="jump_to_today_snackbar">Jumping to Today …</string>
     <string name="event_deleted_snackbar">The event has been deleted</string>
     <string name="hidden_event">Hidden event</string>
+    <string name="postpone_to_next_day_menu_item">Postpone to the next day</string>
+    <string name="postpone_to_tomorrow_menu_item">Postpone to tomorrow</string>
+    <string name="postpone_to_date_menu_item">Postpone to…</string>
 
     <!--Notes and Schedule (shared)-->
     <string name="pick_category_dialog_title">Pick a category</string>

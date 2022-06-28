@@ -173,4 +173,7 @@
     <string name="music_list_notification_channel_name">Список музики</string>
     <string name="schedule_events_notification_channel_name">Події розкладу</string>
     <string name="schedule_events_notification_channel_description">Сповіщення подій розкладу</string>
+    <string name="postpone_to_next_day_menu_item">Перенести на наступний день</string>
+    <string name="postpone_to_tomorrow_menu_item">Перенести на завтра</string>
+    <string name="postpone_to_date_menu_item">Перенести на…</string>
 </resources>
