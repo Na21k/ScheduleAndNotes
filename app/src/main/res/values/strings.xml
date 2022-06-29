@@ -199,6 +199,8 @@
     <string name="total_price">Total price:</string>
     <string name="price_not_set">Price not set</string>
     <string name="count_formatted" translatable="false">x%1$d</string>
+    <string name="clear_checked_dialog_button">Clear checked</string>
+    <string name="list_cleared_of_checked_items_snackbar">Cleared of checked items</string>
 
     <!--Languages list-->
     <string name="title_create_item">Add list item</string>

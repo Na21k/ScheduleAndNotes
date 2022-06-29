@@ -70,7 +70,7 @@ public class ShoppingListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.shopping_list_menu, menu);
 
         MenuItem menuItem = menu.findItem(R.id.menu_search);
@@ -132,6 +132,12 @@ public class ShoppingListActivity extends AppCompatActivity
         builder.setPositiveButton(R.string.clear_list_dialog_button, (dialog, which) -> {
             mViewModel.deleteAll();
             Snackbar.make(mBinding.getRoot(), R.string.list_cleared_snackbar, 3000)
+                    .setAnchorView(mBinding.itemAdditionLinearLayout).show();
+        });
+        builder.setNeutralButton(R.string.clear_checked_dialog_button, (dialog, which) -> {
+            mViewModel.deleteChecked();
+            Snackbar.make(mBinding.getRoot(), R.string.list_cleared_of_checked_items_snackbar,
+                            3000)
                     .setAnchorView(mBinding.itemAdditionLinearLayout).show();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -311,7 +317,7 @@ public class ShoppingListActivity extends AppCompatActivity
     public void onShoppingItemDeletionRequested(ShoppingListItem item) {
         mViewModel.delete(item);
         Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
-                Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                        Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                 .setAnchorView(mBinding.itemAdditionLinearLayout)
                 .setAction(R.string.undo, v -> mViewModel.addNew(item)).show();
     }

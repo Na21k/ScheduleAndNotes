@@ -42,4 +42,7 @@ public interface ShoppingListItemDao {
 
     @Query("delete from shopping_list_items")
     void deleteAll();
+
+    @Query("delete from shopping_list_items where is_checked")
+    void deleteChecked();
 }
