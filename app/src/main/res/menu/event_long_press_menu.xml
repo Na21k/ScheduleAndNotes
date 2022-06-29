@@ -6,29 +6,34 @@
         android:icon="@drawable/ic_delete_24"
         android:title="@string/delete" />
 
-    <item
-        android:id="@+id/event_set_category_menu_item"
-        android:icon="@drawable/ic_categories_24"
-        android:title="@string/set_category_menu_item" />
+    <group android:id="@+id/categorizing_group">
+        <item
+            android:id="@+id/event_set_category_menu_item"
+            android:icon="@drawable/ic_categories_24"
+            android:title="@string/set_category_menu_item" />
 
-    <item
-        android:id="@+id/event_remove_category_menu_item"
-        android:icon="@drawable/ic_category_crossed_out_24"
-        android:title="@string/remove_category_menu_item" />
+        <item
+            android:id="@+id/event_remove_category_menu_item"
+            android:icon="@drawable/ic_category_crossed_out_24"
+            android:title="@string/remove_category_menu_item" />
+    </group>
 
-    <item
-        android:id="@+id/event_postpone_to_next_day_menu_item"
-        android:icon="@drawable/ic_clock_24"
-        android:title="@string/postpone_to_next_day_menu_item" />
+    <group android:id="@+id/postpone_group">
 
-    <item
-        android:id="@+id/event_postpone_to_tomorrow_menu_item"
-        android:icon="@drawable/ic_clock_24"
-        android:title="@string/postpone_to_tomorrow_menu_item" />
+        <item
+            android:id="@+id/event_postpone_to_next_day_menu_item"
+            android:icon="@drawable/ic_clock_24"
+            android:title="@string/postpone_to_next_day_menu_item" />
 
-    <item
-        android:id="@+id/event_postpone_to_date_menu_item"
-        android:icon="@drawable/ic_clock_24"
-        android:title="@string/postpone_to_date_menu_item" />
+        <item
+            android:id="@+id/event_postpone_to_tomorrow_menu_item"
+            android:icon="@drawable/ic_clock_24"
+            android:title="@string/postpone_to_tomorrow_menu_item" />
 
+        <item
+            android:id="@+id/event_postpone_to_date_menu_item"
+            android:icon="@drawable/ic_clock_24"
+            android:title="@string/postpone_to_date_menu_item" />
+
+    </group>
 </menu>

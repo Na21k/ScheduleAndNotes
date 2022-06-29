@@ -6,14 +6,15 @@
         android:icon="@drawable/ic_delete_24"
         android:title="@string/delete" />
 
-    <item
-        android:id="@+id/note_set_category_menu_item"
-        android:icon="@drawable/ic_categories_24"
-        android:title="@string/set_category_menu_item" />
+    <group android:id="@+id/categorizing_group">
+        <item
+            android:id="@+id/note_set_category_menu_item"
+            android:icon="@drawable/ic_categories_24"
+            android:title="@string/set_category_menu_item" />
 
-    <item
-        android:id="@+id/note_remove_category_menu_item"
-        android:icon="@drawable/ic_category_crossed_out_24"
-        android:title="@string/remove_category_menu_item" />
-
+        <item
+            android:id="@+id/note_remove_category_menu_item"
+            android:icon="@drawable/ic_category_crossed_out_24"
+            android:title="@string/remove_category_menu_item" />
+    </group>
 </menu>

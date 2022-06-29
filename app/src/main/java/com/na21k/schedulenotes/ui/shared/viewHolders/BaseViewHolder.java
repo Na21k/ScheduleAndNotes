@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.core.view.MenuCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class BaseViewHolder extends RecyclerView.ViewHolder
@@ -32,6 +33,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder
         if (mContextMenuRes != 0) {
             MenuInflater menuInflater = new MenuInflater(v.getContext());
             menuInflater.inflate(mContextMenuRes, menu);
+            MenuCompat.setGroupDividerEnabled(menu, true);
 
             if (mContextMenuHeaderRes != 0) {
                 menu.setHeaderTitle(mContextMenuHeaderRes);
