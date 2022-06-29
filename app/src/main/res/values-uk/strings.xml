@@ -161,7 +161,7 @@
     <string name="event_started_title">%1$s - почалось</string>
     <string name="event_starts_soon_title">%1$s - незабаром</string>
     <string name="movie_notification_text">Ви хотіли переглянути цей фільм. Можливо, саме час це зробити?</string>
-    <string name="music_notification_text">Ви планували прослухати цю (пісню/виконавця/альбом/ін.). Можливо, саме час це зробити?</string>
+    <string name="music_notification_text">Ви планували прослухати це. Можливо, зараз саме час?</string>
     <string name="successfully_imported_from_backup_toast">Успішно імпортовано з резервної копії</string>
     <string name="import_alert_title">Повідомлення про імпорт</string>
     <string name="import_alert_message">Імпорт передбачає втрату всіх існуючих даних. Ви впевнені, що бажаєте продовжити?</string>
