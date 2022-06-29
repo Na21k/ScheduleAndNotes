@@ -286,6 +286,9 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         calendar.set(year, month, dayOfMonth);
         Date newDate = calendar.getTime();
 
+        Date diffDateOnly = DateTimeHelper.getDifferenceDateOnly(oldDate, newDate);
+        adjustDateTimeEndsBy(diffDateOnly);
+
         mViewModel.setSelectedDateTimeStarts(newDate);
         mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(newDate));
     }
@@ -309,6 +312,9 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         calendar.set(Calendar.MINUTE, minute);
         Date newDate = calendar.getTime();
 
+        Date diffTimeOnly = DateTimeHelper.getDifferenceTimeOnly(oldDate, newDate);
+        adjustDateTimeEndsBy(diffTimeOnly);
+
         mViewModel.setSelectedDateTimeStarts(newDate);
         mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
     }
@@ -323,6 +329,27 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
         mViewModel.setSelectedDateTimeEnds(newDate);
         mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
+    }
+
+    private Date getDifferenceDateOnly(Date a, Date b) {
+        Date dateTimeStarts = mViewModel.getSelectedDateTimeStarts();
+        Date dateTimeEnds = mViewModel.getSelectedDateTimeEnds();
+        Date dateStarts = DateTimeHelper.truncateToDateOnly(dateTimeStarts);
+        Date dateEnds = DateTimeHelper.truncateToDateOnly(dateTimeEnds);
+
+        return DateTimeHelper.getDifference(dateStarts, dateEnds);
+    }
+
+    private void adjustDateTimeEndsBy(Date spanLongevity) {
+        Date dateTimeEnds = mViewModel.getSelectedDateTimeEnds();
+
+        assert dateTimeEnds != null;
+
+        Date newDateTimeEnds = DateTimeHelper.addDates(dateTimeEnds, spanLongevity);
+        mViewModel.setSelectedDateTimeEnds(newDateTimeEnds);
+
+        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(newDateTimeEnds));
+        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDateTimeEnds));
     }
 
     private boolean isEditing() {
