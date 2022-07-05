@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:icon="@mipmap/ic_shopping_list_shortcut"
+        android:roundIcon="@mipmap/ic_shopping_list_shortcut_round"
+        android:shortcutId="shopping_list_shortcut"
+        android:shortcutShortLabel="@string/title_shopping_list">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.na21k.schedulenotes.ui.lists.shopping.ShoppingListActivity"
+            android:targetPackage="com.na21k.schedulenotes" />
+    </shortcut>
+</shortcuts>
