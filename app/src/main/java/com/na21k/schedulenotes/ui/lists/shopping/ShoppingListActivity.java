@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -52,6 +53,7 @@ public class ShoppingListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ShortcutManagerCompat.reportShortcutUsed(this, "shopping_list_shortcut");
 
         mViewModel = new ViewModelProvider(this).get(ShoppingListViewModel.class);
         mBinding = ActivityShoppingListBinding.inflate(getLayoutInflater());
