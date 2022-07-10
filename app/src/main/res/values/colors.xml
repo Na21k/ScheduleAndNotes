@@ -11,7 +11,7 @@
     <color name="colorPrimary">#FF6544</color>
     <color name="colorPrimaryVariant">#DF583C</color>
     <color name="colorAccent">#41D5F4</color>
-    <color name="shadow_color">#000000</color>
+    <color name="shadow_color">#8E8E8E</color>
     <color name="window_background">#FFFFFF</color>
     <color name="navigation_bar">#FFFFFF</color>
     <color name="snackbar">#FF6544</color>

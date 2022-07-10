@@ -12,22 +12,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TableLayout
             android:id="@+id/default_lists_area"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingTop="@dimen/page_margin"
+                android:paddingBottom="10dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/movies_list_btn_card"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_margin="@dimen/page_margin"
                     android:layout_weight="0.5"
                     android:clickable="true"
                     android:focusable="true"
@@ -36,8 +34,7 @@
                     android:outlineSpotShadowColor="@color/shadow_color"
                     app:cardBackgroundColor="@color/list_movies"
                     app:cardCornerRadius="@dimen/corner_radius"
-                    app:cardElevation="@dimen/elevation"
-                    tools:ignore="RtlHardcoded">
+                    app:cardElevation="@dimen/elevation">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -52,12 +49,11 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <Space android:layout_width="@dimen/page_margin" />
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/music_list_btn_card"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_margin="@dimen/page_margin"
                     android:layout_weight="0.5"
                     android:clickable="true"
                     android:focusable="true"
@@ -66,8 +62,7 @@
                     android:outlineSpotShadowColor="@color/shadow_color"
                     app:cardBackgroundColor="@color/list_music"
                     app:cardCornerRadius="@dimen/corner_radius"
-                    app:cardElevation="@dimen/elevation"
-                    tools:ignore="RtlHardcoded">
+                    app:cardElevation="@dimen/elevation">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -81,19 +76,17 @@
                         app:drawableLeftCompat="@drawable/ic_music_note_24" />
 
                 </androidx.cardview.widget.CardView>
+            </TableRow>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingTop="6dp"
+                android:paddingBottom="10dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/shopping_list_btn_card"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_margin="@dimen/page_margin"
                     android:layout_weight="0.5"
                     android:clickable="true"
                     android:focusable="true"
@@ -102,8 +95,7 @@
                     android:outlineSpotShadowColor="@color/shadow_color"
                     app:cardBackgroundColor="@color/list_shopping"
                     app:cardCornerRadius="@dimen/corner_radius"
-                    app:cardElevation="@dimen/elevation"
-                    tools:ignore="RtlHardcoded">
+                    app:cardElevation="@dimen/elevation">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -118,12 +110,11 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <Space android:layout_width="@dimen/page_margin" />
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/languages_list_btn_card"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_margin="@dimen/page_margin"
                     android:layout_weight="0.5"
                     android:clickable="true"
                     android:focusable="true"
@@ -132,8 +123,7 @@
                     android:outlineSpotShadowColor="@color/shadow_color"
                     app:cardBackgroundColor="@color/list_languages"
                     app:cardCornerRadius="@dimen/corner_radius"
-                    app:cardElevation="@dimen/elevation"
-                    tools:ignore="RtlHardcoded">
+                    app:cardElevation="@dimen/elevation">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -147,10 +137,9 @@
                         app:drawableLeftCompat="@drawable/ic_translate_24" />
 
                 </androidx.cardview.widget.CardView>
+            </TableRow>
 
-            </LinearLayout>
-
-        </LinearLayout>
+        </TableLayout>
 
         <include
             android:id="@+id/included_list"
