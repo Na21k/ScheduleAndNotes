@@ -10,18 +10,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
         android:orientation="vertical">
 
         <TableLayout
             android:id="@+id/default_lists_area"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/page_margin"
+            android:layout_marginBottom="8dp"
+            android:clipChildren="false">
 
-            <TableRow
-                android:clipToPadding="false"
-                android:paddingHorizontal="@dimen/page_margin"
-                android:paddingTop="@dimen/page_margin"
-                android:paddingBottom="10dp">
+            <TableRow>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/movies_list_btn_card"
@@ -78,11 +79,9 @@
                 </androidx.cardview.widget.CardView>
             </TableRow>
 
-            <TableRow
-                android:clipToPadding="false"
-                android:paddingHorizontal="@dimen/page_margin"
-                android:paddingTop="6dp"
-                android:paddingBottom="10dp">
+            <Space android:layout_height="@dimen/page_margin" />
+
+            <TableRow>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/shopping_list_btn_card"

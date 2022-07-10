@@ -5,7 +5,7 @@
     <color name="colorAccent">#3CC4E1</color>
     <color name="window_background">#202124</color>
     <color name="navigation_bar">#3A3B3D</color>
-    <color name="shadow_color">#AFAFAF</color>
+    <color name="shadow_color">#C4C4C4</color>
     <color name="snackbar">#787878</color>
 
     <color name="check_color">#1ECF5F</color>
