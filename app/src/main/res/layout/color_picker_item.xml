@@ -18,7 +18,7 @@
         android:outlineSpotShadowColor="@color/shadow_color"
         app:cardCornerRadius="@dimen/corner_radius"
         app:cardElevation="@dimen/elevation"
-        tools:cardBackgroundColor="@color/colorAccent" />
+        tools:cardBackgroundColor="@color/colorPrimary" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/color_picker_item_dark_color_card"
@@ -29,7 +29,7 @@
         android:outlineSpotShadowColor="@color/shadow_color"
         app:cardCornerRadius="@dimen/corner_radius"
         app:cardElevation="@dimen/elevation"
-        tools:cardBackgroundColor="@color/colorAccentDark" />
+        tools:cardBackgroundColor="@color/colorPrimaryVariant" />
 
     <ImageView
         android:id="@+id/color_picker_item_image_when_selected"
