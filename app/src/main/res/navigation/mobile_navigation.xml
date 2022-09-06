@@ -28,10 +28,6 @@
         android:name="com.na21k.schedulenotes.ui.categories.CategoriesFragment"
         android:label="@string/title_categories"
         tools:layout="@layout/categories_fragment" />
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.na21k.schedulenotes.ui.settings.SettingsFragment"
-        android:label="@string/title_settings" />
 
     <!--    <fragment
             android:id="@+id/navigation_home"
