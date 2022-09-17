@@ -1,110 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:clipChildren="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="@dimen/page_margin"
-                android:paddingTop="@dimen/page_margin"
-                android:paddingBottom="8dp">
+                android:clipChildren="false"
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/word_or_phrase"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:hint="@string/word_or_phrase"
-                    android:imeOptions="actionNext"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:textSize="34sp" />
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_margin"
+                    android:paddingTop="@dimen/page_margin"
+                    android:paddingBottom="8dp">
 
-                <EditText
-                    android:id="@+id/transcription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@null"
-                    android:hint="@string/transcription"
-                    android:imeOptions="actionNext"
-                    android:importantForAutofill="no"
-                    android:inputType="textPhonetic"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/word_or_phrase"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="@string/word_or_phrase"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:textSize="34sp" />
 
-                <EditText
-                    android:id="@+id/translation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@null"
-                    android:hint="@string/translation"
-                    android:imeOptions="actionNext"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/transcription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@null"
+                        android:hint="@string/transcription"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textPhonetic"
+                        android:textSize="20sp" />
 
-                <EditText
-                    android:id="@+id/explanation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@null"
-                    android:hint="@string/explanation"
-                    android:imeOptions="flagNavigateNext"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/translation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@null"
+                        android:hint="@string/translation"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:textSize="20sp" />
 
-                <EditText
-                    android:id="@+id/usageExample"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@null"
-                    android:hint="@string/usage_example"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/explanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@null"
+                        android:hint="@string/explanation"
+                        android:imeOptions="flagNavigateNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:textSize="20sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/usage_example_images"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/usageExample"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@null"
+                        android:hint="@string/usage_example"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/usage_example_images"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/loading_attached_images_progressbar"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="20dp" />
+
+                <include
+                    android:id="@+id/included_images_list"
+                    layout="@layout/images_list" />
 
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/loading_attached_images_progressbar"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp" />
+        </androidx.core.widget.NestedScrollView>
 
-            <include
-                android:id="@+id/included_images_list"
-                layout="@layout/images_list" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

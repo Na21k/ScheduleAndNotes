@@ -1,87 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.categories.categoryDetails.CategoryDetailsActivity">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="@dimen/page_margin">
+            android:layout_height="match_parent">
 
-            <!--<TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/page_margin"
-                android:text="@string/category_name_edit_text_title"
-                android:textSize="24sp" />-->
-
-            <EditText
-                android:id="@+id/category_name_input"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/body_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/page_margin"
-                android:background="@null"
-                android:hint="@string/category_name_input_hint"
-                android:importantForAutofill="no"
-                android:inputType="textCapSentences"
-                android:textSize="34sp" />
+                android:layout_marginTop="@dimen/page_margin"
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/page_margin"
-                android:text="@string/color_selection_title"
-                android:textSize="34sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/page_margin"
-                android:text="@string/color_selection_subtitle"
-                android:textSize="15sp" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="always">
-
-                <LinearLayout
-                    android:id="@+id/color_variants"
+                <!--<TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginHorizontal="@dimen/page_margin"
+                    android:text="@string/category_name_edit_text_title"
+                    android:textSize="24sp" />-->
 
-                    <include layout="@layout/color_picker_item" />
+                <EditText
+                    android:id="@+id/category_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/page_margin"
+                    android:background="@null"
+                    android:hint="@string/category_name_input_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences"
+                    android:textSize="34sp" />
 
-                    <include layout="@layout/color_picker_item" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
 
-                    <include layout="@layout/color_picker_item" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/page_margin"
+                    android:text="@string/color_selection_title"
+                    android:textSize="34sp" />
 
-                    <include layout="@layout/color_picker_item" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/page_margin"
+                    android:text="@string/color_selection_subtitle"
+                    android:textSize="15sp" />
 
-                    <include layout="@layout/color_picker_item" />
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="always">
 
-                    <include layout="@layout/color_picker_item" />
+                    <LinearLayout
+                        android:id="@+id/color_variants"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <include layout="@layout/color_picker_item" />
+                        <include layout="@layout/color_picker_item" />
 
-                </LinearLayout>
+                        <include layout="@layout/color_picker_item" />
 
-            </HorizontalScrollView>
+                        <include layout="@layout/color_picker_item" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                        <include layout="@layout/color_picker_item" />
 
-    </ScrollView>
+                        <include layout="@layout/color_picker_item" />
+
+                        <include layout="@layout/color_picker_item" />
+
+                        <include layout="@layout/color_picker_item" />
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </ScrollView>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

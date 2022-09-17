@@ -1,17 +1,18 @@
 package com.na21k.schedulenotes.ui.lists.userDefinedLists;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.WindowCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -54,8 +55,12 @@ public class UserDefinedListActivity extends AppCompatActivity
         mViewModel = new ViewModelProvider(this).get(UserDefinedListViewModel.class);
         mBinding = ActivityUserDefinedListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        if (!UiHelper.isInDarkMode(this)) {
+            WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                    .setAppearanceLightNavigationBars(true);
+        }
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -69,7 +74,7 @@ public class UserDefinedListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.simple_list_menu, menu);
 
         MenuItem menuItem = menu.findItem(R.id.menu_search);
@@ -205,7 +210,7 @@ public class UserDefinedListActivity extends AppCompatActivity
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(userDefinedListItem);
             Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
-                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                            Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                     .setAnchorView(mBinding.itemAdditionLinearLayout)
                     .setAction(R.string.undo, v -> mViewModel.addNew(userDefinedListItem)).show();
         });

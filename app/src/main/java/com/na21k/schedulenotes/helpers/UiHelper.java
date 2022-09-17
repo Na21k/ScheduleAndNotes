@@ -3,17 +3,22 @@ package com.na21k.schedulenotes.helpers;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.view.Gravity;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
 
 public class UiHelper {
@@ -100,5 +105,75 @@ public class UiHelper {
         }
 
         return layoutManager;
+    }
+
+    public static void showSnackbar(@NonNull Context context,
+                                    @NonNull View view,
+                                    @StringRes int stringResourceId,
+                                    int bottomInset) {
+        makeSnackbar(context, view, stringResourceId, bottomInset, 3000).show();
+    }
+
+    public static void showSnackbar(@NonNull Context context,
+                                    @NonNull View view,
+                                    @NonNull String message,
+                                    int bottomInset) {
+        Snackbar snackbar = Snackbar
+                .make(view, message, 3000);
+
+        CoordinatorLayout.LayoutParams params = UiHelper
+                .generateNewSnackbarLayoutParams(context, snackbar, bottomInset);
+        snackbar.getView().setLayoutParams(params);
+
+        snackbar.show();
+    }
+
+    @NonNull
+    public static Snackbar makeSnackbar(@NonNull Context context,
+                                        @NonNull View view,
+                                        @StringRes int stringResourceId,
+                                        int bottomInset,
+                                        int durationMillis) {
+        Snackbar snackbar = Snackbar
+                .make(view, stringResourceId, durationMillis);
+
+        CoordinatorLayout.LayoutParams params = UiHelper
+                .generateNewSnackbarLayoutParams(context, snackbar, bottomInset);
+        snackbar.getView().setLayoutParams(params);
+
+        return snackbar;
+    }
+
+    @NonNull
+    public static CoordinatorLayout.LayoutParams generateNewFabLayoutParams(
+            @NonNull Context context,
+            @NonNull ExtendedFloatingActionButton fab,
+            int bottomInset,
+            int gravity) {
+        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(
+                (CoordinatorLayout.LayoutParams) fab.getLayoutParams());
+        params.gravity = gravity;
+
+        int pageMargin = (int) context.getResources().getDimension(R.dimen.page_margin);
+
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin,
+                pageMargin + bottomInset);
+
+        return params;
+    }
+
+    @NonNull
+    public static CoordinatorLayout.LayoutParams generateNewSnackbarLayoutParams(
+            @NonNull Context context,
+            @NonNull Snackbar snackbar,
+            int bottomInset) {
+        CoordinatorLayout.LayoutParams params = new CoordinatorLayout
+                .LayoutParams(snackbar.getView().getLayoutParams());
+
+        int margin = (int) (context.getResources().getDimension(R.dimen.page_margin) / 2);
+        params.setMargins(margin, margin, margin, bottomInset + margin);
+        params.gravity = Gravity.BOTTOM;
+
+        return params;
     }
 }

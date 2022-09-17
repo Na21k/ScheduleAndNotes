@@ -9,20 +9,23 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.databinding.ActivityNoteDetailsBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 
 import java.util.Comparator;
@@ -33,6 +36,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     private NoteDetailsViewModel mViewModel;
     private ActivityNoteDetailsBinding mBinding;
     private Integer mCurrentNotesCategoryId;
+    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,9 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         mViewModel = new ViewModelProvider(this).get(NoteDetailsViewModel.class);
         mBinding = ActivityNoteDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        makeNavBarLookNice();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -71,7 +76,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.note_details_menu, menu);
 
         if (!isEditing()) {
@@ -114,6 +119,22 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         return true;
     }
 
+    private void makeNavBarLookNice() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
+            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            mBinding.activityNoteDetailsRoot.setPadding(i.left, i.top, i.right, 0);
+            mBinding.scrollView.setPadding(0, 0, 0, i.bottom);
+
+            mMostRecentBottomInset = i.bottom;
+
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
+
     private void saveNote() {
         Editable titleEditable = mBinding.noteTitle.getText();
         Editable detailsEditable = mBinding.noteDetails.getText();
@@ -130,7 +151,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
             finish();
         } else {
-            showSnackbar(R.string.specify_note_title_snackbar);
+            UiHelper.showSnackbar(this, mBinding.getRoot(),
+                    R.string.specify_note_title_snackbar, mMostRecentBottomInset);
         }
     }
 
@@ -157,7 +179,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
     private void removeCategory() {
         mCurrentNotesCategoryId = null;
-        showSnackbar(R.string.excluded_from_category_snackbar);
+        UiHelper.showSnackbar(this, mBinding.getRoot(),
+                R.string.excluded_from_category_snackbar, mMostRecentBottomInset);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
     }
@@ -181,7 +204,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
                     android.R.layout.simple_list_item_1, categories);
             builder.setAdapter(adapter, (dialog, which) -> {
                 mCurrentNotesCategoryId = categories.get(which).getId();
-                showSnackbar(R.string.category_set_snackbar);
+                UiHelper.showSnackbar(this, mBinding.getRoot(),
+                        R.string.category_set_snackbar, mMostRecentBottomInset);
                 invalidateOptionsMenu();    //show the Exclude from category button
             });
 
@@ -201,9 +225,5 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     private void loadCategoriesFromDb() {
         mViewModel.getAllCategories().observe(this,
                 categories -> mViewModel.setCategoriesCache(categories));
-    }
-
-    private void showSnackbar(@StringRes int stringResourceId) {
-        Snackbar.make(mBinding.activityNoteDetailsRoot, stringResourceId, 3000).show();
     }
 }

@@ -11,6 +11,10 @@
         android:orientation="vertical">
 
         <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
+
+        <include
             android:id="@+id/included_list"
             layout="@layout/simple_list"
             android:layout_width="match_parent"

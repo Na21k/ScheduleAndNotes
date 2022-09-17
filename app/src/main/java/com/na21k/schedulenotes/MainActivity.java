@@ -9,6 +9,10 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,7 +25,6 @@ import androidx.work.WorkManager;
 import com.na21k.schedulenotes.databinding.ActivityMainBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
-import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.settings.SettingsActivity;
 import com.na21k.schedulenotes.workers.MovieNotificationWorker;
 import com.na21k.schedulenotes.workers.MusicNotificationWorker;
@@ -32,14 +35,15 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -48,14 +52,26 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_categories).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(mBinding.navView, navController);
 
-        if (!UiHelper.isInDarkMode(this)) {
-            getWindow().setNavigationBarColor(Color.TRANSPARENT);
-        }
+        makeNavBarLookNice();
 
         createNotificationChannels();
         ensureRecommendationsWorkerIsScheduled();
+    }
+
+    private void makeNavBarLookNice() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
+            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            mBinding.container.setPadding(i.left, i.top, i.right, 0);
+            mBinding.navView.setPadding(0, 0, 0, i.bottom);
+
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     @Override

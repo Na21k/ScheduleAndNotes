@@ -5,13 +5,17 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
@@ -25,9 +29,33 @@ import java.util.Date;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements DatePickerDialog.OnDateSetListener {
 
+    private int mBottomInset;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView onCreateRecyclerView(@NonNull LayoutInflater inflater,
+                                             @NonNull ViewGroup parent,
+                                             @Nullable Bundle savedInstanceState) {
+        RecyclerView recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState);
+        recyclerView.setPadding(0, 0, 0, mBottomInset);
+        recyclerView.setClipToPadding(false);
+
+        return recyclerView;
+    }
+
+    public void updateBottomInset(int bottomPx) {
+        RecyclerView rv = getListView();
+
+        if (rv != null) {
+            rv.setPadding(0, 0, 0, bottomPx);
+        }
+
+        mBottomInset = bottomPx;
     }
 
     @Override
@@ -116,10 +144,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
         Activity activity = getActivity();
 
         if (activity != null) {
-            View snackView = activity.findViewById(R.id.nav_host_fragment_activity_main);
+            View snackView = activity.findViewById(R.id.settings);
             Snackbar snackbar = Snackbar.make(snackView, textResourceId, 5000);
-            snackbar.setAnchorView(R.id.nav_view);
-            //snackbar.setAction("OK", v -> snackbar.dismiss());
+            snackbar.setAction(android.R.string.ok, v -> snackbar.dismiss());
 
             snackbar.show();
         }

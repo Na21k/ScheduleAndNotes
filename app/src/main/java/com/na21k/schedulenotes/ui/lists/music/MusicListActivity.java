@@ -4,20 +4,26 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
@@ -46,6 +52,7 @@ public class MusicListActivity extends AppCompatActivity
     private MusicListAdapter mListAdapter;
     private LiveData<List<MusicListItem>> mLastSearchLiveData;
     private boolean isSearchMode = false;
+    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +61,9 @@ public class MusicListActivity extends AppCompatActivity
         mViewModel = new ViewModelProvider(this).get(MusicListViewModel.class);
         mBinding = ActivityMusicListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        makeNavBarLookNice();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -68,7 +76,7 @@ public class MusicListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.simple_list_menu, menu);
 
         MenuItem menuItem = menu.findItem(R.id.menu_search);
@@ -110,6 +118,31 @@ public class MusicListActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void makeNavBarLookNice() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
+            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            mBinding.container.setPadding(i.left, i.top, i.right, 0);
+
+            CoordinatorLayout.LayoutParams newFabParams = UiHelper.generateNewFabLayoutParams(
+                    this,
+                    mBinding.addMusicFab,
+                    i.bottom,
+                    Gravity.END | Gravity.BOTTOM);
+
+            mBinding.addMusicFab.setLayoutParams(newFabParams);
+            mBinding.includedList.simpleList.setPadding(0, 0, 0, i.bottom);
+            mBinding.includedList.simpleList.setClipToPadding(false);
+
+            mMostRecentBottomInset = i.bottom;
+
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     private void setUpList() {
@@ -231,8 +264,9 @@ public class MusicListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(musicListItem);
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
-                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+            UiHelper.makeSnackbar(this, mBinding.getRoot(),
+                            R.string.list_item_deleted_snackbar, mMostRecentBottomInset,
+                            Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                     .setAction(R.string.undo, v -> mViewModel.addNew(musicListItem)).show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {

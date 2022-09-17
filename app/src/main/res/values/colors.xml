@@ -13,7 +13,6 @@
     <color name="colorAccent">#41D5F4</color>
     <color name="shadow_color">#646464</color>
     <color name="window_background">#FFFFFF</color>
-    <color name="navigation_bar">#FFFFFF</color>
     <color name="snackbar">#FF6544</color>
 
     <color name="check_color">#20DD65</color>

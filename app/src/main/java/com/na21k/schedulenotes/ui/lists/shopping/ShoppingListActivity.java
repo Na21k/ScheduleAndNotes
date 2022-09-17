@@ -1,7 +1,6 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.view.WindowCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -58,8 +58,12 @@ public class ShoppingListActivity extends AppCompatActivity
         mViewModel = new ViewModelProvider(this).get(ShoppingListViewModel.class);
         mBinding = ActivityShoppingListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        if (!UiHelper.isInDarkMode(this)) {
+            WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                    .setAppearanceLightNavigationBars(true);
+        }
 
         ActionBar actionBar = getSupportActionBar();
 

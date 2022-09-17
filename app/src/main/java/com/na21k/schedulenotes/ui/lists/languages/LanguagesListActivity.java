@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +14,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,7 +26,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.LanguagesListItemsSortingOrder;
 import com.na21k.schedulenotes.R;
@@ -52,6 +57,7 @@ public class LanguagesListActivity extends AppCompatActivity
     private LanguagesListAdapter mListAdapter;
     private LiveData<List<LanguagesListItem>> mLastSearchLiveData;
     private boolean isSearchMode = false;
+    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +66,9 @@ public class LanguagesListActivity extends AppCompatActivity
         mViewModel = new ViewModelProvider(this).get(LanguagesListViewModel.class);
         mBinding = ActivityLanguagesListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        makeNavBarLookNice();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -74,7 +81,7 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.languages_list_menu, menu);
 
         MenuItem menuItem = menu.findItem(R.id.menu_search);
@@ -113,7 +120,7 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(@NonNull Menu menu) {
         switch (getSortingOrder()) {
             case Word:
                 menu.findItem(R.id.menu_sort_by_word_or_phrase).setChecked(true);
@@ -150,6 +157,31 @@ public class LanguagesListActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void makeNavBarLookNice() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
+            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            mBinding.container.setPadding(i.left, i.top, i.right, 0);
+
+            CoordinatorLayout.LayoutParams newFabParams = UiHelper.generateNewFabLayoutParams(
+                    this,
+                    mBinding.addWordOrPhraseFab,
+                    i.bottom,
+                    Gravity.END | Gravity.BOTTOM);
+
+            mBinding.addWordOrPhraseFab.setLayoutParams(newFabParams);
+            mBinding.wordsAndPhrasesListRecyclerView.setPadding(0, 0, 0, i.bottom);
+            mBinding.wordsAndPhrasesListRecyclerView.setClipToPadding(false);
+
+            mMostRecentBottomInset = i.bottom;
+
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     private void setUpList() {
@@ -264,14 +296,16 @@ public class LanguagesListActivity extends AppCompatActivity
             Handler deletionHandler = new Handler();
             Runnable deletionRunnable = () -> {
                 mViewModel.delete(item);
-                Snackbar.make(mBinding.getRoot(), R.string.list_item_deleted_snackbar,
-                        3000).show();
+                UiHelper.showSnackbar(this, mBinding.getRoot(),
+                        R.string.list_item_deleted_snackbar, mMostRecentBottomInset);
             };
             deletionHandler.postDelayed(deletionRunnable,
                     Constants.UNDO_DELETE_TIMEOUT_MILLIS + 300);
 
-            Snackbar.make(mBinding.getRoot(), R.string.list_item_scheduled_for_deletion_snackbar,
-                    Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+            UiHelper.makeSnackbar(this, mBinding.getRoot(),
+                            R.string.list_item_scheduled_for_deletion_snackbar,
+                            mMostRecentBottomInset,
+                            Constants.UNDO_DELETE_TIMEOUT_MILLIS)
                     .setAction(R.string.cancel, v -> deletionHandler.removeCallbacks(deletionRunnable))
                     .show();
         });

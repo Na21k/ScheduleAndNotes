@@ -12,11 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
@@ -25,6 +28,7 @@ import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.ActivityCategoryDetailsBinding;
 import com.na21k.schedulenotes.databinding.ColorPickerItemBinding;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
+import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.List;
 
@@ -35,6 +39,7 @@ public class CategoryDetailsActivity extends AppCompatActivity
     private ActivityCategoryDetailsBinding mBinding;
     private ColorSet mSelectedColorSet;
     private ColorSetModel mSelectedColorSetModel;
+    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +48,9 @@ public class CategoryDetailsActivity extends AppCompatActivity
         mViewModel = new ViewModelProvider(this).get(CategoryDetailsViewModel.class);
         mBinding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        makeNavBarLookNice();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -73,7 +79,7 @@ public class CategoryDetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.category_details_menu, menu);
 
         if (!isEditing()) {
@@ -104,6 +110,22 @@ public class CategoryDetailsActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void makeNavBarLookNice() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
+            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            mBinding.container.setPadding(i.left, i.top, i.right, 0);
+            mBinding.bodyLinearLayout.setPadding(0, 0, 0, i.bottom);
+
+            mMostRecentBottomInset = i.bottom;
+
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     @Override
@@ -174,8 +196,8 @@ public class CategoryDetailsActivity extends AppCompatActivity
 
             finish();
         } else {
-            Snackbar.make(mBinding.getRoot(), R.string.specify_category_name_snackbar, 3000)
-                    .show();
+            UiHelper.showSnackbar(this, mBinding.getRoot(),
+                    R.string.specify_category_name_snackbar, mMostRecentBottomInset);
         }
     }
 

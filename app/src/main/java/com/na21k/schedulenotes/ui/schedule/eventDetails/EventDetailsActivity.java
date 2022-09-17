@@ -3,7 +3,6 @@ package com.na21k.schedulenotes.ui.schedule.eventDetails;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -17,6 +16,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,6 +28,7 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ActivityEventDetailsBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 
 import java.util.Calendar;
@@ -51,8 +52,12 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         mViewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
         mBinding = ActivityEventDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        setSupportActionBar(mBinding.appBar.appBar);
 
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        if (!UiHelper.isInDarkMode(this)) {
+            WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                    .setAppearanceLightNavigationBars(true);
+        }
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -101,7 +106,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.event_details_menu, menu);
 
         if (!isEditing()) {
@@ -329,15 +334,6 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
         mViewModel.setSelectedDateTimeEnds(newDate);
         mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
-    }
-
-    private Date getDifferenceDateOnly(Date a, Date b) {
-        Date dateTimeStarts = mViewModel.getSelectedDateTimeStarts();
-        Date dateTimeEnds = mViewModel.getSelectedDateTimeEnds();
-        Date dateStarts = DateTimeHelper.truncateToDateOnly(dateTimeStarts);
-        Date dateEnds = DateTimeHelper.truncateToDateOnly(dateTimeEnds);
-
-        return DateTimeHelper.getDifference(dateStarts, dateEnds);
     }
 
     private void adjustDateTimeEndsBy(Date spanLongevity) {
