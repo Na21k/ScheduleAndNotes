@@ -1,7 +1,6 @@
 package com.na21k.schedulenotes.ui.notes.noteDetails;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -12,10 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,8 +31,6 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
     private NoteDetailsViewModel mViewModel;
     private ActivityNoteDetailsBinding mBinding;
-    private Integer mCurrentNotesCategoryId;
-    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +41,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        makeNavBarLookNice();
+        WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                .setAppearanceLightNavigationBars(!UiHelper.isInDarkMode(this));
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -72,7 +67,9 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     public void onChanged(Note note) {
         mBinding.noteTitle.setText(note.getTitle());
         mBinding.noteDetails.setText(note.getDetails());
-        mCurrentNotesCategoryId = note.getCategoryId();
+        mViewModel.setNoteCache(note);
+
+        invalidateOptionsMenu();    //note category might have changed
     }
 
     @Override
@@ -83,7 +80,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             menu.removeItem(R.id.menu_delete);
         }
 
-        if (mCurrentNotesCategoryId == null) {
+        if (mViewModel.getNoteCache() == null
+                || mViewModel.getNoteCache().getCategoryId() == null) {
             menu.removeItem(R.id.menu_remove_category);
         }
 
@@ -119,32 +117,23 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         return true;
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            mBinding.activityNoteDetailsRoot.setPadding(i.left, i.top, i.right, 0);
-            mBinding.scrollView.setPadding(0, 0, 0, i.bottom);
-
-            mMostRecentBottomInset = i.bottom;
-
-            return WindowInsetsCompat.CONSUMED;
-        });
-    }
-
     private void saveNote() {
         Editable titleEditable = mBinding.noteTitle.getText();
         Editable detailsEditable = mBinding.noteDetails.getText();
 
         if (titleEditable != null && !titleEditable.toString().isEmpty()) {
-            Note note = new Note(0, titleEditable.toString(), detailsEditable.toString(),
-                    mCurrentNotesCategoryId);
+            Note cachedNote = mViewModel.getNoteCache();
+
+            if (cachedNote == null) {
+                cachedNote = mViewModel
+                        .setNoteCache(new Note(0, "", null, null));
+            }
+
+            Note note = new Note(cachedNote.getId(), titleEditable.toString(),
+                    detailsEditable.toString(), cachedNote.getCategoryId());
 
             if (isEditing()) {
-                mViewModel.updateCurrentNote(note);
+                mViewModel.updateNote(note);
             } else {
                 mViewModel.createNote(note);
             }
@@ -152,7 +141,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             finish();
         } else {
             UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.specify_note_title_snackbar, mMostRecentBottomInset);
+                    R.string.specify_note_title_snackbar, 0);
         }
     }
 
@@ -163,11 +152,11 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         builder.setMessage(R.string.note_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            LiveData<Note> note = mViewModel.getCurrentNote();
+            LiveData<Note> note = mViewModel.getCurrentNoteLiveData();
 
             if (note != null) {
                 note.removeObserver(this);
-                mViewModel.deleteCurrentNote();
+                mViewModel.deleteNote(mViewModel.getNoteCache());
                 finish();
             }
         });
@@ -178,9 +167,9 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     }
 
     private void removeCategory() {
-        mCurrentNotesCategoryId = null;
+        mViewModel.getNoteCache().setCategoryId(null);
         UiHelper.showSnackbar(this, mBinding.getRoot(),
-                R.string.excluded_from_category_snackbar, mMostRecentBottomInset);
+                R.string.excluded_from_category_snackbar, 0);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
     }
@@ -203,9 +192,20 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
                     android.R.layout.simple_list_item_1, categories);
             builder.setAdapter(adapter, (dialog, which) -> {
-                mCurrentNotesCategoryId = categories.get(which).getId();
-                UiHelper.showSnackbar(this, mBinding.getRoot(),
-                        R.string.category_set_snackbar, mMostRecentBottomInset);
+                Category category = categories.get(which);
+                int categoryId = category.getId();
+
+                if (mViewModel.getNoteCache() == null) {
+                    mViewModel.setNoteCache(new Note(0, "", null, categoryId));
+                } else {
+                    mViewModel.getNoteCache().setCategoryId(categoryId);
+                }
+
+                UiHelper.showSnackbar(this,
+                        mBinding.getRoot(),
+                        R.string.category_set_snackbar,
+                        0);
+
                 invalidateOptionsMenu();    //show the Exclude from category button
             });
 
@@ -219,11 +219,11 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     }
 
     private void loadNoteFromDb(int noteId) {
-        mViewModel.getNote(noteId).observe(this, this);
+        mViewModel.getNoteLiveData(noteId).observe(this, this);
     }
 
     private void loadCategoriesFromDb() {
-        mViewModel.getAllCategories().observe(this,
+        mViewModel.getAllCategoriesLiveData().observe(this,
                 categories -> mViewModel.setCategoriesCache(categories));
     }
 }

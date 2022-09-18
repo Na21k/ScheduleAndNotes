@@ -55,7 +55,8 @@ public class CategoriesHelper {
     }
 
     public static int getNoteCategoryColor(Context context, Note note, List<Category> categories,
-                                           boolean isNightMode) throws CouldNotFindColorSetModelException {
+                                           boolean isNightMode)
+            throws CouldNotFindColorSetModelException {
         Integer categoryId = note.getCategoryId();
         ColorSetModel defaultColorSetModel = getDefaultColorSetModel(context);
         int defaultColor = isNightMode ? defaultColorSetModel.getColorNightHex() :
@@ -75,7 +76,7 @@ public class CategoriesHelper {
         }
 
         ColorSetModel noteColorSetModel = colorSetModels.stream().filter(
-                colorSetModel -> colorSetModel.getColorSet().equals(noteCategory.getColorSet()))
+                        colorSetModel -> colorSetModel.getColorSet() == noteCategory.getColorSet())
                 .findFirst().orElse(null);
 
         if (noteColorSetModel == null) {
@@ -87,7 +88,8 @@ public class CategoriesHelper {
     }
 
     public static int getEventCategoryColor(Context context, Event event, List<Category> categories,
-                                            boolean isNightMode) throws CouldNotFindColorSetModelException {
+                                            boolean isNightMode)
+            throws CouldNotFindColorSetModelException {
         Integer categoryId = event.getCategoryId();
         ColorSetModel defaultColorSetModel = getDefaultColorSetModel(context);
         int defaultColor = isNightMode ? defaultColorSetModel.getColorNightHex() :
@@ -107,7 +109,7 @@ public class CategoriesHelper {
         }
 
         ColorSetModel eventColorSetModel = colorSetModels.stream().filter(
-                colorSetModel -> colorSetModel.getColorSet().equals(eventCategory.getColorSet()))
+                        colorSetModel -> colorSetModel.getColorSet() == eventCategory.getColorSet())
                 .findFirst().orElse(null);
 
         if (eventColorSetModel == null) {
@@ -118,13 +120,14 @@ public class CategoriesHelper {
                 eventColorSetModel.getColorNightHex() : eventColorSetModel.getColorDayHex();
     }
 
+    @NonNull
     private static ColorSetModel getDefaultColorSetModel(Context context)
             throws CouldNotFindColorSetModelException {
         ColorSet defaultColorSet = Constants.DEFAULT_COLOR_SET;
 
-        List<ColorSetModel> colorSetModels = CategoriesHelper.getCategoriesColorSets(context);
-        ColorSetModel res = colorSetModels.stream().filter(
-                colorSetModel -> colorSetModel.getColorSet().equals(defaultColorSet))
+        List<ColorSetModel> colorSetModels = getCategoriesColorSets(context);
+        ColorSetModel res = colorSetModels.stream().filter(colorSetModel ->
+                        colorSetModel.getColorSet() == defaultColorSet)
                 .findFirst().orElse(null);
 
         if (res != null) {

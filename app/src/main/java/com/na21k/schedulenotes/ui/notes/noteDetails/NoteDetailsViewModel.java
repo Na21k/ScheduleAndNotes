@@ -17,55 +17,57 @@ import java.util.List;
 public class NoteDetailsViewModel extends AndroidViewModel {
 
     private final NoteDao mNoteDao;
-    private final LiveData<List<Category>> mCategories;
-    private List<Category> mCategoriesCache = null;
-    private LiveData<Note> mNote;
-    private int mNoteId;
+    private final LiveData<List<Category>> mCategoriesLiveData;
+    private LiveData<Note> mNoteLiveData;
+    private List<Category> mCategories = null;
+    private Note mNote;
 
     public NoteDetailsViewModel(@NonNull Application application) {
         super(application);
 
         AppDatabase db = AppDatabase.getInstance(application);
         mNoteDao = db.noteDao();
-        mCategories = db.categoryDao().getAll();
+        mCategoriesLiveData = db.categoryDao().getAll();
     }
 
-    public LiveData<Note> getNote(int id) {
-        if (mNoteId != id) {
-            mNote = mNoteDao.getById(id);
-            mNoteId = id;
-        }
-
-        return mNote;
+    public LiveData<Note> getNoteLiveData(int id) {
+        return mNoteLiveData = mNoteDao.getById(id);
     }
 
-    public LiveData<List<Category>> getAllCategories() {
-        return mCategories;
+    public LiveData<List<Category>> getAllCategoriesLiveData() {
+        return mCategoriesLiveData;
     }
 
     public void createNote(Note note) {
         new Thread(() -> mNoteDao.insert(note)).start();
     }
 
-    public void deleteCurrentNote() {
-        new Thread(() -> mNoteDao.delete(mNoteId)).start();
-    }
-
-    public void updateCurrentNote(Note note) {
-        note.setId(mNoteId);
+    public void updateNote(Note note) {
         new Thread(() -> mNoteDao.update(note)).start();
     }
 
+    public void deleteNote(Note note) {
+        new Thread(() -> mNoteDao.delete(note)).start();
+    }
+
     @Nullable
-    public LiveData<Note> getCurrentNote() {
-        return mNote;
+    public LiveData<Note> getCurrentNoteLiveData() {
+        return mNoteLiveData;
     }
 
     public List<Category> getCategoriesCache() {
-        return mCategoriesCache;
+        return mCategories;
     }
 
     public void setCategoriesCache(List<Category> categoriesCache) {
-        mCategoriesCache = categoriesCache;
+        mCategories = categoriesCache;
+    }
+
+    public Note getNoteCache() {
+        return mNote;
+    }
+
+    public Note setNoteCache(@NonNull Note note) {
+        return mNote = note;
     }
 }

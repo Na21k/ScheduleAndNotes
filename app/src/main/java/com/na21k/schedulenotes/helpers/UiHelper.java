@@ -24,12 +24,15 @@ import com.na21k.schedulenotes.R;
 public class UiHelper {
 
     public static boolean isInDarkMode(@NonNull Fragment fragment) {
-        return (fragment.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                == Configuration.UI_MODE_NIGHT_YES;
+        return isInDarkMode(fragment.getResources());
     }
 
     public static boolean isInDarkMode(@NonNull AppCompatActivity activity) {
-        return (activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+        return isInDarkMode(activity.getResources());
+    }
+
+    public static boolean isInDarkMode(@NonNull Resources resources) {
+        return (resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES;
     }
 

@@ -57,10 +57,8 @@ public class UserDefinedListActivity extends AppCompatActivity
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        if (!UiHelper.isInDarkMode(this)) {
-            WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
-                    .setAppearanceLightNavigationBars(true);
-        }
+        WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                .setAppearanceLightNavigationBars(!UiHelper.isInDarkMode(this));
 
         ActionBar actionBar = getSupportActionBar();
 
