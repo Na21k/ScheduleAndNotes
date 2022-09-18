@@ -17,7 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,7 +47,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ListsFragment extends Fragment
-        implements ListsListAdapter.OnListActionRequestedListener {
+        implements ListsListAdapter.OnListActionRequestedListener, MenuProvider {
 
     private final Observer<List<UserDefinedList>> mListsObserver = new Observer<List<UserDefinedList>>() {
         @Override
@@ -62,7 +65,6 @@ public class ListsFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(ListsViewModel.class);
     }
 
@@ -76,17 +78,20 @@ public class ListsFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
         mListAdapter = setUpRecyclerView();
         setObservers();
         setListeners();
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.lists_menu, menu);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.lists_menu, menu);
 
-        MenuItem menuItem = menu.findItem(R.id.menu_search);
-        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+        MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 isSearchMode = true;
@@ -104,7 +109,7 @@ public class ListsFragment extends Fragment
             }
         });
 
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -118,8 +123,11 @@ public class ListsFragment extends Fragment
                 return false;
             }
         });
+    }
 
-        super.onCreateOptionsMenu(menu, inflater);
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 
     private ListsListAdapter setUpRecyclerView() {

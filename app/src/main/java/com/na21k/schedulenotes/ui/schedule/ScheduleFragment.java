@@ -18,7 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -42,7 +45,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ScheduleFragment extends Fragment
-        implements Observer<List<Event>>, EventsListAdapter.OnEventActionRequestedListener {
+        implements Observer<List<Event>>, EventsListAdapter.OnEventActionRequestedListener, MenuProvider {
 
     private ScheduleViewModel mViewModel;
     private ScheduleFragmentBinding mBinding;
@@ -53,7 +56,6 @@ public class ScheduleFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
     }
 
@@ -67,17 +69,24 @@ public class ScheduleFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        MenuHost menuHost = requireActivity();
+        //TODO: State.CREATED causes the menu to blink when switching tabs (same for unset State).
+        //State.STARTED removes blinking but causes menu recreation
+        //when clicking a search results item.
+        //Open search in a new activity to fix this (valid for all the 4 tabs).
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
         mAdapter = setUpRecyclerView();
         setObservers();
         setListeners();
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.schedule_menu, menu);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.schedule_menu, menu);
 
-        MenuItem menuItem = menu.findItem(R.id.menu_search);
-        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+        MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 isSearchMode = true;
@@ -95,7 +104,7 @@ public class ScheduleFragment extends Fragment
             }
         });
 
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -115,7 +124,26 @@ public class ScheduleFragment extends Fragment
             }
         });
 
-        super.onCreateOptionsMenu(menu, inflater);
+        /*searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isSearchMode = false;
+                mBinding.addEventFab.show();
+                mBinding.dateSelectionArea.setVisibility(View.VISIBLE);
+
+                Toast.makeText(requireContext(), "lost focus", Toast.LENGTH_SHORT).show();
+            } else {
+                isSearchMode = true;
+                mBinding.addEventFab.hide();
+                mBinding.dateSelectionArea.setVisibility(View.GONE);
+
+                Toast.makeText(requireContext(), "gained focus", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 
     private EventsListAdapter setUpRecyclerView() {
