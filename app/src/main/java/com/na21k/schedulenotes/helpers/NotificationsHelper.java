@@ -11,6 +11,7 @@ import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventToTomorrowFromNotificationBroadcastReceiver;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
@@ -96,6 +97,14 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setContentIntent(intent);
 
+        PendingIntent postponeToTomorrowIntent = getPostponeEventToTomorrowPendingIntent(
+                context, notificationId, eventId);
+        NotificationCompat.Action postponeToTomorrowAction = new NotificationCompat
+                .Action(R.drawable.ic_schedule_24,
+                context.getString(R.string.postpone_to_tomorrow_menu_item),
+                postponeToTomorrowIntent);
+        builder.addAction(postponeToTomorrowAction);
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, builder.build());
     }
@@ -141,6 +150,21 @@ public class NotificationsHelper {
         intent.putExtras(bundle);
 
         return PendingIntent.getActivity(context, eventId, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private static PendingIntent getPostponeEventToTomorrowPendingIntent(Context context,
+                                                                         int notificationId,
+                                                                         int eventId) {
+        Intent intent = new Intent(
+                context, PostponeEventToTomorrowFromNotificationBroadcastReceiver.class);
+        intent.setAction("com.na21k.schedulenotes.POSTPONE_EVENT_TO_TOMORROW_FROM_NOTIFICATION");
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.NOTIFICATION_ID_INTENT_KEY, notificationId);
+        bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
+        intent.putExtras(bundle);
+
+        return PendingIntent.getBroadcast(context, 0, intent,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

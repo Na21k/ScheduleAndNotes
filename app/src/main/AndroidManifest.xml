@@ -12,17 +12,6 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/title_settings" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
         <activity
             android:name=".ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity"
             android:exported="false" />
@@ -76,6 +65,24 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <receiver
+            android:name=".BroadcastReceivers.PostponeEventToTomorrowFromNotificationBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.na21k.schedulenotes.POSTPONE_EVENT_TO_TOMORROW_FROM_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
