@@ -1,12 +1,16 @@
 package com.na21k.schedulenotes.helpers;
 
+import android.Manifest;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -105,8 +109,7 @@ public class NotificationsHelper {
                 postponeToTomorrowIntent);
         builder.addAction(postponeToTomorrowAction);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(notificationId, builder.build());
+        notifyIfNotificationsPermissionGranted(context, notificationId, builder.build());
     }
 
     public static void showMovieNotification(Context context, String title, String text) {
@@ -116,8 +119,7 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                 .setContentIntent(intent);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(Constants.MOVIES_LIST_NOTIFICATION_ID, builder.build());
+        notifyIfNotificationsPermissionGranted(context, Constants.MOVIES_LIST_NOTIFICATION_ID, builder.build());
     }
 
     public static void showMusicNotification(Context context, String title, String text) {
@@ -127,8 +129,7 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                 .setContentIntent(intent);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(Constants.MUSIC_LIST_NOTIFICATION_ID, builder.build());
+        notifyIfNotificationsPermissionGranted(context, Constants.MUSIC_LIST_NOTIFICATION_ID, builder.build());
     }
 
     public static void showLanguagesListNotification(Context context, String title, String text, int wordId) {
@@ -138,8 +139,7 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                 .setContentIntent(intent);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(Constants.LANGUAGES_LIST_NOTIFICATION_ID, builder.build());
+        notifyIfNotificationsPermissionGranted(context, Constants.LANGUAGES_LIST_NOTIFICATION_ID, builder.build());
     }
 
     private static PendingIntent getEventNotificationPendingIntent(Context context, int eventId) {
@@ -213,5 +213,15 @@ public class NotificationsHelper {
     public static void cancelNotification(Context context, int notificationId) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(notificationId);
+    }
+
+    private static void notifyIfNotificationsPermissionGranted(@NonNull Context context,
+                                                               int notificationId,
+                                                               @NonNull Notification notification) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(notificationId, notification);
+        }
     }
 }

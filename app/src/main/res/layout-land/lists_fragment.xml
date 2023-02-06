@@ -50,7 +50,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <Space android:layout_width="@dimen/page_margin" />
+                <android.widget.Space android:layout_width="@dimen/page_margin" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/music_list_btn_card"
@@ -80,7 +80,7 @@
 
             </TableRow>
 
-            <Space android:layout_height="@dimen/page_margin" />
+            <android.widget.Space android:layout_height="@dimen/page_margin" />
 
             <TableRow>
 
@@ -110,7 +110,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <Space android:layout_width="@dimen/page_margin" />
+                <android.widget.Space android:layout_width="@dimen/page_margin" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/languages_list_btn_card"
