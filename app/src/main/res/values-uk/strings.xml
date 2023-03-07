@@ -178,4 +178,6 @@
     <string name="postpone_to_date_menu_item">Перенести на…</string>
     <string name="clear_checked_dialog_button">Очистити позначені</string>
     <string name="list_cleared_of_checked_items_snackbar">Очищено від позначених елементів</string>
+    <string name="notifications_permission_request_alert_title">Увімкнути сповіщення</string>
+    <string name="notifications_permission_request_alert_message">Нам потрібенд дозвіл для надсилання сповіщень розкладу та списків</string>
 </resources>

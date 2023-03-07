@@ -88,6 +88,10 @@
     <!--Snackbar and Toast messages-->
     <string name="unexpected_error">An unexpected error occurred</string>
 
+    <!--Permission management-->
+    <string name="notifications_permission_request_alert_title">Enable notifications</string>
+    <string name="notifications_permission_request_alert_message">We need the notifications permission in order to notify you about upcoming schedule events and send lists notifications</string>
+
     <!--Categories-->
     <string name="title_create_category">Create category</string>
     <string name="title_edit_category">Edit category</string>
