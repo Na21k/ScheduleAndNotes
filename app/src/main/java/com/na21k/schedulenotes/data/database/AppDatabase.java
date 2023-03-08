@@ -35,7 +35,7 @@ import com.na21k.schedulenotes.data.database.Schedule.EventDao;
         UserDefinedList.class, UserDefinedListItem.class,
         ShoppingListItem.class, MoviesListItem.class, MusicListItem.class,
         LanguagesListItem.class, LanguagesListItemAttachedImage.class},
-        version = 7, exportSchema = false)
+        version = 7)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
