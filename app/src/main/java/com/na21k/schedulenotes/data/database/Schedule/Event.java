@@ -7,7 +7,6 @@ import androidx.room.Index;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Identifiable;
-import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotification;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,11 +14,7 @@ import java.util.Date;
 
 @Entity(tableName = "events", indices = {@Index(value = "id")},
         foreignKeys = {@ForeignKey(entity = Category.class, parentColumns = "id",
-                childColumns = "category_id", onDelete = ForeignKey.SET_NULL),
-                @ForeignKey(entity = ScheduledNotification.class, parentColumns = "request_id",
-                        childColumns = "last_starts_notification_request_id", onDelete = ForeignKey.SET_NULL),
-                @ForeignKey(entity = ScheduledNotification.class, parentColumns = "request_id",
-                        childColumns = "last_starts_soon_notification_request_id", onDelete = ForeignKey.SET_NULL)})
+                childColumns = "category_id", onDelete = ForeignKey.SET_NULL)})
 public class Event extends Identifiable {
 
     @NotNull
@@ -42,12 +37,6 @@ public class Event extends Identifiable {
 
     @ColumnInfo(name = "is_hidden", defaultValue = "false")
     private boolean isHidden;
-
-    @ColumnInfo(name = "last_starts_notification_request_id")
-    private String lastStartsNotificationRequestId;
-
-    @ColumnInfo(name = "last_starts_soon_notification_request_id")
-    private String lastStartsSoonNotificationRequestId;
 
     public Event(int id, @NotNull String title, String details, Integer categoryId,
                  @NotNull Date dateTimeStarts, @NotNull Date dateTimeEnds, boolean isHidden) {
@@ -109,21 +98,5 @@ public class Event extends Identifiable {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
-    }
-
-    public String getLastStartsNotificationRequestId() {
-        return lastStartsNotificationRequestId;
-    }
-
-    public void setLastStartsNotificationRequestId(String lastStartsNotificationRequestId) {
-        this.lastStartsNotificationRequestId = lastStartsNotificationRequestId;
-    }
-
-    public String getLastStartsSoonNotificationRequestId() {
-        return lastStartsSoonNotificationRequestId;
-    }
-
-    public void setLastStartsSoonNotificationRequestId(String lastStartsSoonNotificationRequestId) {
-        this.lastStartsSoonNotificationRequestId = lastStartsSoonNotificationRequestId;
     }
 }

@@ -9,10 +9,10 @@ import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotificationDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
-import com.na21k.schedulenotes.helpers.WorkersHelper;
+import com.na21k.schedulenotes.helpers.AlarmsHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.List;
 public class EventDetailsViewModel extends AndroidViewModel {
 
     private final EventDao mEventDao;
-    private final ScheduledNotificationDao mNotificationDao;
     private final LiveData<List<Category>> mCategories;
     private List<Category> mCategoriesCache = null;
     private LiveData<Event> mEvent;
@@ -33,7 +32,6 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
         AppDatabase db = AppDatabase.getInstance(application);
         mEventDao = db.eventDao();
-        mNotificationDao = db.scheduledNotificationDao();
         mCategories = db.categoryDao().getAll();
     }
 
@@ -59,16 +57,16 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public void deleteCurrentEvent() {
-        new Thread(() -> mEventDao.delete(mEventId)).start();
+        new Thread(() -> {
+            AlarmsHelper.cancelEventNotificationAlarmsBlocking(mEventId, getApplication());
+            mEventDao.delete(mEventId);
+        }).start();
     }
 
     public void updateCurrentEvent(Event event) {
         event.setId(mEventId);
         new Thread(() -> {
-            WorkersHelper.cancelRequest(event.getLastStartsNotificationRequestId(),
-                    getApplication());
-            WorkersHelper.cancelRequest(event.getLastStartsSoonNotificationRequestId(),
-                    getApplication());
+            AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
             scheduleNotificationsAndUpdateBlocking(event);
         }).start();
     }
@@ -105,7 +103,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     private void scheduleNotificationsAndUpdateBlocking(@NonNull Event event) {
-        WorkersHelper.scheduleEventNotificationsBlocking(event, mNotificationDao, getApplication());
+        EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
         mEventDao.update(event);
     }
 }

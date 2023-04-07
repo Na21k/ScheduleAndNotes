@@ -23,7 +23,7 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.helpers.WorkersHelper;
+import com.na21k.schedulenotes.helpers.AlarmsHelper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,10 +76,10 @@ public class ImportActivity extends AppCompatActivity {
     }
 
     private void readFromFileInBackgroundThread(Uri uri) {
-        new Thread(() -> readFromFile(uri)).start();
+        new Thread(() -> readFromFileBlocking(uri)).start();
     }
 
-    private void readFromFile(Uri uri) {
+    private void readFromFileBlocking(Uri uri) {
         try {
             ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "r");
             FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
@@ -95,7 +95,7 @@ public class ImportActivity extends AppCompatActivity {
             List<ShoppingListItem> shoppingListItems = (List<ShoppingListItem>) objectInputStream.readObject();
             List<LanguagesListItem> languagesListItems = (List<LanguagesListItem>) objectInputStream.readObject();
 
-            WorkersHelper.cancelAllEventNotificationWorkers(this);
+            AlarmsHelper.cancelAllEventNotificationAlarmsBlocking(this);
             mViewModel.clearDatabase();
 
             mViewModel.insertCategoriesBlocking(categories);

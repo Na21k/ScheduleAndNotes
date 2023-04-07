@@ -24,10 +24,9 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListIt
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItemDao;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Notes.NoteDao;
-import com.na21k.schedulenotes.data.database.Notifications.ScheduledNotificationDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
-import com.na21k.schedulenotes.helpers.WorkersHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 
 import java.util.List;
 
@@ -43,7 +42,6 @@ public class ImportActivityViewModel extends AndroidViewModel {
     private final ShoppingListItemDao mShoppingListItemDao;
     private final LanguagesListItemDao mLanguagesListItemDao;
     private final LanguagesListItemAttachedImageDao mLanguagesListItemAttachedImageDao;
-    private final ScheduledNotificationDao mNotificationDao;
 
     public ImportActivityViewModel(@NonNull Application application) {
         super(application);
@@ -58,7 +56,6 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mShoppingListItemDao = db.shoppingListItemDao();
         mLanguagesListItemDao = db.languagesListItemDao();
         mLanguagesListItemAttachedImageDao = db.languagesListItemAttachedImageDao();
-        mNotificationDao = db.scheduledNotificationDao();
     }
 
     public void clearDatabase() {
@@ -70,13 +67,11 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mMusicListItemDao.deleteAll();
         mShoppingListItemDao.deleteAll();
         mLanguagesListItemDao.deleteAll();
-        mNotificationDao.deleteAll();
     }
 
     public void insertEventsBlocking(List<Event> events) {
         for (Event event : events) {
-            WorkersHelper.scheduleEventNotificationsBlocking(event, mNotificationDao,
-                    getApplication());
+            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
         }
 
         mEventDao.insert(events);

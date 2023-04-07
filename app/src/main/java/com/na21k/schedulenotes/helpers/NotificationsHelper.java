@@ -94,7 +94,7 @@ public class NotificationsHelper {
     }
 
     public static void showEventNotification(Context context, String title, String text,
-                                             int notificationId, int eventId) {
+                                             int eventId) {
         PendingIntent intent = getEventNotificationPendingIntent(context, eventId);
         NotificationCompat.Builder builder = getBasicBuilder(context, title, text,
                 EVENT_NOTIFICATIONS_CHANNEL_ID, R.drawable.ic_event_24)
@@ -102,14 +102,14 @@ public class NotificationsHelper {
                 .setContentIntent(intent);
 
         PendingIntent postponeToTomorrowIntent = getPostponeEventToTomorrowPendingIntent(
-                context, notificationId, eventId);
+                context, eventId);
         NotificationCompat.Action postponeToTomorrowAction = new NotificationCompat
                 .Action(R.drawable.ic_schedule_24,
                 context.getString(R.string.postpone_to_tomorrow_menu_item),
                 postponeToTomorrowIntent);
         builder.addAction(postponeToTomorrowAction);
 
-        notifyIfNotificationsPermissionGranted(context, notificationId, builder.build());
+        notifyIfNotificationsPermissionGranted(context, eventId, builder.build());
     }
 
     public static void showMovieNotification(Context context, String title, String text) {
@@ -154,13 +154,11 @@ public class NotificationsHelper {
     }
 
     private static PendingIntent getPostponeEventToTomorrowPendingIntent(Context context,
-                                                                         int notificationId,
                                                                          int eventId) {
         Intent intent = new Intent(
                 context, PostponeEventToTomorrowFromNotificationBroadcastReceiver.class);
         intent.setAction("com.na21k.schedulenotes.POSTPONE_EVENT_TO_TOMORROW_FROM_NOTIFICATION");
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.NOTIFICATION_ID_INTENT_KEY, notificationId);
         bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
         intent.putExtras(bundle);
 

@@ -14,11 +14,10 @@ public class PostponeEventToTomorrowFromNotificationBroadcastReceiver extends Br
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
-        int notificationId = b.getInt(Constants.NOTIFICATION_ID_INTENT_KEY);
         int eventId = b.getInt(Constants.EVENT_ID_INTENT_KEY);
 
-        Toast.makeText(context, "Notification ID: " + notificationId + ". Event ID: " + eventId, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Notification ID is Event ID: " + eventId, Toast.LENGTH_LONG).show();
 
-        NotificationsHelper.cancelNotification(context, notificationId);
+        NotificationsHelper.cancelNotification(context, eventId);
     }
 }
