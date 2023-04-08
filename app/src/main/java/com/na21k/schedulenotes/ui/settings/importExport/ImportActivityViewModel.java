@@ -28,6 +28,7 @@ import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 
+import java.util.Date;
 import java.util.List;
 
 public class ImportActivityViewModel extends AndroidViewModel {
@@ -70,11 +71,16 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertEventsBlocking(List<Event> events) {
+        mEventDao.insert(events);
+        Date now = new Date();
+
         for (Event event : events) {
+            if (event.getDateTimeStarts().before(now)) {
+                continue;
+            }
+
             EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
         }
-
-        mEventDao.insert(events);
     }
 
     public void insertNotesBlocking(List<Note> notes) {
