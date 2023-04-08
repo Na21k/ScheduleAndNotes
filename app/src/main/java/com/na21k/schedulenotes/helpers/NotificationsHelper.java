@@ -42,6 +42,7 @@ public class NotificationsHelper {
                 .setDescription(description)
                 .setVibrationEnabled(true)
                 .setLightsEnabled(true)
+                .setLightColor(context.getColor(R.color.event_notifications_LED))
                 .build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
