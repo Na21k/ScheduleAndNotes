@@ -5,9 +5,6 @@ import static com.na21k.schedulenotes.data.database.Schedule.EventNotificationAl
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
@@ -28,7 +25,8 @@ public class EventNotificationAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!shouldNotify(context)) {
+        if (!NotificationsHelper.shouldNotify(
+                context, Constants.RECEIVE_SCHEDULE_NOTIFICATIONS_PREFERENCE_KEY)) {
             return;
         }
 
@@ -77,15 +75,5 @@ public class EventNotificationAlarmReceiver extends BroadcastReceiver {
 
             pendingResult.finish();
         }).start();
-    }
-
-    //TODO: move to NotificationsHelper (same code is present in NotificationWorkerBase)
-    private boolean shouldNotify(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        return preferences.getBoolean(
-                Constants.RECEIVE_NOTIFICATIONS_PREFERENCE_KEY, true)
-                && preferences.getBoolean(
-                Constants.RECEIVE_SCHEDULE_NOTIFICATIONS_PREFERENCE_KEY, true);
     }
 }

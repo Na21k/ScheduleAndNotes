@@ -27,17 +27,17 @@ public class EventsHelper {
         Date starts = event.getDateTimeStarts();
         Date startsSoon = Constants.getEventStartsSoonNotificationTime(starts);
 
-        int startsPendingIntentRequestCode = (int) pendingIntentDao.insert(
-                new EventNotificationAlarmPendingIntent(0, eventId,
-                        EventNotificationAlarmPendingIntent.EventNotificationType.EventStarted));
         int startsSoonPendingIntentRequestCode = (int) pendingIntentDao.insert(
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStartsSoon));
+        int startsPendingIntentRequestCode = (int) pendingIntentDao.insert(
+                new EventNotificationAlarmPendingIntent(0, eventId,
+                        EventNotificationAlarmPendingIntent.EventNotificationType.EventStarted));
 
         AlarmsHelper.scheduleEventNotificationAlarm(
-                eventId, starts.getTime(), startsPendingIntentRequestCode, context);
-        AlarmsHelper.scheduleEventNotificationAlarm(
                 eventId, startsSoon.getTime(), startsSoonPendingIntentRequestCode, context);
+        AlarmsHelper.scheduleEventNotificationAlarm(
+                eventId, starts.getTime(), startsPendingIntentRequestCode, context);
     }
 
     public static void scheduleEventNotificationBlocking(

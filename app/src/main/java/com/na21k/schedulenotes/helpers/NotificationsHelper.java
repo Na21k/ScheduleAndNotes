@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventToTomorrowFromNotificationBroadcastReceiver;
 import com.na21k.schedulenotes.Constants;
@@ -200,18 +202,30 @@ public class NotificationsHelper {
                                                               String title, String text,
                                                               String channelId,
                                                               int drawableResourceId) {
-        return new NotificationCompat
+        NotificationCompat.Builder builder = new NotificationCompat
                 .Builder(context, channelId)
                 .setSmallIcon(drawableResourceId)
                 .setContentTitle(title)
-                .setContentText(text)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true);
+
+        if (text != null && !text.isEmpty()) {
+            builder.setContentText(text);
+        }
+
+        return builder;
     }
 
     public static void cancelNotification(Context context, int notificationId) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(notificationId);
+    }
+
+    public static boolean shouldNotify(Context context, String notificationTypePreferenceKey) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return preferences.getBoolean(Constants.RECEIVE_NOTIFICATIONS_PREFERENCE_KEY, true)
+                && preferences.getBoolean(notificationTypePreferenceKey, true);
     }
 
     private static void notifyIfNotificationsPermissionGranted(@NonNull Context context,
