@@ -31,6 +31,7 @@ import androidx.work.WorkManager;
 
 import com.na21k.schedulenotes.databinding.ActivityMainBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.ui.settings.SettingsActivity;
 import com.na21k.schedulenotes.workers.MovieNotificationWorker;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         requestNotificationsPermission();
 
         createNotificationChannels();
+        ensureEventNotificationsScheduledAsync();
         ensureRecommendationsWorkerIsScheduled();
     }
 
@@ -99,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void ensureEventNotificationsScheduledAsync() {
+        new Thread(() -> EventsHelper.ensureEventNotificationsScheduledBlocking(this))
+                .start();
     }
 
     private void ensureRecommendationsWorkerIsScheduled() {

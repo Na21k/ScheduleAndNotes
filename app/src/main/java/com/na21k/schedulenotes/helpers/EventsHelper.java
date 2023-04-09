@@ -6,6 +6,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
@@ -13,6 +14,7 @@ import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPend
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntentDao;
 
 import java.util.Date;
+import java.util.List;
 
 public class EventsHelper {
 
@@ -23,7 +25,7 @@ public class EventsHelper {
 
         int eventId = event.getId();
         Date starts = event.getDateTimeStarts();
-        Date startsSoon = DateTimeHelper.addMinutes(starts, -30);
+        Date startsSoon = Constants.getEventStartsSoonNotificationTime(starts);
 
         int startsPendingIntentRequestCode = (int) pendingIntentDao.insert(
                 new EventNotificationAlarmPendingIntent(0, eventId,
@@ -40,19 +42,39 @@ public class EventsHelper {
 
     public static void scheduleEventNotificationBlocking(
             @NonNull EventNotificationAlarmPendingIntent pendingIntent, @NonNull Context context) {
+        EventNotificationType notificationType = pendingIntent.getNotificationType();
         EventDao eventDao = AppDatabase.getInstance(context).eventDao();
         Event event = eventDao.getByIdBlocking(pendingIntent.getEventId());
 
         Date starts = event.getDateTimeStarts();
         long triggerAtMillis;
 
-        if (pendingIntent.getNotificationType().equals(EventNotificationType.EventStarted)) {
-            triggerAtMillis = starts.getTime();
-        } else {
-            triggerAtMillis = DateTimeHelper.addMinutes(starts, -30).getTime();
+        switch (notificationType) {
+            case EventStarted:
+                triggerAtMillis = starts.getTime();
+                break;
+            case EventStartsSoon:
+                triggerAtMillis = Constants
+                        .getEventStartsSoonNotificationTime(starts).getTime();
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unexpected notification type: " + notificationType.name());
         }
 
         AlarmsHelper.scheduleEventNotificationAlarm(
                 event.getId(), triggerAtMillis, pendingIntent.getId(), context);
+    }
+
+    public static void ensureEventNotificationsScheduledBlocking(@NonNull Context context) {
+        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
+                .eventNotificationAlarmPendingIntentDao();
+        //only pending intents for notifications that haven't been sent yet are stored
+        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
+                .getAllBlocking();
+
+        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
+            scheduleEventNotificationBlocking(pendingIntent, context);
+        }
     }
 }
