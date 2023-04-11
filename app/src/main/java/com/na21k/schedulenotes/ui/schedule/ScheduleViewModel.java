@@ -93,7 +93,7 @@ public class ScheduleViewModel extends AndroidViewModel {
 
     private void postponeTo(Event event, Date newDateTimeStarts, Date newDateTimeEnds) {
         new Thread(() -> {
-            AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
+            EventsHelper.cancelEventNotificationsBlocking(event, getApplication());
 
             event.setDateTimeStarts(newDateTimeStarts);
             event.setDateTimeEnds(newDateTimeEnds);

@@ -66,6 +66,19 @@ public class EventsHelper {
                 event.getId(), triggerAtMillis, pendingIntent.getId(), context);
     }
 
+    public static void cancelEventNotificationsBlocking(@NonNull Event event,
+                                                        @NonNull Context context) {
+        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
+                .eventNotificationAlarmPendingIntentDao();
+
+        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
+                .getByEventIdBlocking(event.getId());
+
+        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
+            scheduleEventNotificationBlocking(pendingIntent, context);
+        }
+    }
+
     public static void ensureEventNotificationsScheduledBlocking(@NonNull Context context) {
         EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
                 .eventNotificationAlarmPendingIntentDao();
