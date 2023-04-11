@@ -12,6 +12,7 @@ import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -91,10 +92,15 @@ public class ScheduleViewModel extends AndroidViewModel {
     }
 
     private void postponeTo(Event event, Date newDateTimeStarts, Date newDateTimeEnds) {
-        event.setDateTimeStarts(newDateTimeStarts);
-        event.setDateTimeEnds(newDateTimeEnds);
+        new Thread(() -> {
+            AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
 
-        updateEvent(event);
+            event.setDateTimeStarts(newDateTimeStarts);
+            event.setDateTimeEnds(newDateTimeEnds);
+            updateEvent(event);
+
+            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
+        }).start();
     }
 
     public List<Event> getEventsCache() {
