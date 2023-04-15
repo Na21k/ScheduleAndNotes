@@ -10,7 +10,7 @@ import com.na21k.schedulenotes.data.database.Identifiable;
 
 import org.jetbrains.annotations.NotNull;
 
-@Entity(tableName = "notes", indices = {@Index(value = "id")},
+@Entity(tableName = "notes", indices = {@Index(value = "id"), @Index(value = "category_id")},
         foreignKeys = {@ForeignKey(entity = Category.class, parentColumns = "id",
                 childColumns = "category_id", onDelete = ForeignKey.SET_NULL)})
 public class Note extends Identifiable {

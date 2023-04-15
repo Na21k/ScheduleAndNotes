@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-@Entity(tableName = "events", indices = {@Index(value = "id")},
+@Entity(tableName = "events", indices = {@Index(value = "id"), @Index(value = "category_id")},
         foreignKeys = {@ForeignKey(entity = Category.class, parentColumns = "id",
                 childColumns = "category_id", onDelete = ForeignKey.SET_NULL)})
 public class Event extends Identifiable {

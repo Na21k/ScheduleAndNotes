@@ -39,9 +39,10 @@ import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPend
         UserDefinedList.class, UserDefinedListItem.class,
         ShoppingListItem.class, MoviesListItem.class, MusicListItem.class,
         LanguagesListItem.class, LanguagesListItemAttachedImage.class},
-        version = 8,
+        version = 9,
         autoMigrations = {
-                @AutoMigration(from = 7, to = 8, spec = AppDatabase.AutoMigration_7_8.class)})
+                @AutoMigration(from = 7, to = 8, spec = AppDatabase.AutoMigration_7_8.class),
+                @AutoMigration(from = 8, to = 9)})
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
