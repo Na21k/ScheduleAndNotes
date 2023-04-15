@@ -83,7 +83,11 @@ public class CategoriesListAdapter
         private void setData(@NonNull Category category) {
             mCategory = category;
             mBinding.categoryName.setText(category.getTitle());
-            mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
+            mBinding.categoriesListCard.setStrokeColor(getCardColor(category));
+
+            if (!mIsNightMode) {
+                mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
+            }
         }
 
         private int getCardColor(Category category) {

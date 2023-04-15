@@ -138,10 +138,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mBinding.eventStartTime.setText(startsFormatted);
             mBinding.eventEndTime.setText(endsFormatted);
 
-            int backColor = CategoriesHelper
+            int categoryColor = CategoriesHelper
                     .getEventCategoryColor(itemView.getContext(), event, mCategories, mIsNightMode);
+            mBinding.scheduleListItemCard.setStrokeColor(categoryColor);
 
-            mBinding.scheduleListItemCard.setCardBackgroundColor(backColor);
+            if (!mIsNightMode) {
+                mBinding.scheduleListItemCard.setCardBackgroundColor(categoryColor);
+            }
         }
 
         private String getTimeFormatted(Date dateTime) {

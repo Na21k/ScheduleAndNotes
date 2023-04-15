@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:clipChildren="false">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/calendar_btn_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +39,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.27">
+                app:layout_constraintVertical_bias="0.27"
+                app:strokeColor="@color/neutral_button_stroke"
+                app:strokeWidth="@dimen/stroke_width">
 
                 <TextView
                     android:id="@+id/calendar_btn_text"
@@ -51,7 +53,7 @@
                     android:textSize="22sp"
                     tools:text="Date formatted" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <ImageButton
                 android:id="@+id/previous_date_btn"

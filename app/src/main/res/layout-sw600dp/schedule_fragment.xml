@@ -31,7 +31,7 @@
                 android:src="@drawable/ic_navigate_before_48"
                 tools:ignore="RtlHardcoded" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/calendar_btn_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -49,7 +49,9 @@
                 android:outlineSpotShadowColor="@color/shadow_color"
                 app:cardBackgroundColor="@color/neutral_button"
                 app:cardCornerRadius="@dimen/corner_radius"
-                app:cardElevation="@dimen/elevation">
+                app:cardElevation="@dimen/elevation"
+                app:strokeColor="@color/neutral_button_stroke"
+                app:strokeWidth="@dimen/stroke_width">
 
                 <TextView
                     android:id="@+id/calendar_btn_text"
@@ -61,7 +63,7 @@
                     android:textSize="22sp"
                     tools:text="Date formatted" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <ImageButton
                 android:id="@+id/next_date_btn"

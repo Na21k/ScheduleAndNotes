@@ -167,9 +167,13 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
                 mBinding.noteDetails.setVisibility(View.VISIBLE);
             }
 
-            int backColor = CategoriesHelper
+            int categoryColor = CategoriesHelper
                     .getNoteCategoryColor(itemView.getContext(), note, mCategories, mIsNightMode);
-            mBinding.notesListCard.setCardBackgroundColor(backColor);
+            mBinding.notesListCard.setStrokeColor(categoryColor);
+
+            if (!mIsNightMode) {
+                mBinding.notesListCard.setCardBackgroundColor(categoryColor);
+            }
         }
     }
 
