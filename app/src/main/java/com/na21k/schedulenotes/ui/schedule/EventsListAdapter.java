@@ -49,12 +49,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = mEvents.get(position);
-
-        try {
-            holder.setData(event);
-        } catch (CouldNotFindColorSetModelException e) {
-            e.printStackTrace();
-        }
+        holder.setData(event);
     }
 
     @Override
@@ -138,8 +133,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mBinding.eventStartTime.setText(startsFormatted);
             mBinding.eventEndTime.setText(endsFormatted);
 
-            int categoryColor = CategoriesHelper
-                    .getEventCategoryColor(itemView.getContext(), event, mCategories, mIsNightMode);
+            int categoryColor = CategoriesHelper.getCategoryColor(
+                    itemView.getContext(), event.getCategoryId(), mCategories, mIsNightMode);
             mBinding.scheduleListItemCard.setStrokeColor(categoryColor);
 
             if (!mIsNightMode) {

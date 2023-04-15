@@ -71,12 +71,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
         } else {
             NotesListItem noteItem = (NotesListItem) mNotesAndHeaders.get(position);
             NoteViewHolder viewHolder = (NoteViewHolder) holder;
-
-            try {
-                viewHolder.setData(noteItem.getNote());
-            } catch (CouldNotFindColorSetModelException e) {
-                e.printStackTrace();
-            }
+            viewHolder.setData(noteItem.getNote());
         }
     }
 
@@ -167,8 +162,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<GroupedListItemViewHo
                 mBinding.noteDetails.setVisibility(View.VISIBLE);
             }
 
-            int categoryColor = CategoriesHelper
-                    .getNoteCategoryColor(itemView.getContext(), note, mCategories, mIsNightMode);
+            int categoryColor = CategoriesHelper.getCategoryColor(
+                    itemView.getContext(), note.getCategoryId(), mCategories, mIsNightMode);
             mBinding.notesListCard.setStrokeColor(categoryColor);
 
             if (!mIsNightMode) {

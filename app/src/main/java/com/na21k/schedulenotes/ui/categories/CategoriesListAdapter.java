@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.models.ColorSet;
-import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.CategoriesListItemBinding;
+import com.na21k.schedulenotes.exceptions.CouldNotFindColorSetModelException;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.ui.shared.viewHolders.BaseViewHolder;
 
@@ -80,30 +79,17 @@ public class CategoriesListAdapter
             }
         }
 
-        private void setData(@NonNull Category category) {
+        private void setData(@NonNull Category category) throws CouldNotFindColorSetModelException {
             mCategory = category;
             mBinding.categoryName.setText(category.getTitle());
-            mBinding.categoriesListCard.setStrokeColor(getCardColor(category));
+
+            int categoryColor = CategoriesHelper.getCategoryColor(
+                    itemView.getContext(), category, mIsNightMode);
+            mBinding.categoriesListCard.setStrokeColor(categoryColor);
 
             if (!mIsNightMode) {
-                mBinding.categoriesListCard.setCardBackgroundColor(getCardColor(category));
+                mBinding.categoriesListCard.setCardBackgroundColor(categoryColor);
             }
-        }
-
-        private int getCardColor(Category category) {
-            ColorSet categoryColorSet = category.getColorSet();
-            List<ColorSetModel> colorSetModels = CategoriesHelper.getCategoriesColorSets(itemView.getContext());
-            ColorSetModel categoryColorSetModel = colorSetModels.stream()
-                    .filter(colorSetModel -> colorSetModel.getColorSet()
-                            .equals(categoryColorSet)).findFirst().orElse(null);
-
-            int res = 0;
-
-            if (categoryColorSetModel != null) {
-                res = mIsNightMode ? categoryColorSetModel.getColorNightHex() : categoryColorSetModel.getColorDayHex();
-            }
-
-            return res;
         }
     }
 
