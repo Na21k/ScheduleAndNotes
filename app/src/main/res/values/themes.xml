@@ -68,4 +68,13 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_radius</item>
     </style>
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusTopStart">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius</item>
+        <item name="boxStrokeWidth">@dimen/stroke_width_text_input_layout</item>
+        <item name="boxStrokeWidthFocused">@dimen/stroke_width_text_input_layout</item>
+    </style>
 </resources>

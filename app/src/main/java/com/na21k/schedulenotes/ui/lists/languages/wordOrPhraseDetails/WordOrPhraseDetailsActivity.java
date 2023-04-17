@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,11 +125,11 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
 
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets i = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
 
             mBinding.container.setPadding(i.left, i.top, i.right, 0);
             mBinding.includedImagesList.imagesList.setPadding(0, 0, 0, i.bottom);
-            mBinding.includedImagesList.imagesList.setClipToPadding(false);
 
             mMostRecentBottomInset = i.bottom;
 
@@ -169,18 +170,32 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     }
 
     private void saveItem() {
-        String wordOrPhrase = mBinding.wordOrPhrase.getText().toString();
+        Editable wordOrPhraseEditable = mBinding.wordOrPhrase.getText();
+        String wordOrPhrase;
 
-        if (wordOrPhrase.isEmpty()) {
+        if (wordOrPhraseEditable == null ||
+                (wordOrPhrase = wordOrPhraseEditable.toString()).isEmpty()) {
             UiHelper.showSnackbar(this, mBinding.getRoot(),
                     R.string.specify_word_or_phrase_snackbar, mMostRecentBottomInset);
             return;
         }
 
-        String transcription = mBinding.transcription.getText().toString();
-        String translation = mBinding.translation.getText().toString();
-        String explanation = mBinding.explanation.getText().toString();
-        String usageExample = mBinding.usageExample.getText().toString();
+        Editable transcriptionEditable = mBinding.transcription.getText();
+        Editable translationEditable = mBinding.translation.getText();
+        Editable explanationEditable = mBinding.explanation.getText();
+        Editable usageExampleEditable = mBinding.usageExample.getText();
+
+        if (transcriptionEditable == null || translationEditable == null ||
+                explanationEditable == null || usageExampleEditable == null) {
+            UiHelper.showSnackbar(this, mBinding.getRoot(),
+                    R.string.unexpected_error, mMostRecentBottomInset);
+            return;
+        }
+
+        String transcription = transcriptionEditable.toString();
+        String translation = translationEditable.toString();
+        String explanation = explanationEditable.toString();
+        String usageExample = usageExampleEditable.toString();
 
         if (isEditing() && mItem != null) {
             mItem.setText(wordOrPhrase);

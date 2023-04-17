@@ -19,7 +19,8 @@
             android:id="@+id/scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false">
+            android:clipChildren="false"
+            android:overScrollMode="always">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,63 +36,93 @@
                     android:paddingTop="@dimen/page_margin"
                     android:paddingBottom="8dp">
 
-                    <EditText
-                        android:id="@+id/word_or_phrase"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:hint="@string/word_or_phrase"
-                        android:imeOptions="actionNext"
-                        android:importantForAutofill="no"
-                        android:inputType="textCapSentences"
-                        android:textSize="34sp" />
+                        android:hint="@string/word_or_phrase">
 
-                    <EditText
-                        android:id="@+id/transcription"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/word_or_phrase"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:importantForAutofill="no"
+                            android:inputType="textCapSentences"
+                            android:textSize="34sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="@null"
-                        android:hint="@string/transcription"
-                        android:imeOptions="actionNext"
-                        android:importantForAutofill="no"
-                        android:inputType="textPhonetic"
-                        android:textSize="20sp" />
+                        android:hint="@string/transcription">
 
-                    <EditText
-                        android:id="@+id/translation"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/transcription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:importantForAutofill="no"
+                            android:inputType="textPhonetic"
+                            android:textSize="20sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="@null"
-                        android:hint="@string/translation"
-                        android:imeOptions="actionNext"
-                        android:importantForAutofill="no"
-                        android:inputType="textCapSentences"
-                        android:textSize="20sp" />
+                        android:hint="@string/translation">
 
-                    <EditText
-                        android:id="@+id/explanation"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/translation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:importantForAutofill="no"
+                            android:inputType="textCapSentences"
+                            android:textSize="20sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="@null"
-                        android:hint="@string/explanation"
-                        android:imeOptions="flagNavigateNext"
-                        android:importantForAutofill="no"
-                        android:inputType="textCapSentences|textMultiLine"
-                        android:textSize="20sp" />
+                        android:hint="@string/explanation">
 
-                    <EditText
-                        android:id="@+id/usageExample"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/explanation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="flagNavigateNext"
+                            android:importantForAutofill="no"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:textSize="20sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="@null"
-                        android:hint="@string/usage_example"
-                        android:importantForAutofill="no"
-                        android:inputType="textCapSentences|textMultiLine"
-                        android:textSize="20sp" />
+                        android:hint="@string/usage_example">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/usageExample"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:importantForAutofill="no"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:textSize="20sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
                         android:layout_width="match_parent"

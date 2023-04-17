@@ -7,4 +7,5 @@
     <dimen name="elevation">10dp</dimen>
     <dimen name="corner_radius">12dp</dimen>
     <dimen name="stroke_width">0dp</dimen>
+    <dimen name="stroke_width_text_input_layout">1dp</dimen>
 </resources>
