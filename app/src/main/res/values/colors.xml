@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
     <color name="colorPrimary">#FF6544</color>
     <color name="colorPrimaryVariant">#DF583C</color>
     <color name="colorAccent">#41D5F4</color>
-    <color name="shadow_color">#646464</color>
     <color name="window_background">#FFFFFF</color>
+    <color name="shadow_color">#646464</color>
     <color name="snackbar">#FF6544</color>
 
     <color name="event_notifications_LED">#FF6600</color>
@@ -25,32 +17,32 @@
     <!--Categories color sets-->
     <color name="category_gray">#EAEAEA</color>
     <color name="category_gray_night">#787878</color>
-    <color name="category_red">#FF4545</color>
+    <color name="category_red">#EF9A9A</color>
     <color name="category_red_night">#E43C3C</color>
-    <color name="category_orange">#FF7F46</color>
+    <color name="category_orange">#FFAB91</color>
     <color name="category_orange_night">#E1703D</color>
-    <color name="category_yellow">#FFEC42</color>
+    <color name="category_yellow">#FFF59D</color>
     <color name="category_yellow_night">#DFCE39</color>
-    <color name="category_green">#3DFF67</color>
+    <color name="category_green">#C5E1A5</color>
     <color name="category_green_night">#33D656</color>
-    <color name="category_cyan">#3FEFFF</color>
+    <color name="category_cyan">#80DEEA</color>
     <color name="category_cyan_night">#36CBD8</color>
-    <color name="category_blue">#588FFF</color>
+    <color name="category_blue">#90CAF9</color>
     <color name="category_blue_night">#4D7DDF</color>
-    <color name="category_purple">#D163FF</color>
+    <color name="category_purple">#B39DDB</color>
     <color name="category_purple_night">#B355DA</color>
-    <color name="category_pink">#FF63FC</color>
+    <color name="category_pink">#F48FB1</color>
     <color name="category_pink_night">#DD56DB</color>
 
     <!--Standard lists colors-->
-    <color name="list_movies_card_background">#588FFF</color>
-    <color name="list_music_card_background">#FF4545</color>
-    <color name="list_shopping_card_background">#3DFF67</color>
-    <color name="list_languages_card_background">#D163FF</color>
-    <color name="list_movies_card_stroke">#588FFF</color>
-    <color name="list_music_card_stroke">#FF4545</color>
-    <color name="list_shopping_card_stroke">#3DFF67</color>
-    <color name="list_languages_card_stroke">#D163FF</color>
+    <color name="list_movies_card_background">@color/category_blue</color>
+    <color name="list_music_card_background">@color/category_red</color>
+    <color name="list_shopping_card_background">@color/category_green</color>
+    <color name="list_languages_card_background">@color/category_purple</color>
+    <color name="list_movies_card_stroke">@color/category_blue</color>
+    <color name="list_music_card_stroke">@color/category_red</color>
+    <color name="list_shopping_card_stroke">@color/category_green</color>
+    <color name="list_languages_card_stroke">@color/category_purple</color>
     <color name="list_item">@color/neutral_button</color>
     <color name="list_item_stroke">@color/neutral_button_stroke</color>
     <color name="list_item_grayed_out">#8F8F8F</color>

@@ -17,10 +17,10 @@
     <color name="list_music_card_background">@color/list_item</color>
     <color name="list_shopping_card_background">@color/list_item</color>
     <color name="list_languages_card_background">@color/list_item</color>
-    <color name="list_movies_card_stroke">#4D7DDF</color>
-    <color name="list_music_card_stroke">#E43C3C</color>
-    <color name="list_shopping_card_stroke">#33D656</color>
-    <color name="list_languages_card_stroke">#B355DA</color>
+    <color name="list_movies_card_stroke">@color/category_blue_night</color>
+    <color name="list_music_card_stroke">@color/category_red_night</color>
+    <color name="list_shopping_card_stroke">@color/category_green_night</color>
+    <color name="list_languages_card_stroke">@color/category_purple_night</color>
     <color name="list_item_grayed_out">#1C1D20</color>
     <color name="price_text_color">#1ECF5F</color>
 </resources>
