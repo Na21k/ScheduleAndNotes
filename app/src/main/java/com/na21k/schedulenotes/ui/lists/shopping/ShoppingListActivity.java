@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
@@ -308,7 +309,9 @@ public class ShoppingListActivity extends AppCompatActivity
         builder.setNegativeButton(R.string.delete,
                 (dialog, which) -> onShoppingItemDeletionRequested(item));
 
-        builder.show();
+        AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @Override

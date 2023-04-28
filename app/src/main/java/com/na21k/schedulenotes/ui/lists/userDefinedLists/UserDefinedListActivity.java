@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -194,7 +195,9 @@ public class UserDefinedListActivity extends AppCompatActivity
         builder.setNegativeButton(R.string.delete,
                 (dialog, which) -> onItemDeletionRequested(userDefinedListItem));
 
-        builder.show();
+        AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @SuppressLint("WrongConstant")

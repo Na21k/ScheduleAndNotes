@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -238,7 +239,9 @@ public class ListsFragment extends Fragment
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
             });
 
-            builder.show();
+            AlertDialog alertDialog = builder.show();
+            alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                    .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
@@ -343,7 +346,9 @@ public class ListsFragment extends Fragment
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
             });
 
-            builder.show();
+            AlertDialog alertDialog = builder.show();
+            alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                    .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 

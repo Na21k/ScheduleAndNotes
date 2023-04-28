@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -218,7 +219,9 @@ public class MusicListActivity extends AppCompatActivity
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
         });
 
-        builder.show();
+        AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @Override
@@ -251,7 +254,9 @@ public class MusicListActivity extends AppCompatActivity
         builder.setNegativeButton(R.string.delete,
                 (dialog, which) -> onMusicDeletionRequested(musicListItem));
 
-        builder.show();
+        AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @SuppressLint("WrongConstant")
