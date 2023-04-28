@@ -55,6 +55,9 @@
     <string name="movie_notification_text">You wanted to watch this movie. Maybe it\'s time to do it?</string>
     <string name="music_notification_text">You wanted to listen to this. Maybe it\'s time to do it?</string>
 
+    <!--Notification actions-->
+    <string name="postpone_event_by_one_day">Postpone by a day</string>
+
     <!--Notification channels-->
     <string name="schedule_events_notification_channel_name">Schedule events</string>
     <string name="schedule_events_notification_channel_description">Schedule events notifications</string>

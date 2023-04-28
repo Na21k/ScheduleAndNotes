@@ -180,4 +180,5 @@
     <string name="list_cleared_of_checked_items_snackbar">Очищено від позначених елементів</string>
     <string name="notifications_permission_request_alert_title">Увімкнути сповіщення</string>
     <string name="notifications_permission_request_alert_message">Нам потрібенд дозвіл для надсилання сповіщень розкладу та списків</string>
+    <string name="postpone_event_by_one_day">Перенести на 1 день</string>
 </resources>

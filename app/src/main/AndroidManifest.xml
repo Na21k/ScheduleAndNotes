@@ -80,10 +80,10 @@
         </provider>
 
         <receiver
-            android:name=".BroadcastReceivers.PostponeEventToTomorrowFromNotificationBroadcastReceiver"
+            android:name=".BroadcastReceivers.PostponeEventByOneDayFromNotificationBroadcastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.na21k.schedulenotes.POSTPONE_EVENT_TO_TOMORROW_FROM_NOTIFICATION" />
+                <action android:name="com.na21k.schedulenotes.POSTPONE_EVENT_BY_ONE_DAY_FROM_NOTIFICATION" />
             </intent-filter>
         </receiver>
         <receiver

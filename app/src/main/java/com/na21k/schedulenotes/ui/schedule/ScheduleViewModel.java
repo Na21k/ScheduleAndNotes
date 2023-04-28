@@ -64,43 +64,14 @@ public class ScheduleViewModel extends AndroidViewModel {
         Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
         Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);
 
-        postponeTo(event, newStartsDateOnly);
+        EventsHelper.postponeToAsync(event, newStartsDateOnly, getApplication());
     }
 
     public void postponeToTomorrow(Event event) {
         Date tomorrow = DateTimeHelper.addDays(new Date(), 1);
         Date tomorrowDateOnly = DateTimeHelper.truncateToDateOnly(tomorrow);
 
-        postponeTo(event, tomorrowDateOnly);
-    }
-
-    public void postponeTo(Event event, Date dateOnly) {
-        Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(dateOnly);
-        Date oldStartsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeStarts());
-        Date oldEndsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeEnds());
-
-        Date postponeDaysDiff = DateTimeHelper.getDifference(oldStartsDateOnly, newStartsDateOnly);
-        Date newEndsDateOnly = DateTimeHelper.addDates(oldEndsDateOnly, postponeDaysDiff);
-
-        Date startsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeStarts());
-        Date endsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeEnds());
-
-        Date newDateTimeStarts = DateTimeHelper.addDates(newStartsDateOnly, startsTimeOnly);
-        Date newDateTimeEnds = DateTimeHelper.addDates(newEndsDateOnly, endsTimeOnly);
-
-        postponeTo(event, newDateTimeStarts, newDateTimeEnds);
-    }
-
-    private void postponeTo(Event event, Date newDateTimeStarts, Date newDateTimeEnds) {
-        new Thread(() -> {
-            EventsHelper.cancelEventNotificationsBlocking(event, getApplication());
-
-            event.setDateTimeStarts(newDateTimeStarts);
-            event.setDateTimeEnds(newDateTimeEnds);
-            updateEvent(event);
-
-            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
-        }).start();
+        EventsHelper.postponeToAsync(event, tomorrowDateOnly, getApplication());
     }
 
     public List<Event> getEventsCache() {

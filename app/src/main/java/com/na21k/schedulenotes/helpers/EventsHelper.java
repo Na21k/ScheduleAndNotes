@@ -18,6 +18,40 @@ import java.util.List;
 
 public class EventsHelper {
 
+    public static void postponeToAsync(@NonNull Event event, @NonNull Date dateOnly,
+                                       @NonNull Context context) {
+        new Thread(() -> postponeToBlocking(event, dateOnly, context)).start();
+    }
+
+    public static void postponeToBlocking(@NonNull Event event, @NonNull Date dateOnly,
+                                          @NonNull Context context) {
+        Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(dateOnly);
+        Date oldStartsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeStarts());
+        Date oldEndsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeEnds());
+
+        Date postponeDaysDiff = DateTimeHelper.getDifference(oldStartsDateOnly, newStartsDateOnly);
+        Date newEndsDateOnly = DateTimeHelper.addDates(oldEndsDateOnly, postponeDaysDiff);
+
+        Date startsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeStarts());
+        Date endsTimeOnly = DateTimeHelper.getTimeOnly(event.getDateTimeEnds());
+
+        Date newDateTimeStarts = DateTimeHelper.addDates(newStartsDateOnly, startsTimeOnly);
+        Date newDateTimeEnds = DateTimeHelper.addDates(newEndsDateOnly, endsTimeOnly);
+
+        postponeToBlocking(event, newDateTimeStarts, newDateTimeEnds, context);
+    }
+
+    private static void postponeToBlocking(@NonNull Event event, @NonNull Date newDateTimeStarts,
+                                           @NonNull Date newDateTimeEnds, @NonNull Context context) {
+        cancelEventNotificationsBlocking(event, context);
+
+        event.setDateTimeStarts(newDateTimeStarts);
+        event.setDateTimeEnds(newDateTimeEnds);
+        AppDatabase.getInstance(context).eventDao().update(event);
+
+        scheduleEventNotificationsBlocking(event, context);
+    }
+
     public static void scheduleEventNotificationsBlocking(@NonNull Event event,
                                                           @NonNull Context context) {
         EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)

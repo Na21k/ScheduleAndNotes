@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventToTomorrowFromNotificationBroadcastReceiver;
+import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventByOneDayFromNotificationBroadcastReceiver;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
@@ -104,12 +104,12 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setContentIntent(intent);
 
-        PendingIntent postponeToTomorrowIntent = getPostponeEventToTomorrowPendingIntent(
+        PendingIntent postponeByOneDayIntent = getPostponeEventByOneDayPendingIntent(
                 context, eventId);
         NotificationCompat.Action postponeToTomorrowAction = new NotificationCompat
                 .Action(R.drawable.ic_schedule_24,
-                context.getString(R.string.postpone_to_tomorrow_menu_item),
-                postponeToTomorrowIntent);
+                context.getString(R.string.postpone_event_by_one_day),
+                postponeByOneDayIntent);
         builder.addAction(postponeToTomorrowAction);
 
         notifyIfNotificationsPermissionGranted(context, eventId, builder.build());
@@ -156,11 +156,11 @@ public class NotificationsHelper {
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static PendingIntent getPostponeEventToTomorrowPendingIntent(Context context,
-                                                                         int eventId) {
+    private static PendingIntent getPostponeEventByOneDayPendingIntent(Context context,
+                                                                       int eventId) {
         Intent intent = new Intent(
-                context, PostponeEventToTomorrowFromNotificationBroadcastReceiver.class);
-        intent.setAction("com.na21k.schedulenotes.POSTPONE_EVENT_TO_TOMORROW_FROM_NOTIFICATION");
+                context, PostponeEventByOneDayFromNotificationBroadcastReceiver.class);
+        intent.setAction("com.na21k.schedulenotes.POSTPONE_EVENT_BY_ONE_DAY_FROM_NOTIFICATION");
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
         intent.putExtras(bundle);
