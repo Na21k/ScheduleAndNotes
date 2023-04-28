@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
 
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets i = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
 
             mBinding.container.setPadding(i.left, i.top, i.right, 0);
             mBinding.navView.setPadding(0, 0, 0, i.bottom);

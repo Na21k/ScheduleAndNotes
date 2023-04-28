@@ -164,7 +164,8 @@ public class LanguagesListActivity extends AppCompatActivity
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
 
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets i = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
 
             mBinding.container.setPadding(i.left, i.top, i.right, 0);
 
