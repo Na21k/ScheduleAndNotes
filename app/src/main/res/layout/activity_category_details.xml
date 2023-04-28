@@ -44,7 +44,7 @@
                     android:inputType="textCapSentences"
                     android:textSize="34sp" />
 
-                <FrameLayout
+                <Space
                     android:layout_width="match_parent"
                     android:layout_height="20dp" />
 
