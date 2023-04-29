@@ -28,6 +28,8 @@ public class Constants {
     public static final String RECEIVE_MUSIC_LIST_NOTIFICATIONS_PREFERENCE_KEY = "receive_music_list_notifications";
     public static final String RECEIVE_LANGUAGES_LIST_NOTIFICATIONS_PREFERENCE_KEY = "receive_languages_list_notifications";
     public static final String LANGUAGES_LIST_SORTING_ORDER_PREFERENCE_KEY = "languages_list_sorting_order";
+
+    //positive notification id's are reserved for schedule events notifications
     public static final int MOVIES_LIST_NOTIFICATION_ID = -1;
     public static final int MUSIC_LIST_NOTIFICATION_ID = -2;
     public static final int LANGUAGES_LIST_NOTIFICATION_ID = -3;
@@ -36,11 +38,5 @@ public class Constants {
     @NonNull
     public static Date getRecommendationsTime() {
         return DateTimeHelper.addHours(DateTimeHelper.truncateToDateOnly(new Date()), 15);
-    }
-
-    //TODO: move to EventsHelper as getEventStartsSoonTime
-    //create a constant in Constants (event starts soon offset mins or smth)
-    public static Date getEventStartsSoonNotificationTime(Date eventsStarts) {
-        return DateTimeHelper.addMinutes(eventsStarts, -30);
     }
 }

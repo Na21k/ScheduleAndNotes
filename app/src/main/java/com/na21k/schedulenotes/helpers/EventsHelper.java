@@ -6,7 +6,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
@@ -17,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 public class EventsHelper {
+
+    public static final int EVENT_STARTS_SOON_TIME_OFFSET_MINS = -30;
 
     public static void postponeToAsync(@NonNull Event event, @NonNull Date dateOnly,
                                        @NonNull Context context) {
@@ -59,7 +60,7 @@ public class EventsHelper {
 
         int eventId = event.getId();
         Date starts = event.getDateTimeStarts();
-        Date startsSoon = Constants.getEventStartsSoonNotificationTime(starts);
+        Date startsSoon = getEventStartsSoonDateTime(starts);
 
         int startsSoonPendingIntentRequestCode = (int) pendingIntentDao.insert(
                 new EventNotificationAlarmPendingIntent(0, eventId,
@@ -88,8 +89,7 @@ public class EventsHelper {
                 triggerAtMillis = starts.getTime();
                 break;
             case EventStartsSoon:
-                triggerAtMillis = Constants
-                        .getEventStartsSoonNotificationTime(starts).getTime();
+                triggerAtMillis = getEventStartsSoonDateTime(starts).getTime();
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -124,5 +124,10 @@ public class EventsHelper {
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
             scheduleEventNotificationBlocking(pendingIntent, context);
         }
+    }
+
+    @NonNull
+    public static Date getEventStartsSoonDateTime(Date eventsStarts) {
+        return DateTimeHelper.addMinutes(eventsStarts, EVENT_STARTS_SOON_TIME_OFFSET_MINS);
     }
 }
