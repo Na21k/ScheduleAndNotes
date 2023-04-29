@@ -102,14 +102,15 @@ public class EventsHelper {
 
     public static void cancelEventNotificationsBlocking(@NonNull Event event,
                                                         @NonNull Context context) {
+        AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), context);
+
         EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
                 .eventNotificationAlarmPendingIntentDao();
-
         List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
                 .getByEventIdBlocking(event.getId());
 
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
-            scheduleEventNotificationBlocking(pendingIntent, context);
+            pendingIntentDao.delete(pendingIntent);
         }
     }
 

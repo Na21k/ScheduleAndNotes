@@ -38,6 +38,8 @@ public class Constants {
         return DateTimeHelper.addHours(DateTimeHelper.truncateToDateOnly(new Date()), 15);
     }
 
+    //TODO: move to EventsHelper as getEventStartsSoonTime
+    //create a constant in Constants (event starts soon offset mins or smth)
     public static Date getEventStartsSoonNotificationTime(Date eventsStarts) {
         return DateTimeHelper.addMinutes(eventsStarts, -30);
     }
