@@ -101,18 +101,29 @@ public class CategoriesHelper {
     @NonNull
     private static ColorSetModel getDefaultColorSetModel(Context context)
             throws CouldNotFindColorSetModelException {
-        ColorSet defaultColorSet = Constants.DEFAULT_COLOR_SET;
+        return getDefaultColorSetModel(getCategoriesColorSets(context));
+    }
 
-        List<ColorSetModel> colorSetModels = getCategoriesColorSets(context);
-        ColorSetModel res = colorSetModels.stream().filter(colorSetModel ->
-                        colorSetModel.getColorSet() == defaultColorSet)
+    @NonNull
+    public static ColorSetModel getDefaultColorSetModel(@NonNull List<ColorSetModel> models)
+            throws CouldNotFindColorSetModelException {
+        ColorSet defaultColorSet = Constants.DEFAULT_COLOR_SET;
+        return getColorSetModelByColorSet(models, defaultColorSet);
+    }
+
+    @NonNull
+    public static ColorSetModel getColorSetModelByColorSet(@NonNull List<ColorSetModel> models,
+                                                           @NonNull ColorSet colorSet)
+            throws CouldNotFindColorSetModelException {
+        ColorSetModel res = models.stream().filter(colorSetModel ->
+                        colorSetModel.getColorSet() == colorSet)
                 .findFirst().orElse(null);
 
         if (res != null) {
             return res;
         } else {
             throw new CouldNotFindColorSetModelException(
-                    "Could not find the default color set model", defaultColorSet);
+                    "Could not find the default color set model", colorSet);
         }
     }
 }

@@ -10,18 +10,25 @@ import androidx.lifecycle.LiveData;
 import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
+import com.na21k.schedulenotes.data.models.ColorSetModel;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
+
+import java.util.List;
 
 public class CategoryDetailsViewModel extends AndroidViewModel {
 
     private final CategoryDao mCategoryDao;
     private LiveData<Category> mCategory;
     private int mCategoryId;
+    private final List<ColorSetModel> mColorSetModels;
 
     public CategoryDetailsViewModel(@NonNull Application application) {
         super(application);
 
         AppDatabase db = AppDatabase.getInstance(application);
         mCategoryDao = db.categoryDao();
+
+        mColorSetModels = CategoriesHelper.getCategoriesColorSets(application);
     }
 
     public LiveData<Category> getCategory(int id) {
@@ -41,7 +48,7 @@ public class CategoryDetailsViewModel extends AndroidViewModel {
         new Thread(() -> mCategoryDao.delete(mCategoryId)).start();
     }
 
-    public void updateCurrentCategory(Category category) {
+    public void updateCurrentCategory(@NonNull Category category) {
         category.setId(mCategoryId);
         new Thread(() -> mCategoryDao.update(category)).start();
     }
@@ -49,5 +56,14 @@ public class CategoryDetailsViewModel extends AndroidViewModel {
     @Nullable
     public LiveData<Category> getCurrentCategory() {
         return mCategory;
+    }
+
+    @NonNull
+    public List<ColorSetModel> getColorSetModels() {
+        return mColorSetModels;
+    }
+
+    public ColorSetModel getDefaultColorSetModel() {
+        return CategoriesHelper.getDefaultColorSetModel(mColorSetModels);
     }
 }

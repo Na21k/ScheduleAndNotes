@@ -62,34 +62,10 @@
                     android:text="@string/color_selection_subtitle"
                     android:textSize="15sp" />
 
-                <HorizontalScrollView
+                <com.na21k.schedulenotes.ui.controls.ColorSetPickerView
+                    android:id="@+id/color_set_picker"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="always">
-
-                    <LinearLayout
-                        android:id="@+id/color_variants"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                        <include layout="@layout/color_picker_item" />
-
-                    </LinearLayout>
-
-                </HorizontalScrollView>
+                    android:layout_height="wrap_content" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

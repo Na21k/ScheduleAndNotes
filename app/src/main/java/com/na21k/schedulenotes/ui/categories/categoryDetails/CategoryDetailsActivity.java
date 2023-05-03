@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -26,19 +24,16 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.ActivityCategoryDetailsBinding;
-import com.na21k.schedulenotes.databinding.ColorPickerItemBinding;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.helpers.UiHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryDetailsActivity extends AppCompatActivity
-        implements Observer<Category>, View.OnClickListener {
+public class CategoryDetailsActivity extends AppCompatActivity implements Observer<Category> {
 
     private CategoryDetailsViewModel mViewModel;
     private ActivityCategoryDetailsBinding mBinding;
-    private ColorSet mSelectedColorSet;
-    private ColorSetModel mSelectedColorSetModel;
     private int mMostRecentBottomInset;
 
     @Override
@@ -58,6 +53,8 @@ public class CategoryDetailsActivity extends AppCompatActivity
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        renderColorPickerItems();
+
         if (isEditing()) {
             setTitle(R.string.title_edit_category);
 
@@ -66,16 +63,8 @@ public class CategoryDetailsActivity extends AppCompatActivity
             loadCategoryFromDb(categoryId);
         } else {
             setTitle(R.string.title_create_category);
-            mSelectedColorSet = ColorSet.GRAY;
-            rerenderColorPickerItems();
+            mBinding.colorSetPicker.setSelectedModel(mViewModel.getDefaultColorSetModel());
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        ColorSetModel model = (ColorSetModel) v.getTag();
-        mSelectedColorSet = model.getColorSet();
-        setSelectedColorPickerItem(v);
     }
 
     @Override
@@ -132,46 +121,17 @@ public class CategoryDetailsActivity extends AppCompatActivity
     @Override
     public void onChanged(Category category) {
         mBinding.categoryNameInput.setText(category.getTitle());
-        mSelectedColorSet = category.getColorSet();
-        rerenderColorPickerItems();
+
+        List<ColorSetModel> models = mViewModel.getColorSetModels();
+        ColorSetModel model = CategoriesHelper
+                .getColorSetModelByColorSet(models, category.getColorSet());
+
+        mBinding.colorSetPicker.setSelectedModel(model);
     }
 
-    private void rerenderColorPickerItems() {
-        List<ColorSetModel> models = CategoriesHelper.getCategoriesColorSets(this);
-        LinearLayout variantsLayout = mBinding.colorVariants;
-        variantsLayout.removeAllViews();
-
-        for (ColorSetModel model : models) {
-            ColorPickerItemBinding itemBinding = ColorPickerItemBinding.inflate(getLayoutInflater());
-            itemBinding.colorPickerItemLightColorCard.setCardBackgroundColor(model.getColorDayHex());
-            itemBinding.colorPickerItemDarkColorCard.setCardBackgroundColor(model.getColorNightHex());
-
-            if (model.getColorSet() != mSelectedColorSet) {
-                itemBinding.colorPickerItemImageWhenSelected.setVisibility(View.INVISIBLE);
-            } else {
-                mSelectedColorSetModel = model;
-            }
-
-            View view = itemBinding.getRoot();
-            view.setTag(model);
-
-            view.setOnClickListener(this);
-
-            variantsLayout.addView(view);
-        }
-    }
-
-    private void setSelectedColorPickerItem(View newSelectionView) {
-        View selectedOptionView = mBinding.colorVariants.findViewWithTag(mSelectedColorSetModel);
-        ColorPickerItemBinding selectedOptionBinding = ColorPickerItemBinding.bind(selectedOptionView);
-        selectedOptionBinding.colorPickerItemImageWhenSelected.setVisibility(View.INVISIBLE);
-
-        ColorPickerItemBinding newSelectionBinding = ColorPickerItemBinding.bind(newSelectionView);
-        newSelectionBinding.colorPickerItemImageWhenSelected.setVisibility(View.VISIBLE);
-
-        ColorSetModel newSelectionModel = (ColorSetModel) newSelectionView.getTag();
-        mSelectedColorSet = newSelectionModel.getColorSet();
-        mSelectedColorSetModel = newSelectionModel;
+    private void renderColorPickerItems() {
+        mBinding.colorSetPicker.setModels(new ArrayList<>(mViewModel.getColorSetModels()),
+                mViewModel.getDefaultColorSetModel());
     }
 
     private boolean isEditing() {
@@ -186,20 +146,29 @@ public class CategoryDetailsActivity extends AppCompatActivity
     private void saveCategory() {
         Editable editable = mBinding.categoryNameInput.getText();
 
-        if (editable != null && !editable.toString().isEmpty()) {
-            Category category = new Category(0, editable.toString(), mSelectedColorSet);
-
-            if (isEditing()) {
-                mViewModel.updateCurrentCategory(category);
-            } else {
-                mViewModel.createCategory(category);
-            }
-
-            finish();
-        } else {
+        if (editable == null || editable.toString().isEmpty()) {
             UiHelper.showSnackbar(this, mBinding.getRoot(),
                     R.string.specify_category_name_snackbar, mMostRecentBottomInset);
+
+            return;
         }
+
+        ColorSetModel selectedColorSetModel = mBinding.colorSetPicker.getSelectedModel();
+
+        if (selectedColorSetModel == null) {
+            throw new IllegalStateException("The selected " + ColorSetModel.class + " is not set");
+        }
+
+        ColorSet selectedColorSet = selectedColorSetModel.getColorSet();
+        Category category = new Category(0, editable.toString(), selectedColorSet);
+
+        if (isEditing()) {
+            mViewModel.updateCurrentCategory(category);
+        } else {
+            mViewModel.createCategory(category);
+        }
+
+        finish();
     }
 
     private void deleteCategory() {

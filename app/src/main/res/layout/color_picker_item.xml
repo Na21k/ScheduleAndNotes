@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
@@ -37,6 +35,7 @@
         android:layout_height="50dp"
         android:layout_margin="@dimen/page_margin"
         android:src="@drawable/ic_check_24"
+        android:visibility="invisible"
         app:tint="@color/check_color" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
