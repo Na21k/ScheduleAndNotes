@@ -3,6 +3,8 @@ package com.na21k.schedulenotes.ui.controls;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.databinding.ColorPickerItemBinding;
+import com.na21k.schedulenotes.helpers.CategoriesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,32 @@ public class ColorSetPickerView extends HorizontalScrollView {
         addView(mRootLinearLayout);
         ViewGroup.LayoutParams layoutParams = mRootLinearLayout.getLayoutParams();
         layoutParams.width = layoutParams.height = WRAP_CONTENT;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putString("selection", mSelectedModel.getColorSet().name());
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            String selection = bundle.getString("selection");
+            ColorSet selectionColorSet = ColorSet.valueOf(selection);
+            ColorSetModel selectionColorSetModel = CategoriesHelper
+                    .getColorSetModelByColorSet(mModels, selectionColorSet);
+
+            setSelectedModel(selectionColorSetModel);
+
+            state = bundle.getParcelable("superState");
+        }
+
+        super.onRestoreInstanceState(state);
     }
 
     @Nullable

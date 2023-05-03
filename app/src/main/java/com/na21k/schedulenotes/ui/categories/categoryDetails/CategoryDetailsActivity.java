@@ -63,7 +63,6 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
             loadCategoryFromDb(categoryId);
         } else {
             setTitle(R.string.title_create_category);
-            mBinding.colorSetPicker.setSelectedModel(mViewModel.getDefaultColorSetModel());
         }
     }
 
