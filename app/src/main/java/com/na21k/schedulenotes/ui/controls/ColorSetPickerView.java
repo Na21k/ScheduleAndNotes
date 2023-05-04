@@ -26,6 +26,8 @@ import java.util.List;
 
 public class ColorSetPickerView extends HorizontalScrollView {
 
+    private static final String SELECTED_MODEL_COLOR_SET_BUNDLE_KEY = "selectedModelColorSet";
+    private static final String SUPER_STATE_BUNDLE_KEY = "superState";
     private List<ColorSetModel> mModels;
     private ColorSetModel mSelectedModel;
     private LinearLayoutCompat mRootLinearLayout;
@@ -55,8 +57,8 @@ public class ColorSetPickerView extends HorizontalScrollView {
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        bundle.putString("selection", mSelectedModel.getColorSet().name());
-        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putString(SELECTED_MODEL_COLOR_SET_BUNDLE_KEY, mSelectedModel.getColorSet().name());
+        bundle.putParcelable(SUPER_STATE_BUNDLE_KEY, super.onSaveInstanceState());
 
         return bundle;
     }
@@ -65,14 +67,14 @@ public class ColorSetPickerView extends HorizontalScrollView {
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            String selection = bundle.getString("selection");
+            String selection = bundle.getString(SELECTED_MODEL_COLOR_SET_BUNDLE_KEY);
             ColorSet selectionColorSet = ColorSet.valueOf(selection);
             ColorSetModel selectionColorSetModel = CategoriesHelper
                     .getColorSetModelByColorSet(mModels, selectionColorSet);
 
             setSelectedModel(selectionColorSetModel);
 
-            state = bundle.getParcelable("superState");
+            state = bundle.getParcelable(SUPER_STATE_BUNDLE_KEY);
         }
 
         super.onRestoreInstanceState(state);
