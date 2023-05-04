@@ -94,13 +94,14 @@ public class ColorSetPickerView extends HorizontalScrollView {
         }
 
         mModels = models;
-        mSelectedModel = defaultSelection;
         mRootLinearLayout.removeAllViews();
 
         for (ColorSetModel model : models) {
-            ColorSetPickerItemView itemView = createItemView(model, defaultSelection);
+            ColorSetPickerItemView itemView = createItemView(model);
             mRootLinearLayout.addView(itemView);
         }
+
+        setSelectedModel(defaultSelection);
     }
 
     @Nullable
@@ -108,7 +109,7 @@ public class ColorSetPickerView extends HorizontalScrollView {
         return mSelectedModel;
     }
 
-    public void setSelectedModel(@Nullable ColorSetModel selectedModel)
+    public void setSelectedModel(@NonNull ColorSetModel selectedModel)
             throws IllegalStateException, IllegalArgumentException {
         if (mModels == null) {
             throw new IllegalStateException();
@@ -122,11 +123,26 @@ public class ColorSetPickerView extends HorizontalScrollView {
 
         mRootLinearLayout.dispatchSetSelected(false);
         getItemViewByModel(selectedModel).setSelected(true);
+
+        scrollTo(selectedModel);
+    }
+
+    private void scrollTo(@NonNull ColorSetModel selectedModel) {
+        int itemViewWidth = getItemViewByModel(selectedModel).getWidth();
+        int itemViewIndex = mModels.indexOf(selectedModel);
+        int scrollTo = itemViewWidth * itemViewIndex;
+
+        scrollTo(scrollTo, 0);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        scrollTo(mSelectedModel);
     }
 
     @NonNull
-    private ColorSetPickerItemView createItemView(@NonNull ColorSetModel model,
-                                                  @NonNull ColorSetModel defaultSelection) {
+    private ColorSetPickerItemView createItemView(@NonNull ColorSetModel model) {
         ColorSetPickerItemView res = new ColorSetPickerItemView(getContext());
 
         res.setModel(model);
@@ -135,10 +151,6 @@ public class ColorSetPickerView extends HorizontalScrollView {
             res.setSelected(true);
             mSelectedModel = model;
         });
-
-        if (model == defaultSelection) {
-            res.setSelected(true);
-        }
 
         return res;
     }
