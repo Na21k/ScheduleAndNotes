@@ -141,6 +141,13 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         RecyclerView recyclerView = mBinding.includedImagesList.imagesList;
         recyclerView.setAdapter(mAttachedImagesListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if (mViewModel.getAttachedImagesCount() > 0) {
+            //the ViewModel already has attached images cached
+            //after a configuration change
+            mAttachedImagesListAdapter.setData(mViewModel.getAttachedImages());
+            mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
+        }
     }
 
     private void loadItemFromDb(int itemId) {
@@ -157,16 +164,17 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             }
         });
 
+        if (mViewModel.getAttachedImagesCount() > 0) {
+            //the ViewModel already has attached images cached
+            //after a configuration change
+            return;
+        }
+
         mViewModel.getAttachedImagesByItemId(itemId).observe(this, attachedImages -> {
             mViewModel.setAttachedImages(attachedImages);
             mAttachedImagesListAdapter.setData(attachedImages);
             mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
         });
-
-        if (mViewModel.getAttachedImagesCount() > 0) {
-            mAttachedImagesListAdapter.setData(mViewModel.getAttachedImages());
-            mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
-        }
     }
 
     private void saveItem() {

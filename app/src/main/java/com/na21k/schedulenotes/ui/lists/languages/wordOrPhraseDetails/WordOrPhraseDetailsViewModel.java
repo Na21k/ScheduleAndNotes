@@ -68,7 +68,7 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
 
     public void setAttachedImages(@NonNull List<LanguagesListItemAttachedImage> images) {
         mImagesBefore = images;
-        mImagesAfter = new ArrayList<>(mImagesBefore);
+        mImagesAfter = new ArrayList<>(images);
         mIsLoadingAttachedImages = false;
     }
 
