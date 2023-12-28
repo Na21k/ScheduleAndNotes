@@ -41,8 +41,14 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
+        boolean isInDarkMode = UiHelper.isInDarkMode(this);
+        //breaks the status bar color on Android 12+ for some reason
+        //and makes it white in light theme
         WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
-                .setAppearanceLightNavigationBars(!UiHelper.isInDarkMode(this));
+                .setAppearanceLightNavigationBars(!isInDarkMode);
+        //fixes the status bar  color
+        WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
+                .setAppearanceLightStatusBars(!isInDarkMode);
 
         ActionBar actionBar = getSupportActionBar();
 
