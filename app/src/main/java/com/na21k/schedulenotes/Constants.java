@@ -17,6 +17,7 @@ public class Constants {
     public static final String LIST_ID_INTENT_KEY = "listId";
     public static final String LIST_TITLE_INTENT_KEY = "listTitle";
     public static final String SELECTED_TIME_MILLIS_INTENT_KEY = "selectedTimeMillis";
+    public static final String IS_OPEN_FROM_ARCHIVE_INTENT_KEY = "isOpenFromArchive";
     public static final ColorSet DEFAULT_COLOR_SET = ColorSet.GRAY;
     @IntRange(from = 1)
     public static final int UNDO_DELETE_TIMEOUT_MILLIS = 7000;

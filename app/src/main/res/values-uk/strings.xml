@@ -181,4 +181,8 @@
     <string name="notifications_permission_request_alert_title">Увімкнути сповіщення</string>
     <string name="notifications_permission_request_alert_message">Нам потрібенд дозвіл для надсилання сповіщень розкладу та списків</string>
     <string name="postpone_event_by_one_day">Перенести на 1 день</string>
+    <string name="unarchive">Розархівувати</string>
+    <string name="archive">Архівувати</string>
+    <string name="archived">Архів</string>
+    <string name="title_languages_list_archive">Архівні слова</string>
 </resources>

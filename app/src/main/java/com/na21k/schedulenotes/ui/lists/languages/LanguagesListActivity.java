@@ -138,6 +138,9 @@ public class LanguagesListActivity extends AppCompatActivity
         LanguagesListItemsSortingOrder order;
 
         switch (item.getItemId()) {
+            case R.id.menu_archived:
+                openArchive();
+                break;
             case R.id.menu_sort_by_word_or_phrase:
                 order = LanguagesListItemsSortingOrder.Word;
                 setSortingOrder(order);
@@ -267,6 +270,11 @@ public class LanguagesListActivity extends AppCompatActivity
                         mBinding.addWordOrPhraseFab.show();
                     }
                 });
+    }
+
+    private void openArchive() {
+        Intent intent = new Intent(this, LanguagesListArchiveActivity.class);
+        startActivity(intent);
     }
 
     private void addItem() {

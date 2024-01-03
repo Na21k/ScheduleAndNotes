@@ -9,6 +9,12 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|withText|collapseActionView" />
 
+    <item
+        android:id="@+id/menu_archived"
+        android:icon="@drawable/ic_archive_24"
+        android:title="@string/archived"
+        app:showAsAction="ifRoom|withText" />
+
     <item android:title="@string/sort_by_options_menu_item">
 
         <menu>

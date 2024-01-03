@@ -98,6 +98,13 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
         if (!isEditing()) {
             menu.removeItem(R.id.menu_delete);
+            menu.removeItem(R.id.menu_archive);
+        }
+
+        if (isOpenFromArchive()) {
+            menu.removeItem(R.id.menu_archive);
+        } else {
+            menu.removeItem(R.id.menu_unarchive);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -108,6 +115,12 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.menu_save:
                 saveItem();
+                break;
+            case R.id.menu_archive:
+                archiveItem();
+                break;
+            case R.id.menu_unarchive:
+                unarchiveItem();
                 break;
             case R.id.menu_cancel:
                 finish();
@@ -221,6 +234,16 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         finish();
     }
 
+    private void archiveItem() {
+        UiHelper.showSnackbar(this, mBinding.getRoot(),
+                "Feature in development, coming soon...", mMostRecentBottomInset);
+        //TODO: archive and finish. Show an archive explanation dialog if the archive is empty
+    }
+
+    private void unarchiveItem() {
+        //TODO: unarchive and finish
+    }
+
     private void deleteItem() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_delete_24);
@@ -240,6 +263,16 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private boolean isEditing() {
         Bundle bundle = getIntent().getExtras();
         return bundle != null;
+    }
+
+    private boolean isOpenFromArchive() {
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            return bundle.getBoolean(Constants.IS_OPEN_FROM_ARCHIVE_INTENT_KEY);
+        } else {
+            return false;
+        }
     }
 
     private void openImageFile(File imageFile) {

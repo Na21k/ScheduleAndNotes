@@ -2,6 +2,9 @@
     <!--General-->
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="archive">Archive</string>
+    <string name="unarchive">Unarchive</string>
+    <string name="archived">Archived</string>
     <string name="cancel">Cancel</string>
     <string name="keep">Keep</string>
     <string name="rename">Rename</string>
@@ -20,6 +23,7 @@
     <string name="title_music_list">Music List</string>
     <string name="title_shopping_list">Shopping List</string>
     <string name="title_languages_list">Vocabulary List</string>
+    <string name="title_languages_list_archive">Archived words</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
     <!-- Preference Titles -->

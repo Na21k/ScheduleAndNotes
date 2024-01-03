@@ -9,6 +9,18 @@
         app:showAsAction="ifRoom|withText" />
 
     <item
+        android:id="@+id/menu_archive"
+        android:icon="@drawable/ic_archive_24"
+        android:title="@string/archive"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/menu_unarchive"
+        android:icon="@drawable/ic_unarchive_24"
+        android:title="@string/unarchive"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_delete_24"
         android:title="@string/delete"
