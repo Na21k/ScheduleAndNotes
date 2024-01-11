@@ -9,20 +9,20 @@ import com.na21k.schedulenotes.data.database.Identifiable;
 
 import java.util.List;
 
-public abstract class MutableRepository<T extends Identifiable, SaveRes, DelRes>
+public abstract class MutableRepository<T extends Identifiable, AddRes>
         extends Repository<T> {
 
     protected MutableRepository(@NonNull Context context) {
         super(context);
     }
 
-    public abstract Task<SaveRes> add(T item);
+    public abstract Task<AddRes> add(T item);
 
-    public abstract Task<SaveRes> add(List<T> items);
+    public abstract Task<Void> add(List<T> items);
 
-    public abstract Task<SaveRes> update(T item);
+    public abstract Task<Void> update(T item);
 
-    public abstract Task<DelRes> delete(T item);
+    public abstract Task<Void> delete(T item);
 
-    public abstract Task<DelRes> deleteAll();
+    public abstract Task<Void> deleteAll();
 }
