@@ -9,8 +9,7 @@ import com.na21k.schedulenotes.data.database.Identifiable;
 
 import java.util.List;
 
-public abstract class MutableRepository<T extends Identifiable, AddRes>
-        extends Repository<T> {
+public abstract class MutableRepository<T extends Identifiable, AddRes> extends Repository {
 
     protected MutableRepository(@NonNull Context context) {
         super(context);
@@ -23,6 +22,4 @@ public abstract class MutableRepository<T extends Identifiable, AddRes>
     public abstract Task<Void> update(T item);
 
     public abstract Task<Void> delete(T item);
-
-    public abstract Task<Void> deleteAll();
 }

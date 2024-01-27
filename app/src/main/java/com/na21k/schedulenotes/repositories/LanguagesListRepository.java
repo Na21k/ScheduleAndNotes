@@ -12,7 +12,9 @@ import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDa
 
 import java.util.List;
 
-public class LanguagesListRepository extends MutableRepository<LanguagesListItem, Long> {
+public class LanguagesListRepository extends MutableRepository<LanguagesListItem, Long>
+        implements CanSearchRepository<LanguagesListItem>, CanListRepository<LanguagesListItem>,
+        CanClearRepository {
 
     private final LanguagesListItemDao mLanguagesListItemDao = db.languagesListItemDao();
     private final LiveData<List<LanguagesListItem>> mAllItems = mLanguagesListItemDao.getAll();
