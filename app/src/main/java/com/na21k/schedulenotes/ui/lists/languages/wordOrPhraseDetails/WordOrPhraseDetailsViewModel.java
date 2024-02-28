@@ -6,11 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImageDao;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
+import com.na21k.schedulenotes.repositories.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.LanguagesListRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,8 @@ import java.util.Objects;
 
 public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
 
-    private final LanguagesListItemDao mLanguagesListItemDao;
-    private final LanguagesListItemAttachedImageDao mAttachedImageDao;
+    private final LanguagesListRepository mLanguagesListRepository;
+    private final LanguagesListAttachedImagesRepository mAttachedImagesRepository;
     private List<LanguagesListItemAttachedImage> mImagesBefore = new ArrayList<>();
     private List<LanguagesListItemAttachedImage> mImagesAfter = new ArrayList<>();
     private boolean mIsLoadingAttachedImages = true;
@@ -28,34 +27,36 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
     public WordOrPhraseDetailsViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mLanguagesListItemDao = db.languagesListItemDao();
-        mAttachedImageDao = db.languagesListItemAttachedImageDao();
+        mLanguagesListRepository = new LanguagesListRepository(application);
+        mAttachedImagesRepository = new LanguagesListAttachedImagesRepository(application);
     }
 
     public LiveData<LanguagesListItem> getById(int id) {
         mItemId = id;
-        return mLanguagesListItemDao.getById(id);
+        return mLanguagesListRepository.getById(id);
     }
 
     public void addNew(LanguagesListItem item) {
-        new Thread(() -> {
-            mItemId = (int) mLanguagesListItemDao.insert(item);
-            updateImagesIfChanged();
-        }).start();
+        mLanguagesListRepository.add(item)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mItemId = Math.toIntExact(task.getResult());
+                        updateImagesIfChanged();
+                    }
+                });
     }
 
     public void update(LanguagesListItem item) {
-        new Thread(() -> mLanguagesListItemDao.update(item)).start();
+        mLanguagesListRepository.update(item);
         updateImagesIfChanged();
     }
 
     public void delete(LanguagesListItem item) {
-        new Thread(() -> mLanguagesListItemDao.delete(item)).start();
+        mLanguagesListRepository.delete(item);
     }
 
     public LiveData<List<LanguagesListItemAttachedImage>> getAttachedImagesByItemId(int itemId) {
-        return mAttachedImageDao.getByListItemId(itemId);
+        return mAttachedImagesRepository.getByListItemId(itemId);
     }
 
     public void addAttachedImage(LanguagesListItemAttachedImage attachedImage) {
@@ -90,12 +91,12 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
             List<LanguagesListItemAttachedImage> added = getAddedImages();
 
             for (LanguagesListItemAttachedImage image : deleted) {
-                new Thread(() -> mAttachedImageDao.delete(image)).start();
+                mAttachedImagesRepository.delete(image);
             }
 
             for (LanguagesListItemAttachedImage image : added) {
                 image.setLanguagesListItemId(mItemId);
-                new Thread(() -> mAttachedImageDao.insert(image)).start();
+                mAttachedImagesRepository.add(image);
             }
         }
     }

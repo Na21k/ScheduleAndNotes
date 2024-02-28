@@ -6,16 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
+import com.na21k.schedulenotes.repositories.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.LanguagesListRepository;
 
 import java.util.List;
 
 public class LanguagesListViewModel extends AndroidViewModel {
 
-    private final LanguagesListItemDao mLanguagesListItemDao;
-    private final LiveData<List<LanguagesListItem>> mAllItems;
+    private final LanguagesListRepository mLanguagesListRepository;
     private final LiveData<List<Integer>> mAllAttachedImagesListItemIds;
     private List<LanguagesListItem> mAllItemsCache;
     private List<Integer> mAttachedImagesListItemIdsCache;
@@ -23,26 +22,21 @@ public class LanguagesListViewModel extends AndroidViewModel {
     public LanguagesListViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mLanguagesListItemDao = db.languagesListItemDao();
-        mAllItems = mLanguagesListItemDao.getAll();
-        mAllAttachedImagesListItemIds = db.languagesListItemAttachedImageDao().getAllListItemIds();
+        mLanguagesListRepository = new LanguagesListRepository(application);
+        mAllAttachedImagesListItemIds = new LanguagesListAttachedImagesRepository(application)
+                .getAllListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getAll() {
-        return mAllItems;
+        return mLanguagesListRepository.getAll();
     }
 
     public LiveData<List<LanguagesListItem>> getItemsSearch(String searchQuery) {
-        return mLanguagesListItemDao.search(searchQuery);
-    }
-
-    public void addNew(LanguagesListItem item) {
-        new Thread(() -> mLanguagesListItemDao.insert(item)).start();
+        return mLanguagesListRepository.getSearch(searchQuery);
     }
 
     public void delete(LanguagesListItem item) {
-        new Thread(() -> mLanguagesListItemDao.delete(item)).start();
+        mLanguagesListRepository.delete(item);
     }
 
     public LiveData<List<Integer>> getAllAttachedImagesListItemIds() {
