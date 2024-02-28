@@ -22,6 +22,10 @@ public class LanguagesListAttachedImagesRepository
         super(context);
     }
 
+    public LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId) {
+        return mAttachedImageDao.getByListItemId(listItemId);
+    }
+
     public LiveData<List<Integer>> getAllListItemIds() {
         return mAttachedImageDao.getAllListItemIds();
     }
