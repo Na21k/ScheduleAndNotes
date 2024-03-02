@@ -54,6 +54,7 @@ public class UserDefinedListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         mViewModel = new ViewModelProvider(this).get(UserDefinedListViewModel.class);
+        mViewModel.configure(getListId());
         mBinding = ActivityUserDefinedListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
@@ -132,14 +133,14 @@ public class UserDefinedListActivity extends AppCompatActivity
     }
 
     private void observeItems() {
-        mLastLiveData = mViewModel.getItemsByListId(getListId());
+        mLastLiveData = mViewModel.getItems();
         mLastLiveData.observe(this, mItemsObserver);
     }
 
     private void replaceItemsObserverAccordingToSearchQuery(String query) {
         mLastLiveData.removeObservers(this);
 
-        mLastLiveData = mViewModel.getItemsSearch(getListId(), query);
+        mLastLiveData = mViewModel.getItemsSearch(query);
         mLastLiveData.observe(this, mItemsObserver);
     }
 

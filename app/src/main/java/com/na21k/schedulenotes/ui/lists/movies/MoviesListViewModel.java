@@ -6,42 +6,38 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
-import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItemDao;
+import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 
 import java.util.List;
 
 public class MoviesListViewModel extends AndroidViewModel {
 
-    private final MoviesListItemDao mMoviesListItemDao;
-    private final LiveData<List<MoviesListItem>> mAllMovies;
+    private final MoviesListRepository mMoviesListRepository;
 
     public MoviesListViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mMoviesListItemDao = db.moviesListItemDao();
-        mAllMovies = mMoviesListItemDao.getAll();
+        mMoviesListRepository = new MoviesListRepository(application);
     }
 
     public LiveData<List<MoviesListItem>> getAll() {
-        return mAllMovies;
+        return mMoviesListRepository.getAll();
     }
 
     public LiveData<List<MoviesListItem>> getItemsSearch(String stringQuery) {
-        return mMoviesListItemDao.search(stringQuery);
+        return mMoviesListRepository.getSearch(stringQuery);
     }
 
     public void addNew(MoviesListItem moviesListItem) {
-        new Thread(() -> mMoviesListItemDao.insert(moviesListItem)).start();
+        mMoviesListRepository.add(moviesListItem);
     }
 
     public void update(MoviesListItem moviesListItem) {
-        new Thread(() -> mMoviesListItemDao.update(moviesListItem)).start();
+        mMoviesListRepository.update(moviesListItem);
     }
 
     public void delete(MoviesListItem moviesListItem) {
-        new Thread(() -> mMoviesListItemDao.delete(moviesListItem)).start();
+        mMoviesListRepository.delete(moviesListItem);
     }
 }

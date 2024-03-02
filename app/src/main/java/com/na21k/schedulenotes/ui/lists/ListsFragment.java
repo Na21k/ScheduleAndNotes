@@ -1,9 +1,7 @@
 package com.na21k.schedulenotes.ui.lists;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -320,22 +318,12 @@ public class ListsFragment extends Fragment
                     String titleOld = list.getTitle();
                     list.setTitle(listName);
 
-                    mViewModel.update(list, (t, e) -> {
-                        if (e.getClass().equals(SQLiteConstraintException.class)) {
-                            Activity activity = getActivity();
+                    mViewModel.update(list, () -> {
+                        list.setTitle(titleOld);
 
-                            if (activity != null) {
-                                activity.runOnUiThread(() -> {
-                                    list.setTitle(titleOld);
-
-                                    onListRenameRequested(list);
-                                    UiHelper.showErrorDialog(context,
-                                            R.string.such_list_already_exists_alert_message);
-                                });
-                            }
-                        } else {
-                            throw new RuntimeException(e);
-                        }
+                        onListRenameRequested(list);
+                        UiHelper.showErrorDialog(context,
+                                R.string.such_list_already_exists_alert_message);
                     });
                 } else {
                     onListRenameRequested(list);

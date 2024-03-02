@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories;
+package com.na21k.schedulenotes.repositories.lists.languages;
 
 import android.content.Context;
 
@@ -9,6 +9,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
+import com.na21k.schedulenotes.repositories.CanClearRepository;
+import com.na21k.schedulenotes.repositories.CanListRepository;
+import com.na21k.schedulenotes.repositories.CanSearchRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 

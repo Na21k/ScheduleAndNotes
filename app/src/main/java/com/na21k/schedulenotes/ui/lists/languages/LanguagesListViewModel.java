@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
-import com.na21k.schedulenotes.repositories.LanguagesListAttachedImagesRepository;
-import com.na21k.schedulenotes.repositories.LanguagesListRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 
 import java.util.List;
 

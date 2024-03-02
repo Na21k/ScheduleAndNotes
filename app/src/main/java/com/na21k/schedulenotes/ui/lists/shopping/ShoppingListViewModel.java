@@ -6,50 +6,46 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
-import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItemDao;
+import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
 
 import java.util.List;
 
 public class ShoppingListViewModel extends AndroidViewModel {
 
-    private final ShoppingListItemDao mShoppingListItemDao;
-    private final LiveData<List<ShoppingListItem>> mAllItems;
+    private final ShoppingListRepository mShoppingListRepository;
 
     public ShoppingListViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mShoppingListItemDao = db.shoppingListItemDao();
-        mAllItems = mShoppingListItemDao.getAll();
+        mShoppingListRepository = new ShoppingListRepository(application);
     }
 
     public LiveData<List<ShoppingListItem>> getAll() {
-        return mAllItems;
+        return mShoppingListRepository.getAll();
     }
 
     public LiveData<List<ShoppingListItem>> getItemsSearch(String searchQuery) {
-        return mShoppingListItemDao.search(searchQuery);
+        return mShoppingListRepository.getSearch(searchQuery);
     }
 
     public void addNew(ShoppingListItem item) {
-        new Thread(() -> mShoppingListItemDao.insert(item)).start();
+        mShoppingListRepository.add(item);
     }
 
     public void update(ShoppingListItem item) {
-        new Thread(() -> mShoppingListItemDao.update(item)).start();
+        mShoppingListRepository.update(item);
     }
 
     public void delete(ShoppingListItem item) {
-        new Thread(() -> mShoppingListItemDao.delete(item)).start();
-    }
-
-    public void deleteAll() {
-        new Thread(mShoppingListItemDao::deleteAll).start();
+        mShoppingListRepository.delete(item);
     }
 
     public void deleteChecked() {
-        new Thread(mShoppingListItemDao::deleteChecked).start();
+        mShoppingListRepository.deleteChecked();
+    }
+
+    public void deleteAll() {
+        mShoppingListRepository.deleteAll();
     }
 }

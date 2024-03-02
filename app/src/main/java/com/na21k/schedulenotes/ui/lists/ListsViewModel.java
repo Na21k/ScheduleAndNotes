@@ -1,59 +1,61 @@
 package com.na21k.schedulenotes.ui.lists;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
-import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListDao;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
+import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
+import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
 
 import java.util.List;
 
 public class ListsViewModel extends AndroidViewModel {
 
-    private final UserDefinedListDao mListDao;
-    private final LiveData<List<UserDefinedList>> mAllLists;
-    private final LiveData<List<UserDefinedListItem>> mAllListItems;
+    private final UserDefinedListsRepository mListsRepository;
+    private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
     private List<UserDefinedList> mListsCache = null;
     private List<UserDefinedListItem> mListItemsCache = null;
 
     public ListsViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mListDao = db.userDefinedListDao();
-        mAllLists = mListDao.getAll();
-        mAllListItems = db.userDefinedListItemDao().getAll();
+        mListsRepository = new UserDefinedListsRepository(application);
+        mUserDefinedListItemsRepository = new UserDefinedListItemsRepository(application);
     }
 
     public LiveData<List<UserDefinedList>> getAllLists() {
-        return mAllLists;
+        return mListsRepository.getAll();
     }
 
     public LiveData<List<UserDefinedList>> getListsSearch(String searchQuery) {
-        return mListDao.search(searchQuery);
+        return mListsRepository.getSearch(searchQuery);
     }
 
     public LiveData<List<UserDefinedListItem>> getAllListItems() {
-        return mAllListItems;
+        return mUserDefinedListItemsRepository.getAll();
     }
 
     public void addNew(UserDefinedList list) {
-        new Thread(() -> mListDao.insert(list)).start();
+        mListsRepository.add(list);
     }
 
-    public void update(UserDefinedList list, Thread.UncaughtExceptionHandler exceptionHandler) {
-        Thread t = new Thread(() -> mListDao.update(list));
-        t.setUncaughtExceptionHandler(exceptionHandler);
-        t.start();
+    public void update(UserDefinedList list, Runnable onSQLiteConstraintException) {
+        mListsRepository.update(list).addOnFailureListener(e -> {
+            if (e.getClass().equals(SQLiteConstraintException.class)) {
+                onSQLiteConstraintException.run();
+            } else {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void delete(UserDefinedList list) {
-        new Thread(() -> mListDao.delete(list)).start();
+        mListsRepository.delete(list);
     }
 
     public List<UserDefinedList> getListsCache() {

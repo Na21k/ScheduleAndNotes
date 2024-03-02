@@ -6,42 +6,38 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
-import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItemDao;
+import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 
 import java.util.List;
 
 public class MusicListViewModel extends AndroidViewModel {
 
-    private final MusicListItemDao mMusicListItemDao;
-    private final LiveData<List<MusicListItem>> mAllMusic;
+    private final MusicListRepository mMusicListRepository;
 
     public MusicListViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mMusicListItemDao = db.musicListItemDao();
-        mAllMusic = mMusicListItemDao.getAll();
+        mMusicListRepository = new MusicListRepository(application);
     }
 
     public LiveData<List<MusicListItem>> getAll() {
-        return mAllMusic;
+        return mMusicListRepository.getAll();
     }
 
     public LiveData<List<MusicListItem>> getItemsSearch(String searchQuery) {
-        return mMusicListItemDao.search(searchQuery);
+        return mMusicListRepository.getSearch(searchQuery);
     }
 
     public void addNew(MusicListItem musicListItem) {
-        new Thread(() -> mMusicListItemDao.insert(musicListItem)).start();
+        mMusicListRepository.add(musicListItem);
     }
 
     public void update(MusicListItem musicListItem) {
-        new Thread(() -> mMusicListItemDao.update(musicListItem)).start();
+        mMusicListRepository.update(musicListItem);
     }
 
     public void delete(MusicListItem musicListItem) {
-        new Thread(() -> mMusicListItemDao.delete(musicListItem)).start();
+        mMusicListRepository.delete(musicListItem);
     }
 }

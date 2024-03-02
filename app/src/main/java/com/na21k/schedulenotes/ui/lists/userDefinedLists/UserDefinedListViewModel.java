@@ -6,40 +6,54 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
-import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItemDao;
+import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
 
 import java.util.List;
 
 public class UserDefinedListViewModel extends AndroidViewModel {
 
-    private final UserDefinedListItemDao mUserDefinedListItemDao;
+    private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+    private Integer mListId = null;
 
     public UserDefinedListViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mUserDefinedListItemDao = db.userDefinedListItemDao();
+        mUserDefinedListItemsRepository = new UserDefinedListItemsRepository(application);
     }
 
-    public LiveData<List<UserDefinedListItem>> getItemsByListId(int listId) {
-        return mUserDefinedListItemDao.getByListId(listId);
+    public void configure(int listId) {
+        mListId = listId;
     }
 
-    public LiveData<List<UserDefinedListItem>> getItemsSearch(int listId, String searchQuery) {
-        return mUserDefinedListItemDao.searchInList(listId, searchQuery);
+    private void ensureConfigured() {
+        if (mListId == null) {
+            throw new IllegalStateException("The ViewModel has not been configured.");
+        }
+    }
+
+    public LiveData<List<UserDefinedListItem>> getItems() {
+        ensureConfigured();
+        return mUserDefinedListItemsRepository.getAllForList(mListId);
+    }
+
+    public LiveData<List<UserDefinedListItem>> getItemsSearch(String searchQuery) {
+        ensureConfigured();
+        return mUserDefinedListItemsRepository.getSearch(mListId, searchQuery);
     }
 
     public void addNew(UserDefinedListItem userDefinedListItem) {
-        new Thread(() -> mUserDefinedListItemDao.insert(userDefinedListItem)).start();
+        mUserDefinedListItemsRepository.add(userDefinedListItem)
+                .addOnFailureListener(Throwable::printStackTrace);
     }
 
     public void update(UserDefinedListItem userDefinedListItem) {
-        new Thread(() -> mUserDefinedListItemDao.update(userDefinedListItem)).start();
+        mUserDefinedListItemsRepository.update(userDefinedListItem)
+                .addOnFailureListener(Throwable::printStackTrace);
     }
 
     public void delete(UserDefinedListItem userDefinedListItem) {
-        new Thread(() -> mUserDefinedListItemDao.delete(userDefinedListItem)).start();
+        mUserDefinedListItemsRepository.delete(userDefinedListItem)
+                .addOnFailureListener(Throwable::printStackTrace);
     }
 }
