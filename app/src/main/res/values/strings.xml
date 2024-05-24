@@ -54,6 +54,7 @@
     <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Vocabulary List and receiving periodic notifications. This way you will be able to memorize them better</string>
 
     <!--Notifications text-->
+    <string name="event_notifications_group_notification_title">A schedule event has started or starts soon</string>
     <string name="event_started_title">%1$s - has started</string>
     <string name="event_starts_soon_title">%1$s - starts soon</string>
     <string name="movie_notification_text">You wanted to watch this movie. Maybe it\'s time to do it?</string>

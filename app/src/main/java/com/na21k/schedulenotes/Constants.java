@@ -31,9 +31,11 @@ public class Constants {
     public static final String LANGUAGES_LIST_SORTING_ORDER_PREFERENCE_KEY = "languages_list_sorting_order";
 
     //positive notification id's are reserved for schedule events notifications
-    public static final int MOVIES_LIST_NOTIFICATION_ID = -1;
-    public static final int MUSIC_LIST_NOTIFICATION_ID = -2;
-    public static final int LANGUAGES_LIST_NOTIFICATION_ID = -3;
+    public static final int EVENT_NOTIFICATIONS_GROUP_SUMMARY_NOTIFICATION_ID = -1;
+    public static final int MOVIES_LIST_NOTIFICATION_ID = -2;
+    public static final int MUSIC_LIST_NOTIFICATION_ID = -3;
+    public static final int LANGUAGES_LIST_NOTIFICATION_ID = -4;
+    public static final String EVENT_NOTIFICATIONS_GROUP_ID = "eventNotificationsGroupId";
     public static final String RECOMMENDATIONS_WORKER_TAG = "recommendationsWorkerTag";
 
     @NonNull

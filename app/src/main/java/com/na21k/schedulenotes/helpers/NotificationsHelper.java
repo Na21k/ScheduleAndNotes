@@ -19,6 +19,7 @@ import androidx.preference.PreferenceManager;
 
 import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventByOneDayFromNotificationBroadcastReceiver;
 import com.na21k.schedulenotes.Constants;
+import com.na21k.schedulenotes.MainActivity;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
 import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
@@ -102,6 +103,7 @@ public class NotificationsHelper {
         NotificationCompat.Builder builder = getBasicBuilder(context, title, text,
                 EVENT_NOTIFICATIONS_CHANNEL_ID, R.drawable.ic_event_24)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
+                .setGroup(Constants.EVENT_NOTIFICATIONS_GROUP_ID)
                 .setContentIntent(intent);
 
         PendingIntent postponeByOneDayIntent = getPostponeEventByOneDayPendingIntent(
@@ -113,6 +115,28 @@ public class NotificationsHelper {
         builder.addAction(postponeToTomorrowAction);
 
         notifyIfNotificationsPermissionGranted(context, eventId, builder.build());
+        showEventNotificationsGroupSummary(context);
+    }
+
+    private static void showEventNotificationsGroupSummary(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
+        String title = context.getString(R.string.event_notifications_group_notification_title);
+
+        NotificationCompat.Builder builder = getBasicBuilder(context, title, null,
+                EVENT_NOTIFICATIONS_CHANNEL_ID, R.drawable.ic_event_24)
+                .setCategory(NotificationCompat.CATEGORY_EVENT)
+                .setGroup(Constants.EVENT_NOTIFICATIONS_GROUP_ID)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .setGroupSummary(true)
+                .setContentIntent(pendingIntent);
+
+        notifyIfNotificationsPermissionGranted(context,
+                Constants.EVENT_NOTIFICATIONS_GROUP_SUMMARY_NOTIFICATION_ID, builder.build());
     }
 
     public static void showMovieNotification(Context context, String title, String text) {
