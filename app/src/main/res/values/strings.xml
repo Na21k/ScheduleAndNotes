@@ -13,6 +13,7 @@
     <string name="proceed">Proceed</string>
     <string name="oops_aletr_title">Oops …</string>
     <string name="please_wait">Please wait</string>
+    <string name="unexpected_error">An unexpected error occurred</string>
 
     <string name="app_name">Schedule &amp; Notes</string>
     <string name="title_home">Home</string>
@@ -26,21 +27,22 @@
     <string name="title_languages_list_archive">Archived words</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
-    <!-- Preference Titles -->
-    <!--<string name="messages_header">Messages</string>-->
-    <string name="manage_data_header">Manage data</string>
-    <string name="notifications_header">Notifications</string>
-    <string name="other_header">Other</string>
+    <string name="title_import">Import</string>
+    <string name="title_export">Export</string>
+    <!--General SECTION END-->
 
+    <!--Preference Titles-->
     <!--Data management preferences-->
+    <string name="manage_data_header">Manage data</string>
     <string name="import_title">Import</string>
     <string name="import_summary">Import data from a file</string>
     <string name="export_title">Export</string>
     <string name="export_summary">Export data to a file</string>
-    <string name="delete_events_older_than_title">Delete events older than …</string>
+    <string name="delete_events_older_than_title">Delete events older than…</string>
     <string name="delete_events_older_than_summary">Delete events that end by a selected date (inclusive)</string>
 
     <!--Notifications preferences-->
+    <string name="notifications_header">Notifications</string>
     <string name="receive_notifications_title">Receive notifications</string>
     <string name="receive_notifications_summary_on">You\'ll receive selected notifications</string>
     <string name="receive_notifications_summary_off">You won\'t receive any notifications</string>
@@ -53,6 +55,27 @@
     <string name="languages_list_notifications_title">Vocabulary List notifications</string>
     <string name="languages_list_notifications_summary">Recall learned words and phrases from time to time by adding them to your Vocabulary List and receiving periodic notifications. This way you will be able to memorize them better</string>
 
+    <!--Other preferences-->
+    <string name="other_header">Other</string>
+    <string name="languages_list_sorting_order_title">Vocabulary List sorting order</string>
+    <string name="languages_list_sorting_order_word">By word</string>
+    <string name="languages_list_sorting_order_translation">By translation</string>
+    <!--Preference Titles SECTION END-->
+
+    <!--Preferences-related but not preference titles-->
+    <string name="delete_events_older_than_succeeded_snackbar">Successfully deleted the selected range of events</string>
+    <string name="backing_up_toast">Backing up …</string>
+    <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
+    <string name="backup_created_successfully_toast">Backup created successfully</string>
+    <string name="import_alert_title">Import alert</string>
+    <string name="import_alert_message">Importing implies loss of all the existing data. Are you sure you want to proceed?</string>
+    <string name="importing_from_backup_toast">Importing from backup …</string>
+    <string name="successfully_imported_from_backup_toast">Successfully imported from backup</string>
+    <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
+    <string name="images_processing_might_take_long_time">Attached images may take a long time to process</string>
+    <!--Preferences-related but not preference titles SECTION END-->
+
+    <!--Notifications-->
     <!--Notifications text-->
     <string name="event_notifications_group_notification_title">A schedule event has started or starts soon</string>
     <string name="event_started_title">%1$s - has started</string>
@@ -69,36 +92,12 @@
     <string name="languages_list_notification_channel_name">Vocabulary List</string>
     <string name="movies_list_notification_channel_name">Movies List</string>
     <string name="music_list_notification_channel_name">Music List</string>
-
-    <!--Other preferences-->
-    <string name="languages_list_sorting_order_title">Vocabulary List sorting order</string>
-    <string name="languages_list_sorting_order_word">By word</string>
-    <string name="languages_list_sorting_order_translation">By translation</string>
-
-    <!-- Messages Preferences -->
-    <!--<string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>-->
-
-    <!--Settings-->
-    <string name="title_import">Import</string>
-    <string name="title_export">Export</string>
-    <string name="delete_events_older_than_succeeded_snackbar">Successfully deleted the selected range of events</string>
-    <string name="backing_up_toast">Backing up …</string>
-    <string name="backing_up_failed_toast">Couldn\'t create a backup</string>
-    <string name="backup_created_successfully_toast">Backup created successfully</string>
-    <string name="import_alert_title">Import alert</string>
-    <string name="import_alert_message">Importing implies loss of all the existing data. Are you sure you want to proceed?</string>
-    <string name="importing_from_backup_toast">Importing from backup …</string>
-    <string name="successfully_imported_from_backup_toast">Successfully imported from backup</string>
-    <string name="importing_from_backup_failed_toast">Couldn\'t import data from backup</string>
-    <string name="images_processing_might_take_long_time">Attached images may take a long time to process</string>
-
-    <!--Snackbar and Toast messages-->
-    <string name="unexpected_error">An unexpected error occurred</string>
+    <!--Notifications SECTION END-->
 
     <!--Permission management-->
     <string name="notifications_permission_request_alert_title">Enable notifications</string>
     <string name="notifications_permission_request_alert_message">We need the notifications permission in order to notify you about upcoming schedule events and send lists notifications</string>
+    <!--Permission management SECTION END-->
 
     <!--Categories-->
     <string name="title_create_category">Create category</string>
