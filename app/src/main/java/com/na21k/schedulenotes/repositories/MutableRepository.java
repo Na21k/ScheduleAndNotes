@@ -19,6 +19,8 @@ public abstract class MutableRepository<T extends Identifiable, AddRes> extends 
 
     public abstract Task<Void> add(List<T> items);
 
+    public abstract void addBlocking(List<T> items);
+
     public abstract Task<Void> update(T item);
 
     public abstract Task<Void> delete(T item);

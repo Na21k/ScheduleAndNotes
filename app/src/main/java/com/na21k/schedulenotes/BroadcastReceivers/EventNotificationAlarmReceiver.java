@@ -8,20 +8,19 @@ import android.content.Intent;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntentDao;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
+import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 public class EventNotificationAlarmReceiver extends BroadcastReceiver {
 
     public static final String EVENT_NOTIFICATION_ALARM_PENDING_INTENT_ID_INTENT_KEY =
             "eventNotificationAlarmPendingIntentId";
     private int mEventNotificationAlarmPendingIntentId;
-    private EventDao mEventDao;
-    private EventNotificationAlarmPendingIntentDao mEventNotificationAlarmPendingIntentDao;
+    private ScheduleRepository mScheduleRepository;
+    private EventNotificationAlarmPendingIntentRepository mEventNotificationAlarmPendingIntentRepository;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,22 +32,22 @@ public class EventNotificationAlarmReceiver extends BroadcastReceiver {
         mEventNotificationAlarmPendingIntentId = intent
                 .getIntExtra(EVENT_NOTIFICATION_ALARM_PENDING_INTENT_ID_INTENT_KEY, 0);
 
-        AppDatabase db = AppDatabase.getInstance(context);
-        mEventDao = db.eventDao();
-        mEventNotificationAlarmPendingIntentDao = db.eventNotificationAlarmPendingIntentDao();
+        mScheduleRepository = new ScheduleRepository(context);
+        mEventNotificationAlarmPendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepository(context);
 
         PendingResult pendingResult = goAsync();
 
         new Thread(() -> {
             EventNotificationAlarmPendingIntent pendingIntent =
-                    mEventNotificationAlarmPendingIntentDao
+                    mEventNotificationAlarmPendingIntentRepository
                             .getByIdBlocking(mEventNotificationAlarmPendingIntentId);
 
             if (pendingIntent != null) {
                 int eventId = pendingIntent.getEventId();
                 EventNotificationType notificationType = pendingIntent.getNotificationType();
 
-                Event event = mEventDao.getByIdBlocking(eventId);
+                Event event = mScheduleRepository.getByIdBlocking(eventId);
 
                 String title;
 
@@ -70,7 +69,7 @@ public class EventNotificationAlarmReceiver extends BroadcastReceiver {
 
                 NotificationsHelper.showEventNotification(context, title, text, eventId);
                 //only pending intents for notifications that haven't been sent yet are stored
-                mEventNotificationAlarmPendingIntentDao.delete(pendingIntent);
+                mEventNotificationAlarmPendingIntentRepository.deleteBlocking(pendingIntent);
             }
 
             pendingResult.finish();

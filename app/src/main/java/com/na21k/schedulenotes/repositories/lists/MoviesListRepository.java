@@ -38,6 +38,11 @@ public class MoviesListRepository extends MutableRepository<MoviesListItem, Void
     }
 
     @Override
+    public List<MoviesListItem> getAllBlocking() {
+        return mMoviesListItemDao.getAllBlocking();
+    }
+
+    @Override
     public LiveData<List<MoviesListItem>> getSearch(String query) {
         return mMoviesListItemDao.search(query);
     }
@@ -64,6 +69,11 @@ public class MoviesListRepository extends MutableRepository<MoviesListItem, Void
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<MoviesListItem> items) {
+        mMoviesListItemDao.insert(items);
     }
 
     @Override
@@ -100,5 +110,10 @@ public class MoviesListRepository extends MutableRepository<MoviesListItem, Void
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void deleteAllBlocking() {
+        mMoviesListItemDao.deleteAll();
     }
 }

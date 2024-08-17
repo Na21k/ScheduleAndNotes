@@ -6,16 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.data.database.Notes.NoteDao;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.NotesRepository;
 
 import java.util.List;
 
 public class NotesViewModel extends AndroidViewModel {
 
-    private final NoteDao mNoteDao;
+    private final NotesRepository mNotesRepository;
     private final LiveData<List<Note>> mAllNotes;
     private final LiveData<List<Category>> mAllCategories;
     private List<Note> mNotesCache = null;
@@ -24,10 +24,11 @@ public class NotesViewModel extends AndroidViewModel {
     public NotesViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mNoteDao = db.noteDao();
-        mAllNotes = mNoteDao.getAll();
-        mAllCategories = db.categoryDao().getAll();
+        mNotesRepository = new NotesRepository(application);
+        CategoriesRepository categoriesRepository = new CategoriesRepository(application);
+
+        mAllNotes = mNotesRepository.getAll();
+        mAllCategories = categoriesRepository.getAll();
     }
 
     public LiveData<List<Note>> getAllNotes() {
@@ -35,7 +36,7 @@ public class NotesViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Note>> getNotesSearch(String searchQuery) {
-        return mNoteDao.search(searchQuery);
+        return mNotesRepository.getSearch(searchQuery);
     }
 
     public LiveData<List<Category>> getAllCategories() {
@@ -43,15 +44,15 @@ public class NotesViewModel extends AndroidViewModel {
     }
 
     public void createNote(Note note) {
-        new Thread(() -> mNoteDao.insert(note)).start();
+        mNotesRepository.add(note);
     }
 
     public void updateNote(Note note) {
-        new Thread(() -> mNoteDao.update(note)).start();
+        mNotesRepository.update(note);
     }
 
     public void deleteNote(Note note) {
-        new Thread(() -> mNoteDao.delete(note)).start();
+        mNotesRepository.delete(note);
     }
 
     public List<Note> getNotesCache() {

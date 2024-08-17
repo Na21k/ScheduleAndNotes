@@ -6,43 +6,30 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
 
 import java.util.List;
 
 public class CategoriesViewModel extends AndroidViewModel {
 
-    private final CategoryDao mCategoryDao;
-    private final LiveData<List<Category>> mAllCategories;
+    private final CategoriesRepository mCategoriesRepository;
 
     public CategoriesViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mCategoryDao = db.categoryDao();
-        mAllCategories = mCategoryDao.getAll();
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
+        mCategoriesRepository = new CategoriesRepository(application);
     }
 
     public LiveData<List<Category>> getAll() {
-        return mAllCategories;
+        return mCategoriesRepository.getAll();
     }
 
     public LiveData<List<Category>> getCategoriesSearch(String searchQuery) {
-        return mCategoryDao.search(searchQuery);
-    }
-
-    public LiveData<List<Category>> search(String search) {
-        return mCategoryDao.search(search);
+        return mCategoriesRepository.getSearch(searchQuery);
     }
 
     public void delete(Category category) {
-        new Thread(() -> mCategoryDao.delete(category)).start();
+        mCategoriesRepository.delete(category);
     }
 }

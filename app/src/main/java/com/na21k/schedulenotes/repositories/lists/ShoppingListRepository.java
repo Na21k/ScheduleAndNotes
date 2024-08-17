@@ -38,6 +38,11 @@ public class ShoppingListRepository extends MutableRepository<ShoppingListItem, 
     }
 
     @Override
+    public List<ShoppingListItem> getAllBlocking() {
+        return mShoppingListItemDao.getAllBlocking();
+    }
+
+    @Override
     public LiveData<List<ShoppingListItem>> getSearch(String query) {
         return mShoppingListItemDao.search(query);
     }
@@ -64,6 +69,11 @@ public class ShoppingListRepository extends MutableRepository<ShoppingListItem, 
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<ShoppingListItem> items) {
+        mShoppingListItemDao.insert(items);
     }
 
     @Override
@@ -104,5 +114,10 @@ public class ShoppingListRepository extends MutableRepository<ShoppingListItem, 
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void deleteAllBlocking() {
+        mShoppingListItemDao.deleteAll();
     }
 }

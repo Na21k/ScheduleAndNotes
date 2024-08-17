@@ -38,6 +38,11 @@ public class MusicListRepository extends MutableRepository<MusicListItem, Void>
     }
 
     @Override
+    public List<MusicListItem> getAllBlocking() {
+        return mMusicListItemDao.getAllBlocking();
+    }
+
+    @Override
     public LiveData<List<MusicListItem>> getSearch(String query) {
         return mMusicListItemDao.search(query);
     }
@@ -64,6 +69,11 @@ public class MusicListRepository extends MutableRepository<MusicListItem, Void>
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<MusicListItem> items) {
+        mMusicListItemDao.insert(items);
     }
 
     @Override
@@ -100,5 +110,10 @@ public class MusicListRepository extends MutableRepository<MusicListItem, Void>
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void deleteAllBlocking() {
+        mMusicListItemDao.deleteAll();
     }
 }

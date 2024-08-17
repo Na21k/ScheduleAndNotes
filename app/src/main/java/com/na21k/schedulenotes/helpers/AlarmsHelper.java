@@ -9,11 +9,10 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.BroadcastReceivers.EventNotificationAlarmReceiver;
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntentDao;
+import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 import java.util.List;
 
@@ -39,13 +38,13 @@ public class AlarmsHelper {
 
     public static void cancelEventNotificationAlarmsBlocking(int eventId,
                                                              @NonNull Context context) {
-        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
-                .eventNotificationAlarmPendingIntentDao();
+        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepository(context);
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = getEventNotificationIntent(eventId, context);
 
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
+        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
                 .getByEventIdBlocking(eventId);
 
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
@@ -62,8 +61,8 @@ public class AlarmsHelper {
     }
 
     public static void cancelAllEventNotificationAlarmsBlocking(@NonNull Context context) {
-        EventDao eventDao = AppDatabase.getInstance(context).eventDao();
-        List<Event> events = eventDao.getAllBlocking();
+        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
+        List<Event> events = scheduleRepository.getAllBlocking();
 
         for (Event event : events) {
             cancelEventNotificationAlarmsBlocking(event.getId(), context);

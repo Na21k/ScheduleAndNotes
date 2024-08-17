@@ -10,5 +10,7 @@ public interface CanListRepository<T extends Identifiable> {
 
     LiveData<List<T>> getAll();
 
+    List<T> getAllBlocking();
+
     LiveData<T> getById(int id);
 }

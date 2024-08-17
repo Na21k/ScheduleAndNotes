@@ -33,6 +33,11 @@ public class UserDefinedListsRepository extends MutableRepository<UserDefinedLis
     }
 
     @Override
+    public List<UserDefinedList> getAllBlocking() {
+        return mUserDefinedListDao.getAllBlocking();
+    }
+
+    @Override
     public LiveData<UserDefinedList> getById(int id) {
         return mUserDefinedListDao.getById(id);
     }
@@ -64,6 +69,11 @@ public class UserDefinedListsRepository extends MutableRepository<UserDefinedLis
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<UserDefinedList> items) {
+        mUserDefinedListDao.insert(items);
     }
 
     @Override
@@ -104,5 +114,10 @@ public class UserDefinedListsRepository extends MutableRepository<UserDefinedLis
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void deleteAllBlocking() {
+        mUserDefinedListDao.deleteAll();
     }
 }

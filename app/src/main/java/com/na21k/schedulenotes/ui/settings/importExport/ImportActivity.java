@@ -96,7 +96,7 @@ public class ImportActivity extends AppCompatActivity {
             List<LanguagesListItem> languagesListItems = (List<LanguagesListItem>) objectInputStream.readObject();
 
             AlarmsHelper.cancelAllEventNotificationAlarmsBlocking(this);
-            mViewModel.clearDatabase();
+            mViewModel.clearDatabaseBlocking();
 
             mViewModel.insertCategoriesBlocking(categories);
             mViewModel.insertEventsBlocking(events);

@@ -6,20 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 import java.util.Date;
 import java.util.List;
 
 public class ScheduleViewModel extends AndroidViewModel {
 
-    private final EventDao mEventDao;
+    private final ScheduleRepository mScheduleRepository;
     private final LiveData<List<Category>> mAllCategories;
     private List<Event> mEventsCache = null;
     private List<Category> mCategoriesCache = null;
@@ -28,17 +28,18 @@ public class ScheduleViewModel extends AndroidViewModel {
     public ScheduleViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mEventDao = db.eventDao();
-        mAllCategories = db.categoryDao().getAll();
+        mScheduleRepository = new ScheduleRepository(application);
+        CategoriesRepository categoriesRepository = new CategoriesRepository(application);
+
+        mAllCategories = categoriesRepository.getAll();
     }
 
     public LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy) {
-        return mEventDao.getByDate(hasStartedBefore, hasNotEndedBy);
+        return mScheduleRepository.getByDate(hasStartedBefore, hasNotEndedBy);
     }
 
     public LiveData<List<Event>> getEventsSearch(String searchQuery) {
-        return mEventDao.search(searchQuery);
+        return mScheduleRepository.getSearch(searchQuery);
     }
 
     public LiveData<List<Category>> getAllCategories() {
@@ -46,17 +47,17 @@ public class ScheduleViewModel extends AndroidViewModel {
     }
 
     public void createEvent(Event event) {
-        new Thread(() -> mEventDao.insert(event)).start();
+        mScheduleRepository.add(event);
     }
 
     public void updateEvent(Event event) {
-        new Thread(() -> mEventDao.update(event)).start();
+        mScheduleRepository.update(event);
     }
 
     public void deleteEvent(Event event) {
         new Thread(() -> {
             AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
-            mEventDao.delete(event);
+            mScheduleRepository.delete(event);
         }).start();
     }
 

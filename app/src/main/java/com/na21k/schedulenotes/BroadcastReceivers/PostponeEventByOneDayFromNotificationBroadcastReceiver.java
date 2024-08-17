@@ -8,11 +8,11 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.na21k.schedulenotes.Constants;
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 import java.util.Date;
 
@@ -27,7 +27,7 @@ public class PostponeEventByOneDayFromNotificationBroadcastReceiver extends Broa
         PendingResult pendingResult = goAsync();
 
         new Thread(() -> {
-            Event event = AppDatabase.getInstance(context).eventDao().getByIdBlocking(eventId);
+            Event event = new ScheduleRepository(context).getByIdBlocking(eventId);
             Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
             Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);
 

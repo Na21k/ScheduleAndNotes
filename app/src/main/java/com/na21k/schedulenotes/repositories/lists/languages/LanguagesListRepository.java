@@ -38,6 +38,11 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
     }
 
     @Override
+    public List<LanguagesListItem> getAllBlocking() {
+        return mLanguagesListItemDao.getAllBlocking();
+    }
+
+    @Override
     public LiveData<List<LanguagesListItem>> getSearch(String query) {
         return mLanguagesListItemDao.search(query);
     }
@@ -64,6 +69,11 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<LanguagesListItem> items) {
+        mLanguagesListItemDao.insert(items);
     }
 
     @Override
@@ -100,5 +110,10 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void deleteAllBlocking() {
+        mLanguagesListItemDao.deleteAll();
     }
 }

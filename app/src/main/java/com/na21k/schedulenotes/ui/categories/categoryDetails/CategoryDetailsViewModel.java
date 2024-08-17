@@ -7,17 +7,16 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
 
 import java.util.List;
 
 public class CategoryDetailsViewModel extends AndroidViewModel {
 
-    private final CategoryDao mCategoryDao;
+    private final CategoriesRepository mCategoriesRepository;
     private LiveData<Category> mCategory;
     private int mCategoryId;
     private final List<ColorSetModel> mColorSetModels;
@@ -25,15 +24,13 @@ public class CategoryDetailsViewModel extends AndroidViewModel {
     public CategoryDetailsViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mCategoryDao = db.categoryDao();
-
+        mCategoriesRepository = new CategoriesRepository(application);
         mColorSetModels = CategoriesHelper.getCategoriesColorSets(application);
     }
 
     public LiveData<Category> getCategory(int id) {
         if (mCategoryId != id) {
-            mCategory = mCategoryDao.getById(id);
+            mCategory = mCategoriesRepository.getById(id);
             mCategoryId = id;
         }
 
@@ -41,16 +38,16 @@ public class CategoryDetailsViewModel extends AndroidViewModel {
     }
 
     public void createCategory(Category category) {
-        new Thread(() -> mCategoryDao.insert(category)).start();
+        mCategoriesRepository.add(category);
     }
 
     public void deleteCurrentCategory() {
-        new Thread(() -> mCategoryDao.delete(mCategoryId)).start();
+        mCategoriesRepository.delete(mCategoryId);
     }
 
     public void updateCurrentCategory(@NonNull Category category) {
         category.setId(mCategoryId);
-        new Thread(() -> mCategoryDao.update(category)).start();
+        mCategoriesRepository.update(category);
     }
 
     @Nullable

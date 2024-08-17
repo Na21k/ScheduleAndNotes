@@ -7,16 +7,16 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.data.database.Notes.NoteDao;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.NotesRepository;
 
 import java.util.List;
 
 public class NoteDetailsViewModel extends AndroidViewModel {
 
-    private final NoteDao mNoteDao;
+    private final NotesRepository mNotesRepository;
     private final LiveData<List<Category>> mCategoriesLiveData;
     private LiveData<Note> mNoteLiveData;
     private List<Category> mCategories = null;
@@ -25,13 +25,14 @@ public class NoteDetailsViewModel extends AndroidViewModel {
     public NoteDetailsViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mNoteDao = db.noteDao();
-        mCategoriesLiveData = db.categoryDao().getAll();
+        mNotesRepository = new NotesRepository(application);
+        CategoriesRepository categoriesRepository = new CategoriesRepository(application);
+
+        mCategoriesLiveData = categoriesRepository.getAll();
     }
 
     public LiveData<Note> getNoteLiveData(int id) {
-        return mNoteLiveData = mNoteDao.getById(id);
+        return mNoteLiveData = mNotesRepository.getById(id);
     }
 
     public LiveData<List<Category>> getAllCategoriesLiveData() {
@@ -39,15 +40,15 @@ public class NoteDetailsViewModel extends AndroidViewModel {
     }
 
     public void createNote(Note note) {
-        new Thread(() -> mNoteDao.insert(note)).start();
+        mNotesRepository.add(note);
     }
 
     public void updateNote(Note note) {
-        new Thread(() -> mNoteDao.update(note)).start();
+        mNotesRepository.update(note);
     }
 
     public void deleteNote(Note note) {
-        new Thread(() -> mNoteDao.delete(note)).start();
+        mNotesRepository.delete(note);
     }
 
     @Nullable

@@ -27,6 +27,10 @@ public class LanguagesListAttachedImagesRepository
         return mAttachedImageDao.getByListItemId(listItemId);
     }
 
+    public List<LanguagesListItemAttachedImage> getByListItemIdBlocking(int listItemId) {
+        return mAttachedImageDao.getByListItemIdBlocking(listItemId);
+    }
+
     public LiveData<List<Integer>> getAllListItemIds() {
         return mAttachedImageDao.getAllListItemIds();
     }
@@ -53,6 +57,11 @@ public class LanguagesListAttachedImagesRepository
         }).start();
 
         return source.getTask();
+    }
+
+    @Override
+    public void addBlocking(List<LanguagesListItemAttachedImage> items) {
+        mAttachedImageDao.insert(items);
     }
 
     @Override

@@ -7,19 +7,19 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 import java.util.Date;
 import java.util.List;
 
 public class EventDetailsViewModel extends AndroidViewModel {
 
-    private final EventDao mEventDao;
+    private final ScheduleRepository mScheduleRepository;
     private final LiveData<List<Category>> mCategories;
     private List<Category> mCategoriesCache = null;
     private LiveData<Event> mEvent;
@@ -30,14 +30,15 @@ public class EventDetailsViewModel extends AndroidViewModel {
     public EventDetailsViewModel(@NonNull Application application) {
         super(application);
 
-        AppDatabase db = AppDatabase.getInstance(application);
-        mEventDao = db.eventDao();
-        mCategories = db.categoryDao().getAll();
+        mScheduleRepository = new ScheduleRepository(application);
+        CategoriesRepository categoriesRepository = new CategoriesRepository(application);
+
+        mCategories = categoriesRepository.getAll();
     }
 
     public LiveData<Event> getEvent(int id) {
         if (mEventId != id) {
-            mEvent = mEventDao.getById(id);
+            mEvent = mScheduleRepository.getById(id);
             mEventId = id;
         }
 
@@ -49,17 +50,16 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public void createEvent(Event event) {
-        new Thread(() -> {
-            long id = mEventDao.insert(event);
-            event.setId((int) id);
-            scheduleNotificationsAndUpdateBlocking(event);
-        }).start();
+        mScheduleRepository.add(event).addOnSuccessListener(id -> {
+            event.setId(Math.toIntExact(id));
+            new Thread(() -> scheduleNotificationsAndUpdateBlocking(event)).start();
+        });
     }
 
     public void deleteCurrentEvent() {
         new Thread(() -> {
             AlarmsHelper.cancelEventNotificationAlarmsBlocking(mEventId, getApplication());
-            mEventDao.delete(mEventId);
+            mScheduleRepository.delete(mEventId);
         }).start();
     }
 
@@ -104,6 +104,6 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     private void scheduleNotificationsAndUpdateBlocking(@NonNull Event event) {
         EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
-        mEventDao.update(event);
+        mScheduleRepository.update(event);
     }
 }

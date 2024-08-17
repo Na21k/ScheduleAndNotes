@@ -6,11 +6,10 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntentDao;
+import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -48,24 +47,24 @@ public class EventsHelper {
 
         event.setDateTimeStarts(newDateTimeStarts);
         event.setDateTimeEnds(newDateTimeEnds);
-        AppDatabase.getInstance(context).eventDao().update(event);
+        new ScheduleRepository(context).update(event);
 
         scheduleEventNotificationsBlocking(event, context);
     }
 
     public static void scheduleEventNotificationsBlocking(@NonNull Event event,
                                                           @NonNull Context context) {
-        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
-                .eventNotificationAlarmPendingIntentDao();
+        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepository(context);
 
         int eventId = event.getId();
         Date starts = event.getDateTimeStarts();
         Date startsSoon = getEventStartsSoonDateTime(starts);
 
-        int startsSoonPendingIntentRequestCode = (int) pendingIntentDao.insert(
+        int startsSoonPendingIntentRequestCode = (int) pendingIntentRepository.addBlocking(
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStartsSoon));
-        int startsPendingIntentRequestCode = (int) pendingIntentDao.insert(
+        int startsPendingIntentRequestCode = (int) pendingIntentRepository.addBlocking(
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStarted));
 
@@ -78,8 +77,8 @@ public class EventsHelper {
     public static void scheduleEventNotificationBlocking(
             @NonNull EventNotificationAlarmPendingIntent pendingIntent, @NonNull Context context) {
         EventNotificationType notificationType = pendingIntent.getNotificationType();
-        EventDao eventDao = AppDatabase.getInstance(context).eventDao();
-        Event event = eventDao.getByIdBlocking(pendingIntent.getEventId());
+        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
+        Event event = scheduleRepository.getByIdBlocking(pendingIntent.getEventId());
 
         Date starts = event.getDateTimeStarts();
         long triggerAtMillis;
@@ -104,21 +103,21 @@ public class EventsHelper {
                                                         @NonNull Context context) {
         AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), context);
 
-        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
-                .eventNotificationAlarmPendingIntentDao();
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
+        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepository(context);
+        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
                 .getByEventIdBlocking(event.getId());
 
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
-            pendingIntentDao.delete(pendingIntent);
+            pendingIntentRepository.deleteBlocking(pendingIntent);
         }
     }
 
     public static void ensureEventNotificationsScheduledBlocking(@NonNull Context context) {
-        EventNotificationAlarmPendingIntentDao pendingIntentDao = AppDatabase.getInstance(context)
-                .eventNotificationAlarmPendingIntentDao();
+        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepository(context);
         //only pending intents for notifications that haven't been sent yet are stored
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentDao
+        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
                 .getAllBlocking();
 
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {

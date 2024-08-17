@@ -19,8 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.data.database.AppDatabase;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
 import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
 import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
 
@@ -129,15 +128,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
     }
 
     private void deleteOlderThanInclusive(Date date) {
-        AppDatabase db = AppDatabase.getInstance(getContext());
-        EventDao events = db.eventDao();
+        Context context = getContext();
+        if (context == null) return;
 
-        Thread thread = new Thread(() -> {
-            events.deleteOlderThan(date);
+        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
 
-            showSnackbar(R.string.delete_events_older_than_succeeded_snackbar);
-        });
-        thread.start();
+        scheduleRepository.deleteOlderThan(date).addOnSuccessListener(
+                unused -> showSnackbar(R.string.delete_events_older_than_succeeded_snackbar));
     }
 
     private void showSnackbar(int textResourceId) {

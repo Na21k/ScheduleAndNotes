@@ -5,73 +5,71 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Categories.Category;
-import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImageDao;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
-import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItemDao;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
-import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItemDao;
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
-import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItemDao;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
-import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListDao;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
-import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItemDao;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.data.database.Notes.NoteDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.NotesRepository;
+import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
+import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
+import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
+import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
+import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
 
 import java.util.Date;
 import java.util.List;
 
 public class ImportActivityViewModel extends AndroidViewModel {
 
-    private final EventDao mEventDao;
-    private final NoteDao mNoteDao;
-    private final CategoryDao mCategoryDao;
-    private final UserDefinedListDao mUserDefinedListDao;
-    private final UserDefinedListItemDao mUserDefinedListItemDao;
-    private final MoviesListItemDao mMoviesListItemDao;
-    private final MusicListItemDao mMusicListItemDao;
-    private final ShoppingListItemDao mShoppingListItemDao;
-    private final LanguagesListItemDao mLanguagesListItemDao;
-    private final LanguagesListItemAttachedImageDao mLanguagesListItemAttachedImageDao;
+    private final ScheduleRepository mScheduleRepository;
+    private final NotesRepository mNotesRepository;
+    private final CategoriesRepository mCategoriesRepository;
+    private final UserDefinedListsRepository mUserDefinedListsRepository;
+    private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+    private final MoviesListRepository mMoviesListRepository;
+    private final MusicListRepository mMusicListRepository;
+    private final ShoppingListRepository mShoppingListRepository;
+    private final LanguagesListRepository mLanguagesListRepository;
+    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
 
     public ImportActivityViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase db = AppDatabase.getInstance(application);
-        mEventDao = db.eventDao();
-        mNoteDao = db.noteDao();
-        mCategoryDao = db.categoryDao();
-        mUserDefinedListDao = db.userDefinedListDao();
-        mUserDefinedListItemDao = db.userDefinedListItemDao();
-        mMoviesListItemDao = db.moviesListItemDao();
-        mMusicListItemDao = db.musicListItemDao();
-        mShoppingListItemDao = db.shoppingListItemDao();
-        mLanguagesListItemDao = db.languagesListItemDao();
-        mLanguagesListItemAttachedImageDao = db.languagesListItemAttachedImageDao();
+        mScheduleRepository = new ScheduleRepository(application);
+        mNotesRepository = new NotesRepository(application);
+        mCategoriesRepository = new CategoriesRepository(application);
+        mUserDefinedListsRepository = new UserDefinedListsRepository(application);
+        mUserDefinedListItemsRepository = new UserDefinedListItemsRepository(application);
+        mMoviesListRepository = new MoviesListRepository(application);
+        mMusicListRepository = new MusicListRepository(application);
+        mShoppingListRepository = new ShoppingListRepository(application);
+        mLanguagesListRepository = new LanguagesListRepository(application);
+        mLanguagesListAttachedImagesRepository = new LanguagesListAttachedImagesRepository(application);
     }
 
-    public void clearDatabase() {
-        mEventDao.deleteAll();
-        mNoteDao.deleteAll();
-        mCategoryDao.deleteAll();
-        mUserDefinedListDao.deleteAll();
-        mMoviesListItemDao.deleteAll();
-        mMusicListItemDao.deleteAll();
-        mShoppingListItemDao.deleteAll();
-        mLanguagesListItemDao.deleteAll();
+    public void clearDatabaseBlocking() {
+        mScheduleRepository.deleteAllBlocking();
+        mNotesRepository.deleteAllBlocking();
+        mCategoriesRepository.deleteAllBlocking();
+        mUserDefinedListsRepository.deleteAllBlocking();
+        mMoviesListRepository.deleteAllBlocking();
+        mMusicListRepository.deleteAllBlocking();
+        mShoppingListRepository.deleteAllBlocking();
+        mLanguagesListRepository.deleteAllBlocking();
     }
 
     public void insertEventsBlocking(List<Event> events) {
-        mEventDao.insert(events);
+        mScheduleRepository.addBlocking(events);
         Date now = new Date();
 
         for (Event event : events) {
@@ -84,39 +82,39 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertNotesBlocking(List<Note> notes) {
-        mNoteDao.insert(notes);
+        mNotesRepository.addBlocking(notes);
     }
 
     public void insertCategoriesBlocking(List<Category> categories) {
-        mCategoryDao.insert(categories);
+        mCategoriesRepository.addBlocking(categories);
     }
 
     public void insertUserDefinedListsBlocking(List<UserDefinedList> lists) {
-        mUserDefinedListDao.insert(lists);
+        mUserDefinedListsRepository.addBlocking(lists);
     }
 
     public void insertUserDefinedListItemsBlocking(List<UserDefinedListItem> items) {
-        mUserDefinedListItemDao.insert(items);
+        mUserDefinedListItemsRepository.addBlocking(items);
     }
 
     public void insertMoviesListItemsBlocking(List<MoviesListItem> items) {
-        mMoviesListItemDao.insert(items);
+        mMoviesListRepository.addBlocking(items);
     }
 
     public void insertMusicListItemsBlocking(List<MusicListItem> items) {
-        mMusicListItemDao.insert(items);
+        mMusicListRepository.addBlocking(items);
     }
 
     public void insertShoppingListItemsBlocking(List<ShoppingListItem> items) {
-        mShoppingListItemDao.insert(items);
+        mShoppingListRepository.addBlocking(items);
     }
 
     public void insertLanguagesListItemsBlocking(List<LanguagesListItem> items) {
-        mLanguagesListItemDao.insert(items);
+        mLanguagesListRepository.addBlocking(items);
     }
 
     public void insertLanguageListItemAttachedImagesBlocking(
             List<LanguagesListItemAttachedImage> images) {
-        mLanguagesListItemAttachedImageDao.insert(images);
+        mLanguagesListAttachedImagesRepository.addBlocking(images);
     }
 }
