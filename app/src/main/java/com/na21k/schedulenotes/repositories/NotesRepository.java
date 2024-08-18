@@ -96,18 +96,6 @@ public class NotesRepository extends MutableRepository<Note, Void>
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mNoteDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mNoteDao.deleteAll();
     }

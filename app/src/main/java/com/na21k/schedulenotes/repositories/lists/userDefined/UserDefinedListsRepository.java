@@ -105,18 +105,6 @@ public class UserDefinedListsRepository extends MutableRepository<UserDefinedLis
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mUserDefinedListDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mUserDefinedListDao.deleteAll();
     }

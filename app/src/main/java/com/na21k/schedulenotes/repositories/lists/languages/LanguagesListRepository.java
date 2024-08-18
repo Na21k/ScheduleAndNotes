@@ -101,18 +101,6 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mLanguagesListItemDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mLanguagesListItemDao.deleteAll();
     }

@@ -105,18 +105,6 @@ public class ShoppingListRepository extends MutableRepository<ShoppingListItem, 
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mShoppingListItemDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mShoppingListItemDao.deleteAll();
     }

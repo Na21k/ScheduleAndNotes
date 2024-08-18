@@ -127,18 +127,6 @@ public class ScheduleRepository extends MutableRepository<Event, Long>
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mEventDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mEventDao.deleteAll();
     }

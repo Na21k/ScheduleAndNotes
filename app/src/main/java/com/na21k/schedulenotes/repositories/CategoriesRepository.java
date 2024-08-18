@@ -107,18 +107,6 @@ public class CategoriesRepository extends MutableRepository<Category, Void>
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mCategoryDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mCategoryDao.deleteAll();
     }

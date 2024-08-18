@@ -101,18 +101,6 @@ public class MusicListRepository extends MutableRepository<MusicListItem, Void>
     }
 
     @Override
-    public Task<Void> deleteAll() {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mMusicListItemDao.deleteAll();
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
     public void deleteAllBlocking() {
         mMusicListItemDao.deleteAll();
     }
