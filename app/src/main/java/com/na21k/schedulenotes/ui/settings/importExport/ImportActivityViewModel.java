@@ -58,14 +58,14 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void clearDatabaseBlocking() {
-        mScheduleRepository.deleteAllBlocking();
-        mNotesRepository.deleteAllBlocking();
-        mCategoriesRepository.deleteAllBlocking();
-        mUserDefinedListsRepository.deleteAllBlocking();
-        mMoviesListRepository.deleteAllBlocking();
-        mMusicListRepository.deleteAllBlocking();
-        mShoppingListRepository.deleteAllBlocking();
-        mLanguagesListRepository.deleteAllBlocking();
+        mScheduleRepository.clearBlocking();
+        mNotesRepository.clearBlocking();
+        mCategoriesRepository.clearBlocking();
+        mUserDefinedListsRepository.clearBlocking();
+        mMoviesListRepository.clearBlocking();
+        mMusicListRepository.clearBlocking();
+        mShoppingListRepository.clearBlocking();
+        mLanguagesListRepository.clearBlocking();
     }
 
     public void insertEventsBlocking(List<Event> events) {

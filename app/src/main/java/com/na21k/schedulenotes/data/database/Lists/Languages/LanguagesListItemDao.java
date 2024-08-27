@@ -2,31 +2,36 @@ package com.na21k.schedulenotes.data.database.Lists.Languages;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
+
+import com.na21k.schedulenotes.data.database.BaseDao;
 
 import java.util.List;
 
 @Dao
-public interface LanguagesListItemDao {
+public interface LanguagesListItemDao extends BaseDao<LanguagesListItem> {
 
     @Query("select count(*) from languages_list_items")
     int getCount();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(LanguagesListItem languagesListItem);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<LanguagesListItem> languagesListItems);
-
+    @Override
     @Query("select * from languages_list_items")
     LiveData<List<LanguagesListItem>> getAll();
 
+    @Override
     @Query("select * from languages_list_items")
     List<LanguagesListItem> getAllBlocking();
+
+    @Override
+    @Query("select * from languages_list_items I where I.id = :entityId")
+    LiveData<LanguagesListItem> getById(int entityId);
+
+    @Override
+    @Query("select * from languages_list_items I where I.id = :entityId")
+    LanguagesListItem getByIdBlocking(int entityId);
+
+    @Query("select * from languages_list_items order by random() limit 1")
+    LanguagesListItem getRandomBlocking();
 
     @Query("select * from languages_list_items I where I.text like '%'||:search||'%'" +
             "or I.transcription like '%'||:search||'%'" +
@@ -35,20 +40,9 @@ public interface LanguagesListItemDao {
             "or I.usage_example_text like '%'||:search||'%'")
     LiveData<List<LanguagesListItem>> search(String search);
 
-    @Query("select * from languages_list_items I where I.id = :id")
-    LiveData<LanguagesListItem> getById(int id);
-
-    @Query("select * from languages_list_items order by random() limit 1")
-    LanguagesListItem getRandomBlocking();
-
-    @Update
-    void update(LanguagesListItem item);
-
-    @Delete
-    void delete(LanguagesListItem item);
-
-    @Query("delete from languages_list_items where id = :id")
-    void delete(int id);
+    @Override
+    @Query("delete from languages_list_items where id = :entityId")
+    void delete(int entityId);
 
     @Query("delete from languages_list_items")
     void deleteAll();

@@ -15,9 +15,9 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.repositories.CanListRepository;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.NotesRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.repositories.ScheduleRepository;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
@@ -31,15 +31,15 @@ import java.util.List;
 
 public class ExportActivityViewModel extends AndroidViewModel {
 
-    private final CanListRepository<Event> mScheduleRepository;
-    private final CanListRepository<Note> mNotesRepository;
-    private final CanListRepository<Category> mCategoriesRepository;
-    private final CanListRepository<UserDefinedList> mUserDefinedListsRepository;
-    private final CanListRepository<UserDefinedListItem> mUserDefinedListItemsRepository;
-    private final CanListRepository<MoviesListItem> mMoviesListRepository;
-    private final CanListRepository<MusicListItem> mMusicListRepository;
-    private final CanListRepository<ShoppingListItem> mShoppingListRepository;
-    private final CanListRepository<LanguagesListItem> mLanguagesListRepository;
+    private final Repository<Event> mScheduleRepository;
+    private final Repository<Note> mNotesRepository;
+    private final Repository<Category> mCategoriesRepository;
+    private final Repository<UserDefinedList> mUserDefinedListsRepository;
+    private final Repository<UserDefinedListItem> mUserDefinedListItemsRepository;
+    private final Repository<MoviesListItem> mMoviesListRepository;
+    private final Repository<MusicListItem> mMusicListRepository;
+    private final Repository<ShoppingListItem> mShoppingListRepository;
+    private final Repository<LanguagesListItem> mLanguagesListRepository;
     private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
 
     public ExportActivityViewModel(@NonNull Application application) {

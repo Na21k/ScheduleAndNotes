@@ -5,16 +5,16 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 public interface CanClearRepository {
 
-    default Task<Void> deleteAll() {
+    default Task<Void> clear() {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
 
         new Thread(() -> {
-            deleteAllBlocking();
+            clearBlocking();
             source.setResult(null);
         }).start();
 
         return source.getTask();
     }
 
-    void deleteAllBlocking();
+    void clearBlocking();
 }

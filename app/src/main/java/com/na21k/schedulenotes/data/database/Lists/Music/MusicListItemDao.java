@@ -2,46 +2,43 @@ package com.na21k.schedulenotes.data.database.Lists.Music;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
+
+import com.na21k.schedulenotes.data.database.BaseDao;
 
 import java.util.List;
 
 @Dao
-public interface MusicListItemDao {
+public interface MusicListItemDao extends BaseDao<MusicListItem> {
 
     @Query("select count(*) from music_list_items")
     int getCount();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(MusicListItem musicListItem);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<MusicListItem> musicListItems);
-
+    @Override
     @Query("select * from music_list_items")
     LiveData<List<MusicListItem>> getAll();
 
+    @Override
     @Query("select * from music_list_items")
     List<MusicListItem> getAllBlocking();
 
-    @Query("select * from music_list_items I where I.text like '%'||:search||'%'")
-    LiveData<List<MusicListItem>> search(String search);
+    @Override
+    @Query("select * from music_list_items I where I.id = :entityId")
+    LiveData<MusicListItem> getById(int entityId);
 
-    @Query("select * from music_list_items I where I.id = :id")
-    LiveData<MusicListItem> getById(int id);
+    @Override
+    @Query("select * from music_list_items I where I.id = :entityId")
+    MusicListItem getByIdBlocking(int entityId);
 
     @Query("select * from music_list_items order by random() limit 1")
     MusicListItem getRandomBlocking();
 
-    @Update
-    void update(MusicListItem musicListItem);
+    @Query("select * from music_list_items I where I.text like '%'||:search||'%'")
+    LiveData<List<MusicListItem>> search(String search);
 
-    @Delete
-    void delete(MusicListItem musicListItem);
+    @Override
+    @Query("delete from music_list_items where id = :entityId")
+    void delete(int entityId);
 
     @Query("delete from music_list_items")
     void deleteAll();

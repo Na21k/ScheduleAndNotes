@@ -2,22 +2,30 @@ package com.na21k.schedulenotes.data.database.Lists.Languages;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
+
+import com.na21k.schedulenotes.data.database.BaseDao;
 
 import java.util.List;
 
 @Dao
-public interface LanguagesListItemAttachedImageDao {
+public interface LanguagesListItemAttachedImageDao extends BaseDao<LanguagesListItemAttachedImage> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(LanguagesListItemAttachedImage attachedImage);
+    @Override
+    @Query("select * from languages_list_items_attached_images")
+    LiveData<List<LanguagesListItemAttachedImage>> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<LanguagesListItemAttachedImage> attachedImages);
+    @Override
+    @Query("select * from languages_list_items_attached_images")
+    List<LanguagesListItemAttachedImage> getAllBlocking();
+
+    @Override
+    @Query("select * from  languages_list_items_attached_images where id = :entityId")
+    LiveData<LanguagesListItemAttachedImage> getById(int entityId);
+
+    @Override
+    @Query("select * from  languages_list_items_attached_images where id = :entityId")
+    LanguagesListItemAttachedImage getByIdBlocking(int entityId);
 
     @Query("select * from languages_list_items_attached_images I " +
             "where I.languages_list_item_id = :listItemId")
@@ -30,9 +38,7 @@ public interface LanguagesListItemAttachedImageDao {
     @Query("select languages_list_item_id from languages_list_items_attached_images")
     LiveData<List<Integer>> getAllListItemIds();
 
-    @Update
-    void update(LanguagesListItemAttachedImage attachedImage);
-
-    @Delete
-    void delete(LanguagesListItemAttachedImage attachedImage);
+    @Override
+    @Query("delete from languages_list_items_attached_images where id = :entityId")
+    void delete(int entityId);
 }

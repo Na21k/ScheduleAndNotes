@@ -2,43 +2,40 @@ package com.na21k.schedulenotes.data.database.Lists.Shopping;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
+
+import com.na21k.schedulenotes.data.database.BaseDao;
 
 import java.util.List;
 
 @Dao
-public interface ShoppingListItemDao {
+public interface ShoppingListItemDao extends BaseDao<ShoppingListItem> {
 
     @Query("select count(*) from shopping_list_items")
     int getCount();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ShoppingListItem shoppingListItem);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<ShoppingListItem> shoppingListItems);
-
+    @Override
     @Query("select * from shopping_list_items")
     LiveData<List<ShoppingListItem>> getAll();
 
+    @Override
     @Query("select * from shopping_list_items")
     List<ShoppingListItem> getAllBlocking();
+
+    @Override
+    @Query("select * from shopping_list_items I where I.id = :entityId")
+    LiveData<ShoppingListItem> getById(int entityId);
+
+    @Override
+    @Query("select * from shopping_list_items I where I.id = :entityId")
+    ShoppingListItem getByIdBlocking(int entityId);
 
     @Query("select * from shopping_list_items I where I.text like '%'||:search||'%'")
     LiveData<List<ShoppingListItem>> search(String search);
 
-    @Query("select * from shopping_list_items I where I.id = :id")
-    LiveData<ShoppingListItem> getById(int id);
-
-    @Update
-    void update(ShoppingListItem shoppingListItem);
-
-    @Delete
-    void delete(ShoppingListItem shoppingListItem);
+    @Override
+    @Query("delete from shopping_list_items where id = :entityId")
+    void delete(int entityId);
 
     @Query("delete from shopping_list_items")
     void deleteAll();

@@ -5,8 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
+import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImageDao;
 import com.na21k.schedulenotes.repositories.MutableRepository;
@@ -14,7 +13,7 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 import java.util.List;
 
 public class LanguagesListAttachedImagesRepository
-        extends MutableRepository<LanguagesListItemAttachedImage, Void> {
+        extends MutableRepository<LanguagesListItemAttachedImage> {
 
     private final LanguagesListItemAttachedImageDao mAttachedImageDao =
             db.languagesListItemAttachedImageDao();
@@ -36,55 +35,7 @@ public class LanguagesListAttachedImagesRepository
     }
 
     @Override
-    public Task<Void> add(LanguagesListItemAttachedImage item) {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mAttachedImageDao.insert(item);
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
-    public Task<Void> add(List<LanguagesListItemAttachedImage> items) {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mAttachedImageDao.insert(items);
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
-    public void addBlocking(List<LanguagesListItemAttachedImage> items) {
-        mAttachedImageDao.insert(items);
-    }
-
-    @Override
-    public Task<Void> update(LanguagesListItemAttachedImage item) {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mAttachedImageDao.update(item);
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
-    }
-
-    @Override
-    public Task<Void> delete(LanguagesListItemAttachedImage item) {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mAttachedImageDao.delete(item);
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
+    protected BaseDao<LanguagesListItemAttachedImage> getDao() {
+        return mAttachedImageDao;
     }
 }

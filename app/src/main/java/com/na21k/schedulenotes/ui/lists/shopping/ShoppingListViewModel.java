@@ -46,6 +46,6 @@ public class ShoppingListViewModel extends AndroidViewModel {
     }
 
     public void deleteAll() {
-        mShoppingListRepository.deleteAll();
+        mShoppingListRepository.clear();
     }
 }

@@ -133,7 +133,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
 
         ScheduleRepository scheduleRepository = new ScheduleRepository(context);
 
-        scheduleRepository.deleteOlderThan(date).addOnSuccessListener(
+        scheduleRepository.clearOlderThan(date).addOnSuccessListener(
                 unused -> showSnackbar(R.string.delete_events_older_than_succeeded_snackbar));
     }
 

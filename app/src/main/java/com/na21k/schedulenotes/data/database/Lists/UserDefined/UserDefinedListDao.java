@@ -2,43 +2,43 @@ package com.na21k.schedulenotes.data.database.Lists.UserDefined;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
+
+import com.na21k.schedulenotes.data.database.BaseDao;
 
 import java.util.List;
 
 @Dao
-public interface UserDefinedListDao {
+public interface UserDefinedListDao extends BaseDao<UserDefinedList> {
 
-    @Query("select count(*) from user_defined_lists")
-    int getCount();
-
+    @Override
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(UserDefinedList userDefinedList);
+    long insert(UserDefinedList entity);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<UserDefinedList> userDefinedLists);
-
+    @Override
     @Query("select * from user_defined_lists")
     LiveData<List<UserDefinedList>> getAll();
 
+    @Override
     @Query("select * from user_defined_lists")
     List<UserDefinedList> getAllBlocking();
+
+    @Override
+    @Query("select * from user_defined_lists L where L.id = :entityId")
+    LiveData<UserDefinedList> getById(int entityId);
+
+    @Override
+    @Query("select * from user_defined_lists L where L.id = :entityId")
+    UserDefinedList getByIdBlocking(int entityId);
 
     @Query("select * from user_defined_lists E where E.title like '%'||:search||'%'")
     LiveData<List<UserDefinedList>> search(String search);
 
-    @Query("select * from user_defined_lists L where L.id = :id")
-    LiveData<UserDefinedList> getById(int id);
-
-    @Update
-    void update(UserDefinedList list);
-
-    @Delete
-    void delete(UserDefinedList list);
+    @Override
+    @Query("delete from user_defined_lists where id = :entityId")
+    void delete(int entityId);
 
     @Query("delete from user_defined_lists")
     void deleteAll();
