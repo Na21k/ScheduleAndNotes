@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventDao;
@@ -33,14 +32,7 @@ public class ScheduleRepository extends MutableRepository<Event>
     }
 
     public Task<Void> clearOlderThan(Date date) {
-        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-
-        new Thread(() -> {
-            mEventDao.deleteOlderThan(date);
-            source.setResult(null);
-        }).start();
-
-        return source.getTask();
+        return runSimpleAsync(() -> mEventDao.deleteOlderThan(date));
     }
 
     @Override
