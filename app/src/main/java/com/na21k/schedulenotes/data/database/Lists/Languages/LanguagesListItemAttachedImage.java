@@ -63,11 +63,15 @@ public class LanguagesListItemAttachedImage extends Identifiable {
         if (thumbnailBitmap == null) {
             int width = bitmapData.getWidth();
             int height = bitmapData.getHeight();
-            final int maxTargetWidth = 2000;
+            final int maxTargetSide = 2000;
 
-            if (width > maxTargetWidth) {
-                width = (int) (width * 0.3f);
-                height = (int) (height * 0.3f);
+            if (width > maxTargetSide || height > maxTargetSide) {
+                float requiredWidthFactor = 1f * width / maxTargetSide;
+                float requiredHeightFactor = 1f * height / maxTargetSide;
+                float requiredFactor = Math.max(requiredWidthFactor, requiredHeightFactor);
+
+                width = (int) (width / requiredFactor);
+                height = (int) (height / requiredFactor);
                 thumbnailBitmap = ThumbnailUtils.extractThumbnail(bitmapData, width, height);
             } else {
                 thumbnailBitmap = bitmapData;
