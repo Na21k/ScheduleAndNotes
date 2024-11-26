@@ -34,7 +34,4 @@ public interface EventNotificationAlarmPendingIntentDao
     @Override
     @Query("delete from event_notification_alarms_pending_intents where id = :entityId")
     void delete(int entityId);
-
-    @Query("delete from event_notification_alarms_pending_intents")
-    void deleteAll();
 }

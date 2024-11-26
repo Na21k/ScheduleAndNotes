@@ -5,11 +5,14 @@ import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.na21k.schedulenotes.data.database.BaseDao;
+import com.na21k.schedulenotes.data.database.CanClearDao;
+import com.na21k.schedulenotes.data.database.CanSearchDao;
 
 import java.util.List;
 
 @Dao
-public interface MoviesListItemDao extends BaseDao<MoviesListItem> {
+public interface MoviesListItemDao extends BaseDao<MoviesListItem>,
+        CanSearchDao<MoviesListItem>, CanClearDao {
 
     @Query("select count(*) from movies_list_items")
     int getCount();
@@ -33,13 +36,15 @@ public interface MoviesListItemDao extends BaseDao<MoviesListItem> {
     @Query("select * from movies_list_items order by random() limit 1")
     MoviesListItem getRandomBlocking();
 
-    @Query("select * from movies_list_items I where I.text like '%'||:search||'%'")
-    LiveData<List<MoviesListItem>> search(String search);
+    @Override
+    @Query("select * from movies_list_items I where I.text like '%'||:query||'%'")
+    LiveData<List<MoviesListItem>> search(String query);
 
     @Override
     @Query("delete from movies_list_items where id = :entityId")
     void delete(int entityId);
 
+    @Override
     @Query("delete from movies_list_items")
     void deleteAll();
 }

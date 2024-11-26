@@ -31,8 +31,8 @@ public interface UserDefinedListItemDao extends BaseDao<UserDefinedListItem> {
     LiveData<List<UserDefinedListItem>> getByListId(int listId);
 
     @Query("select * from user_defined_lists_items I where I.list_id = :listId " +
-            "and I.text like '%'||:search||'%'")
-    LiveData<List<UserDefinedListItem>> searchInList(int listId, String search);
+            "and I.text like '%'||:query||'%'")
+    LiveData<List<UserDefinedListItem>> searchInList(int listId, String query);
 
     @Override
     @Query("delete from user_defined_lists_items where id = :entityId")

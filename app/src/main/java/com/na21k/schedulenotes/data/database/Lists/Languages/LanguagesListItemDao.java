@@ -5,11 +5,14 @@ import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.na21k.schedulenotes.data.database.BaseDao;
+import com.na21k.schedulenotes.data.database.CanClearDao;
+import com.na21k.schedulenotes.data.database.CanSearchDao;
 
 import java.util.List;
 
 @Dao
-public interface LanguagesListItemDao extends BaseDao<LanguagesListItem> {
+public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
+        CanSearchDao<LanguagesListItem>, CanClearDao {
 
     @Query("select count(*) from languages_list_items")
     int getCount();
@@ -33,17 +36,19 @@ public interface LanguagesListItemDao extends BaseDao<LanguagesListItem> {
     @Query("select * from languages_list_items order by random() limit 1")
     LanguagesListItem getRandomBlocking();
 
-    @Query("select * from languages_list_items I where I.text like '%'||:search||'%'" +
-            "or I.transcription like '%'||:search||'%'" +
-            "or I.translation like '%'||:search||'%'" +
-            "or I.explanation like '%'||:search||'%'" +
-            "or I.usage_example_text like '%'||:search||'%'")
-    LiveData<List<LanguagesListItem>> search(String search);
+    @Override
+    @Query("select * from languages_list_items I where I.text like '%'||:query||'%'" +
+            "or I.transcription like '%'||:query||'%'" +
+            "or I.translation like '%'||:query||'%'" +
+            "or I.explanation like '%'||:query||'%'" +
+            "or I.usage_example_text like '%'||:query||'%'")
+    LiveData<List<LanguagesListItem>> search(String query);
 
     @Override
     @Query("delete from languages_list_items where id = :entityId")
     void delete(int entityId);
 
+    @Override
     @Query("delete from languages_list_items")
     void deleteAll();
 }

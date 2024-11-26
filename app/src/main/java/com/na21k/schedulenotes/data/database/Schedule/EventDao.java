@@ -5,12 +5,14 @@ import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.na21k.schedulenotes.data.database.BaseDao;
+import com.na21k.schedulenotes.data.database.CanClearDao;
+import com.na21k.schedulenotes.data.database.CanSearchDao;
 
 import java.util.Date;
 import java.util.List;
 
 @Dao
-public interface EventDao extends BaseDao<Event> {
+public interface EventDao extends BaseDao<Event>, CanSearchDao<Event>, CanClearDao {
 
     @Override
     @Query("select * from events")
@@ -32,11 +34,12 @@ public interface EventDao extends BaseDao<Event> {
             "and E.date_time_ends >= :hasNotEndedBy")
     LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy);
 
-    @Query("select * from events E where E.title like '%'||:search||'%'" +
-            "or E.details like '%'||:search||'%'" +
+    @Override
+    @Query("select * from events E where E.title like '%'||:query||'%'" +
+            "or E.details like '%'||:query||'%'" +
             "or E.category_id in" +
-            "(select C.id from categories C where C.title like '%'||:search||'%')")
-    LiveData<List<Event>> search(String search);
+            "(select C.id from categories C where C.title like '%'||:query||'%')")
+    LiveData<List<Event>> search(String query);
 
     @Override
     @Query("delete from events where id = :entityId")
@@ -45,6 +48,7 @@ public interface EventDao extends BaseDao<Event> {
     @Query("delete from events where date_time_ends <= :date")
     void deleteOlderThan(Date date);
 
+    @Override
     @Query("delete from events")
     void deleteAll();
 }
