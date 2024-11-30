@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
@@ -27,12 +28,30 @@ public class LanguagesListViewModel extends AndroidViewModel {
                 .getAllListItemIds();
     }
 
-    public LiveData<List<LanguagesListItem>> getAll() {
-        return mLanguagesListRepository.getAll();
+    public LiveData<List<LanguagesListItem>> getUnarchived() {
+        return mLanguagesListRepository.getUnarchived();
+    }
+
+    public LiveData<List<LanguagesListItem>> getArchived() {
+        return mLanguagesListRepository.getArchived();
     }
 
     public LiveData<List<LanguagesListItem>> getItemsSearch(String searchQuery) {
         return mLanguagesListRepository.getSearch(searchQuery);
+    }
+
+    Task<Boolean> isArchiveEmpty() {
+        return mLanguagesListRepository.isArchiveEmpty();
+    }
+
+    public void archive(LanguagesListItem item) {
+        item.setArchived(true);
+        mLanguagesListRepository.update(item);
+    }
+
+    public void unarchive(LanguagesListItem item) {
+        item.setArchived(false);
+        mLanguagesListRepository.update(item);
     }
 
     public void delete(LanguagesListItem item) {

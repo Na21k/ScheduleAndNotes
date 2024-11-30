@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
@@ -49,6 +50,20 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
     public void update(LanguagesListItem item) {
         mLanguagesListRepository.update(item);
         updateImagesIfChanged();
+    }
+
+    Task<Boolean> isArchiveEmpty() {
+        return mLanguagesListRepository.isArchiveEmpty();
+    }
+
+    public void archive(LanguagesListItem item) {
+        item.setArchived(true);
+        update(item);
+    }
+
+    public void unarchive(LanguagesListItem item) {
+        item.setArchived(false);
+        update(item);
     }
 
     public void delete(LanguagesListItem item) {

@@ -8,7 +8,8 @@ import com.na21k.schedulenotes.data.database.SimpleListItem;
 
 import org.jetbrains.annotations.NotNull;
 
-@Entity(tableName = "languages_list_items", indices = {@Index(value = "id")})
+@Entity(tableName = "languages_list_items",
+        indices = {@Index(value = "id"), @Index(value = "is_archived")})
 public class LanguagesListItem extends SimpleListItem {
 
     @ColumnInfo(name = "transcription")
@@ -23,6 +24,9 @@ public class LanguagesListItem extends SimpleListItem {
     @ColumnInfo(name = "usage_example_text")
     private String usageExampleText;
 
+    @ColumnInfo(name = "is_archived", defaultValue = "0")
+    private boolean isArchived;
+
     public LanguagesListItem(int id, @NotNull String text, String transcription, String translation,
                              String explanation, String usageExampleText) {
         this.id = id;
@@ -31,6 +35,14 @@ public class LanguagesListItem extends SimpleListItem {
         this.translation = translation;
         this.explanation = explanation;
         this.usageExampleText = usageExampleText;
+        isArchived = false;
+    }
+
+    public LanguagesListItem(LanguagesListItem languagesListItem) {
+        this(languagesListItem.id, languagesListItem.text, languagesListItem.transcription,
+                languagesListItem.translation, languagesListItem.explanation,
+                languagesListItem.usageExampleText);
+        isArchived = languagesListItem.isArchived;
     }
 
     public String getTranscription() {
@@ -63,5 +75,13 @@ public class LanguagesListItem extends SimpleListItem {
 
     public void setUsageExampleText(String usageExampleText) {
         this.usageExampleText = usageExampleText;
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
     }
 }

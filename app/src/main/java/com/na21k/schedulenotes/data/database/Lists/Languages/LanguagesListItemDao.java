@@ -36,12 +36,22 @@ public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
     @Query("select * from languages_list_items order by random() limit 1")
     LanguagesListItem getRandomBlocking();
 
+    @Query("select * from languages_list_items where is_archived = 0")
+    LiveData<List<LanguagesListItem>> getUnarchived();
+
+    @Query("select * from languages_list_items where is_archived = 1")
+    LiveData<List<LanguagesListItem>> getArchived();
+
+    @Query("select (select count(*) from languages_list_items where is_archived = 1) = 0")
+    boolean isArchiveEmptyBlocking();
+
     @Override
-    @Query("select * from languages_list_items I where I.text like '%'||:query||'%'" +
+    @Query("select * from languages_list_items I where I.is_archived = 0 and " +
+            "(I.text like '%'||:query||'%'" +
             "or I.transcription like '%'||:query||'%'" +
             "or I.translation like '%'||:query||'%'" +
             "or I.explanation like '%'||:query||'%'" +
-            "or I.usage_example_text like '%'||:query||'%'")
+            "or I.usage_example_text like '%'||:query||'%')")
     LiveData<List<LanguagesListItem>> search(String query);
 
     @Override

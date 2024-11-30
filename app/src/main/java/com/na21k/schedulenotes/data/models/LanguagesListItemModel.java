@@ -7,9 +7,7 @@ public class LanguagesListItemModel extends LanguagesListItem {
     private final int mAttachedImagesCount;
 
     public LanguagesListItemModel(LanguagesListItem languagesListItem, int attachedImagesCount) {
-        super(languagesListItem.getId(), languagesListItem.getText(),
-                languagesListItem.getTranscription(), languagesListItem.getTranslation(),
-                languagesListItem.getExplanation(), languagesListItem.getUsageExampleText());
+        super(languagesListItem);
         mAttachedImagesCount = attachedImagesCount;
     }
 

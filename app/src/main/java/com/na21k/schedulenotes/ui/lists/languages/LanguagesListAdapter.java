@@ -57,7 +57,7 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
         private LanguagesListItemModel mItem;
 
         public WordViewHolder(LanguagesListItemBinding binding) {
-            super(binding.getRoot(), R.menu.simple_item_long_press_menu, 0);
+            super(binding.getRoot(), R.menu.languages_item_long_press_menu, 0);
             mBinding = binding;
 
             itemView.setOnClickListener(v ->
@@ -69,6 +69,9 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
             switch (item.getItemId()) {
                 case R.id.item_delete_menu_item:
                     mOnLanguagesItemActionRequestedListener.onItemDeletionRequested(mItem);
+                    return true;
+                case R.id.item_toggle_archive_menu_item:
+                    mOnLanguagesItemActionRequestedListener.onItemToggleArchivingRequested(mItem);
                     return true;
                 default:
                     return false;
@@ -107,6 +110,8 @@ public class LanguagesListAdapter extends RecyclerView.Adapter<LanguagesListAdap
     public interface OnLanguagesItemActionRequestedListener {
 
         void onItemUpdateRequested(LanguagesListItemModel item);
+
+        void onItemToggleArchivingRequested(LanguagesListItemModel item);
 
         void onItemDeletionRequested(LanguagesListItemModel item);
     }

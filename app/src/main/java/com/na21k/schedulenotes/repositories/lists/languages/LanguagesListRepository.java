@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
@@ -21,6 +23,25 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
 
     public LanguagesListRepository(@NonNull Context context) {
         super(context);
+    }
+
+    public LiveData<List<LanguagesListItem>> getUnarchived() {
+        return mLanguagesListItemDao.getUnarchived();
+    }
+
+    public LiveData<List<LanguagesListItem>> getArchived() {
+        return mLanguagesListItemDao.getArchived();
+    }
+
+    public Task<Boolean> isArchiveEmpty() {
+        TaskCompletionSource<Boolean> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            boolean isEmpty = mLanguagesListItemDao.isArchiveEmptyBlocking();
+            source.setResult(isEmpty);
+        }).start();
+
+        return source.getTask();
     }
 
     @Override

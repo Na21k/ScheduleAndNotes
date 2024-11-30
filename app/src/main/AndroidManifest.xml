@@ -17,16 +17,16 @@
             android:exported="false"
             android:label="@string/title_settings" />
         <activity
-            android:name=".ui.lists.languages.LanguagesListArchiveActivity"
-            android:exported="false"
-            android:label="@string/title_languages_list_archive" />
-        <activity
             android:name=".ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.lists.languages.LanguagesListActivity"
             android:exported="false"
             android:label="@string/title_languages_list" />
+        <activity
+            android:name=".ui.lists.languages.LanguagesListArchiveActivity"
+            android:exported="false"
+            android:label="@string/title_languages_list_archive" />
         <activity
             android:name=".ui.lists.shopping.ShoppingListActivity"
             android:exported="false"

@@ -235,13 +235,33 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     }
 
     private void archiveItem() {
-        UiHelper.showSnackbar(this, mBinding.getRoot(),
-                "Feature in development, coming soon...", mMostRecentBottomInset);
-        //TODO: archive and finish. Show an archive explanation dialog if the archive is empty
+        mViewModel.isArchiveEmpty().addOnSuccessListener(isEmpty -> {
+            if (!isEmpty) {
+                mViewModel.archive(mItem);
+                finish();
+
+                return;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.ic_archive_24);
+            builder.setTitle(R.string.first_time_archive_explanation_alert_title);
+            builder.setMessage(R.string.first_time_archive_explanation_alert_message);
+
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                mViewModel.archive(mItem);
+                finish();
+            });
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            });
+
+            builder.show();
+        });
     }
 
     private void unarchiveItem() {
-        //TODO: unarchive and finish
+        mViewModel.unarchive(mItem);
+        finish();
     }
 
     private void deleteItem() {

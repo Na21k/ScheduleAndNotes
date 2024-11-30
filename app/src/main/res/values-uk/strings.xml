@@ -184,6 +184,9 @@
     <string name="postpone_event_by_one_day">Перенести на 1 день</string>
     <string name="unarchive">Розархівувати</string>
     <string name="archive">Архівувати</string>
+    <string name="toggle_archive">Архівувати/Розархівувати</string>
     <string name="archived">Архів</string>
-    <string name="title_languages_list_archive">Архівні слова</string>
+    <string name="title_languages_list_archive">Архів Списку-словника</string>
+    <string name="first_time_archive_explanation_alert_title">Архівування</string>
+    <string name="first_time_archive_explanation_alert_message">Використовуйте цю опцію для приховування елементів з основного Списку-словника. Ви не отримуватимете сповіщень про заархівовані елементи. Щоб перейти до архіву, натисніть кнопку [Архів] у верхній панелі на екрані списку</string>
 </resources>

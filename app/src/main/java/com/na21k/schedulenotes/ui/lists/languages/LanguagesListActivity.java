@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -45,18 +46,20 @@ public class LanguagesListActivity extends AppCompatActivity
     private static final int mLandscapeColumnCount = 2;
     private static final int mPortraitColumnCountTablet = 2;
     private static final int mLandscapeColumnCountTablet = 3;
-    private final Observer<List<LanguagesListItem>> mItemsObserver = new Observer<List<LanguagesListItem>>() {
-        @Override
-        public void onChanged(List<LanguagesListItem> items) {
-            mViewModel.setAllItemsCache(items);
-            updateListIfEnoughData();
-        }
-    };
-    private LanguagesListViewModel mViewModel;
-    private ActivityLanguagesListBinding mBinding;
+    protected final Observer<List<LanguagesListItem>> mItemsObserver =
+            new Observer<List<LanguagesListItem>>() {
+                @Override
+                public void onChanged(List<LanguagesListItem> items) {
+                    mViewModel.setAllItemsCache(items);
+                    updateListIfEnoughData();
+                }
+            };
+    protected LanguagesListViewModel mViewModel;
+    protected ActivityLanguagesListBinding mBinding;
     private LanguagesListAdapter mListAdapter;
     private LiveData<List<LanguagesListItem>> mLastSearchLiveData;
     private boolean isSearchMode = false;
+    private boolean addingItemsEnabled = true;
     private int mMostRecentBottomInset;
 
     @Override
@@ -81,6 +84,14 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //when going back from LanguagesListArchiveActivity
+        //in case the sorting order was changed from there
+        updateListIfEnoughData();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.languages_list_menu, menu);
 
@@ -96,7 +107,7 @@ public class LanguagesListActivity extends AppCompatActivity
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 isSearchMode = false;
-                mBinding.addWordOrPhraseFab.show();
+                if (addingItemsEnabled) mBinding.addWordOrPhraseFab.show();
                 return true;
             }
         });
@@ -198,8 +209,8 @@ public class LanguagesListActivity extends AppCompatActivity
         setObservers();
     }
 
-    private void setObservers() {
-        mViewModel.getAll().observe(this, mItemsObserver);
+    protected void setObservers() {
+        mViewModel.getUnarchived().observe(this, mItemsObserver);
         mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
             mViewModel.setAttachedImagesListItemIdsCache(integers);
             updateListIfEnoughData();
@@ -207,7 +218,8 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     private void replaceItemsObserverAccordingToSearchQuery(String query) {
-        mViewModel.getAll().removeObservers(this);
+        //FIXME: does not actually remove anything
+        mViewModel.getUnarchived().removeObservers(this);
 
         if (mLastSearchLiveData != null) {
             mLastSearchLiveData.removeObservers(this);
@@ -217,7 +229,7 @@ public class LanguagesListActivity extends AppCompatActivity
         mLastSearchLiveData.observe(this, mItemsObserver);
     }
 
-    private void updateListIfEnoughData() {
+    protected void updateListIfEnoughData() {
         List<LanguagesListItem> itemsCache = mViewModel.getAllItemsCache();
         List<Integer> attachedImagesListItemIdsCache = mViewModel.getAttachedImagesListItemIdsCache();
 
@@ -267,9 +279,14 @@ public class LanguagesListActivity extends AppCompatActivity
                     if (!v.canScrollVertically(1) && v.canScrollVertically(-1)) {
                         mBinding.addWordOrPhraseFab.hide();
                     } else {
-                        mBinding.addWordOrPhraseFab.show();
+                        if (addingItemsEnabled) mBinding.addWordOrPhraseFab.show();
                     }
                 });
+    }
+
+    protected void disableAddingItems() {
+        addingItemsEnabled = false;
+        mBinding.addWordOrPhraseFab.setVisibility(View.GONE);
     }
 
     private void openArchive() {
@@ -291,6 +308,14 @@ public class LanguagesListActivity extends AppCompatActivity
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemToggleArchivingRequested(LanguagesListItemModel item) {
+        boolean archive = !item.isArchived();
+
+        if (archive) archiveItem(item);
+        else mViewModel.unarchive(item);
     }
 
     @SuppressLint("WrongConstant")
@@ -322,6 +347,27 @@ public class LanguagesListActivity extends AppCompatActivity
         });
 
         builder.show();
+    }
+
+    public void archiveItem(LanguagesListItemModel item) {
+        mViewModel.isArchiveEmpty().addOnSuccessListener(isEmpty -> {
+            if (!isEmpty) {
+                mViewModel.archive(item);
+                return;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.ic_archive_24);
+            builder.setTitle(R.string.first_time_archive_explanation_alert_title);
+            builder.setMessage(R.string.first_time_archive_explanation_alert_message);
+
+            builder.setPositiveButton(android.R.string.ok,
+                    (dialog, which) -> mViewModel.archive(item));
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            });
+
+            builder.show();
+        });
     }
 
     private LanguagesListItemsSortingOrder getSortingOrder() {

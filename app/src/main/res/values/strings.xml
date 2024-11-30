@@ -4,6 +4,7 @@
     <string name="delete">Delete</string>
     <string name="archive">Archive</string>
     <string name="unarchive">Unarchive</string>
+    <string name="toggle_archive">Archive/Unarchive</string>
     <string name="archived">Archived</string>
     <string name="cancel">Cancel</string>
     <string name="keep">Keep</string>
@@ -24,7 +25,7 @@
     <string name="title_music_list">Music List</string>
     <string name="title_shopping_list">Shopping List</string>
     <string name="title_languages_list">Vocabulary List</string>
-    <string name="title_languages_list_archive">Archived words</string>
+    <string name="title_languages_list_archive">Vocabulary List archive</string>
     <string name="title_categories">Categories</string>
     <string name="title_settings">Settings</string>
     <string name="title_import">Import</string>
@@ -233,4 +234,6 @@
     <string name="sort_by_options_menu_item">Sort by</string>
     <string name="sort_by_word_options_menu_item">Word</string>
     <string name="sort_by_translation_options_menu_item">Translation</string>
+    <string name="first_time_archive_explanation_alert_title">About archiving</string>
+    <string name="first_time_archive_explanation_alert_message">Use this option to hide items from the main Vocabulary List. You won\'t receive notifications about archived items. You can access the archive by tapping the [Archived] button in the top menu of the list screen</string>
 </resources>

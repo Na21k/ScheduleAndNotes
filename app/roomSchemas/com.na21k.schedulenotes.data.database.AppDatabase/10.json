@@ -1,0 +1,658 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 10,
+    "identityHash": "b5e0e5bc4b76e5f53189342ef9a6334d",
+    "entities": [
+      {
+        "tableName": "categories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `color_set` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorSet",
+            "columnName": "color_set",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_categories_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_categories_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_categories_title",
+            "unique": true,
+            "columnNames": [
+              "title"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_categories_title` ON `${TABLE_NAME}` (`title`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "notes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `details` TEXT, `category_id` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`category_id`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "details",
+            "columnName": "details",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "category_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_notes_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_notes_category_id",
+            "unique": false,
+            "columnNames": [
+              "category_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_category_id` ON `${TABLE_NAME}` (`category_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "categories",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `details` TEXT, `category_id` INTEGER, `date_time_starts` INTEGER NOT NULL, `date_time_ends` INTEGER NOT NULL, `is_hidden` INTEGER NOT NULL DEFAULT false, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`category_id`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "details",
+            "columnName": "details",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "category_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateTimeStarts",
+            "columnName": "date_time_starts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateTimeEnds",
+            "columnName": "date_time_ends",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isHidden",
+            "columnName": "is_hidden",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_events_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_events_category_id",
+            "unique": false,
+            "columnNames": [
+              "category_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_category_id` ON `${TABLE_NAME}` (`category_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "categories",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "event_notification_alarms_pending_intents",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`event_id` INTEGER NOT NULL, `notification_type` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`event_id`) REFERENCES `events`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "eventId",
+            "columnName": "event_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationType",
+            "columnName": "notification_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_event_notification_alarms_pending_intents_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_event_notification_alarms_pending_intents_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_event_notification_alarms_pending_intents_event_id",
+            "unique": false,
+            "columnNames": [
+              "event_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_event_notification_alarms_pending_intents_event_id` ON `${TABLE_NAME}` (`event_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "event_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "user_defined_lists",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_user_defined_lists_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_defined_lists_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_user_defined_lists_title",
+            "unique": true,
+            "columnNames": [
+              "title"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_user_defined_lists_title` ON `${TABLE_NAME}` (`title`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user_defined_lists_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`list_id` INTEGER NOT NULL, `text` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`list_id`) REFERENCES `user_defined_lists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "listId",
+            "columnName": "list_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_user_defined_lists_items_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_defined_lists_items_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_user_defined_lists_items_list_id",
+            "unique": false,
+            "columnNames": [
+              "list_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_defined_lists_items_list_id` ON `${TABLE_NAME}` (`list_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user_defined_lists",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "list_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "shopping_list_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`price` REAL, `count` INTEGER, `is_checked` INTEGER NOT NULL, `text` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isChecked",
+            "columnName": "is_checked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_shopping_list_items_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_shopping_list_items_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "movies_list_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`text` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_movies_list_items_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_movies_list_items_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "music_list_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`text` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_music_list_items_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_music_list_items_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "languages_list_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transcription` TEXT, `translation` TEXT, `explanation` TEXT, `usage_example_text` TEXT, `is_archived` INTEGER NOT NULL DEFAULT 0, `text` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "transcription",
+            "columnName": "transcription",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "translation",
+            "columnName": "translation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "explanation",
+            "columnName": "explanation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "usageExampleText",
+            "columnName": "usage_example_text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isArchived",
+            "columnName": "is_archived",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_languages_list_items_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_languages_list_items_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_languages_list_items_is_archived",
+            "unique": false,
+            "columnNames": [
+              "is_archived"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_languages_list_items_is_archived` ON `${TABLE_NAME}` (`is_archived`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "languages_list_items_attached_images",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`languages_list_item_id` INTEGER NOT NULL, `binary_data` BLOB NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`languages_list_item_id`) REFERENCES `languages_list_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "languagesListItemId",
+            "columnName": "languages_list_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bitmapData",
+            "columnName": "binary_data",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_languages_list_items_attached_images_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_languages_list_items_attached_images_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_languages_list_items_attached_images_languages_list_item_id",
+            "unique": false,
+            "columnNames": [
+              "languages_list_item_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_languages_list_items_attached_images_languages_list_item_id` ON `${TABLE_NAME}` (`languages_list_item_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "languages_list_items",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "languages_list_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b5e0e5bc4b76e5f53189342ef9a6334d')"
+    ]
+  }
+}
