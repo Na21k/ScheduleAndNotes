@@ -6,11 +6,13 @@ import android.content.Intent;
 
 import com.na21k.schedulenotes.helpers.EventsHelper;
 
+import java.util.Objects;
+
 public class BootCompletedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        if (!Objects.equals(intent.getAction(), "android.intent.action.BOOT_COMPLETED")) {
             return;
         }
 
