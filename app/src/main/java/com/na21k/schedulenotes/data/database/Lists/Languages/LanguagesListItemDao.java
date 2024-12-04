@@ -6,13 +6,14 @@ import androidx.room.Query;
 
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.CanClearDao;
+import com.na21k.schedulenotes.data.database.CanProvideRandomDao;
 import com.na21k.schedulenotes.data.database.CanSearchDao;
 
 import java.util.List;
 
 @Dao
 public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
-        CanSearchDao<LanguagesListItem>, CanClearDao {
+        CanSearchDao<LanguagesListItem>, CanClearDao, CanProvideRandomDao<LanguagesListItem> {
 
     @Query("select count(*) from languages_list_items")
     int getCount();
@@ -33,8 +34,9 @@ public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
     @Query("select * from languages_list_items I where I.id = :entityId")
     LanguagesListItem getByIdBlocking(int entityId);
 
+    @Override
     @Query("select * from languages_list_items where is_archived = 0 order by random() limit 1")
-    LanguagesListItem getRandomUnarchivedBlocking();
+    LanguagesListItem getRandomBlocking();
 
     @Query("select * from languages_list_items where is_archived = 0")
     LiveData<List<LanguagesListItem>> getUnarchived();

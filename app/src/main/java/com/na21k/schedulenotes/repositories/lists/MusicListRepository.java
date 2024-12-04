@@ -9,18 +9,25 @@ import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItemDao;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
+import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
 public class MusicListRepository extends MutableRepository<MusicListItem>
-        implements CanSearchRepository<MusicListItem>, CanClearRepository {
+        implements CanSearchRepository<MusicListItem>, CanClearRepository,
+        CanProvideRandomRepository<MusicListItem> {
 
     private final MusicListItemDao mMusicListItemDao = db.musicListItemDao();
 
     public MusicListRepository(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    public MusicListItem getRandomBlocking() {
+        return mMusicListItemDao.getRandomBlocking();
     }
 
     @Override

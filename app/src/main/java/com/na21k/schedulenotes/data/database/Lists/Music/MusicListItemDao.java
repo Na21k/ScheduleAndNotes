@@ -6,13 +6,14 @@ import androidx.room.Query;
 
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.CanClearDao;
+import com.na21k.schedulenotes.data.database.CanProvideRandomDao;
 import com.na21k.schedulenotes.data.database.CanSearchDao;
 
 import java.util.List;
 
 @Dao
 public interface MusicListItemDao extends BaseDao<MusicListItem>,
-        CanSearchDao<MusicListItem>, CanClearDao {
+        CanSearchDao<MusicListItem>, CanClearDao, CanProvideRandomDao<MusicListItem> {
 
     @Query("select count(*) from music_list_items")
     int getCount();
@@ -33,6 +34,7 @@ public interface MusicListItemDao extends BaseDao<MusicListItem>,
     @Query("select * from music_list_items I where I.id = :entityId")
     MusicListItem getByIdBlocking(int entityId);
 
+    @Override
     @Query("select * from music_list_items order by random() limit 1")
     MusicListItem getRandomBlocking();
 

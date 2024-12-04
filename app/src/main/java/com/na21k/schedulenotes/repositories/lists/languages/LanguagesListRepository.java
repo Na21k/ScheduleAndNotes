@@ -11,18 +11,25 @@ import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
+import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
 public class LanguagesListRepository extends MutableRepository<LanguagesListItem>
-        implements CanSearchRepository<LanguagesListItem>, CanClearRepository {
+        implements CanSearchRepository<LanguagesListItem>, CanClearRepository,
+        CanProvideRandomRepository<LanguagesListItem> {
 
     private final LanguagesListItemDao mLanguagesListItemDao = db.languagesListItemDao();
 
     public LanguagesListRepository(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    public LanguagesListItem getRandomBlocking() {
+        return mLanguagesListItemDao.getRandomBlocking();
     }
 
     public LiveData<List<LanguagesListItem>> getUnarchived() {

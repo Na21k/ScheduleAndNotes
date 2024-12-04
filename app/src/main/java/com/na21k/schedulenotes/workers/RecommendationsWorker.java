@@ -8,19 +8,30 @@ import androidx.work.WorkerParameters;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.data.database.AppDatabase;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
+import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
+import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
+import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 
 import java.util.StringJoiner;
 
 public class RecommendationsWorker extends Worker {
 
+    private final CanProvideRandomRepository<MoviesListItem> mMoviesListRepository;
+    private final CanProvideRandomRepository<MusicListItem> mMusicListRepository;
+    private final CanProvideRandomRepository<LanguagesListItem> mLanguagesListRepository;
+
     public RecommendationsWorker(@NonNull Context context,
                                  @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+
+        mMoviesListRepository = new MoviesListRepository(context);
+        mMusicListRepository = new MusicListRepository(context);
+        mLanguagesListRepository = new LanguagesListRepository(context);
     }
 
     @NonNull
@@ -42,8 +53,7 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        MoviesListItem item = AppDatabase.getInstance(context)
-                .moviesListItemDao().getRandomBlocking();
+        MoviesListItem item = mMoviesListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
@@ -61,8 +71,7 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        MusicListItem item = AppDatabase.getInstance(context)
-                .musicListItemDao().getRandomBlocking();
+        MusicListItem item = mMusicListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
@@ -80,13 +89,19 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        LanguagesListItem item = AppDatabase.getInstance(context)
-                .languagesListItemDao().getRandomUnarchivedBlocking();
+        LanguagesListItem item = mLanguagesListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
         }
 
+        String title = item.getText();
+        String text = getLanguagesListNotificationText(item);
+
+        NotificationsHelper.showLanguagesListNotification(context, title, text, item.getId());
+    }
+
+    private static String getLanguagesListNotificationText(LanguagesListItem item) {
         String transcription = item.getTranscription();
         String translation = item.getTranslation();
         String explanation = item.getExplanation();
@@ -110,9 +125,6 @@ public class RecommendationsWorker extends Worker {
             textJoiner.add(usageExamples);
         }
 
-        String title = item.getText();
-        String text = textJoiner.toString();
-
-        NotificationsHelper.showLanguagesListNotification(context, title, text, item.getId());
+        return textJoiner.toString();
     }
 }
