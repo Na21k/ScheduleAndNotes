@@ -81,7 +81,7 @@ public class RecommendationsWorker extends Worker {
         }
 
         LanguagesListItem item = AppDatabase.getInstance(context)
-                .languagesListItemDao().getRandomBlocking();
+                .languagesListItemDao().getRandomUnarchivedBlocking();
 
         if (item == null) {
             return;

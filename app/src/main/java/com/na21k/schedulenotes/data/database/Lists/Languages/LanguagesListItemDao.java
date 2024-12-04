@@ -33,8 +33,8 @@ public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
     @Query("select * from languages_list_items I where I.id = :entityId")
     LanguagesListItem getByIdBlocking(int entityId);
 
-    @Query("select * from languages_list_items order by random() limit 1")
-    LanguagesListItem getRandomBlocking();
+    @Query("select * from languages_list_items where is_archived = 0 order by random() limit 1")
+    LanguagesListItem getRandomUnarchivedBlocking();
 
     @Query("select * from languages_list_items where is_archived = 0")
     LiveData<List<LanguagesListItem>> getUnarchived();
