@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import com.na21k.schedulenotes.BroadcastReceivers.PostponeEventByOneDayFromNotificationBroadcastReceiver;
+import com.na21k.schedulenotes.BroadcastReceivers.NotificationActionBroadcastReceiver;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.MainActivity;
 import com.na21k.schedulenotes.R;
@@ -166,6 +166,13 @@ public class NotificationsHelper {
                 .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                 .setContentIntent(intent);
 
+        PendingIntent archiveIntent = getArchiveLanguagesListItemPendingIntent(context, wordId);
+        NotificationCompat.Action postponeToTomorrowAction = new NotificationCompat
+                .Action(R.drawable.ic_archive_24,
+                context.getString(R.string.archive),
+                archiveIntent);
+        builder.addAction(postponeToTomorrowAction);
+
         notifyIfNotificationsPermissionGranted(context, Constants.LANGUAGES_LIST_NOTIFICATION_ID, builder.build());
     }
 
@@ -182,8 +189,7 @@ public class NotificationsHelper {
 
     private static PendingIntent getPostponeEventByOneDayPendingIntent(Context context,
                                                                        int eventId) {
-        Intent intent = new Intent(
-                context, PostponeEventByOneDayFromNotificationBroadcastReceiver.class);
+        Intent intent = new Intent(context, NotificationActionBroadcastReceiver.class);
         intent.setAction("com.na21k.schedulenotes.POSTPONE_EVENT_BY_ONE_DAY_FROM_NOTIFICATION");
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
@@ -218,6 +224,18 @@ public class NotificationsHelper {
         intent.putExtras(bundle);
 
         return PendingIntent.getActivity(context, wordId, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private static PendingIntent getArchiveLanguagesListItemPendingIntent(Context context,
+                                                                          int wordId) {
+        Intent intent = new Intent(context, NotificationActionBroadcastReceiver.class);
+        intent.setAction("com.na21k.schedulenotes.ARCHIVE_LANGUAGES_LIST_ITEM_FROM_NOTIFICATION");
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY, wordId);
+        intent.putExtras(bundle);
+
+        return PendingIntent.getBroadcast(context, 0, intent,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

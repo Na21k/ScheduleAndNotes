@@ -84,10 +84,11 @@
         </provider>
 
         <receiver
-            android:name=".BroadcastReceivers.PostponeEventByOneDayFromNotificationBroadcastReceiver"
+            android:name=".BroadcastReceivers.NotificationActionBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.na21k.schedulenotes.POSTPONE_EVENT_BY_ONE_DAY_FROM_NOTIFICATION" />
+                <action android:name="com.na21k.schedulenotes.ARCHIVE_LANGUAGES_LIST_ITEM_FROM_NOTIFICATION" />
             </intent-filter>
         </receiver>
         <receiver
