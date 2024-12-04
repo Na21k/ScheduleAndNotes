@@ -161,7 +161,7 @@
     <string name="event_notifications_group_notification_title">Подія розкладу почалась або насувається</string>
     <string name="event_started_title">%1$s - почалось</string>
     <string name="event_starts_soon_title">%1$s - незабаром</string>
-    <string name="movie_notification_text">Ви хотіли переглянути цей фільм. Можливо, саме час це зробити?</string>
+    <string name="movie_notification_text">Ви хотіли переглянути цей фільм. Можливо, зараз саме час?</string>
     <string name="music_notification_text">Ви планували прослухати це. Можливо, зараз саме час?</string>
     <string name="successfully_imported_from_backup_toast">Успішно імпортовано з резервної копії</string>
     <string name="import_alert_title">Повідомлення про імпорт</string>
