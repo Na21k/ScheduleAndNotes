@@ -17,6 +17,8 @@ public class LanguagesListViewModel extends AndroidViewModel {
 
     private final LanguagesListRepository mLanguagesListRepository;
     private final LiveData<List<Integer>> mAllAttachedImagesListItemIds;
+    private LiveData<List<LanguagesListItem>> mUnarchivedItems;
+    private LiveData<List<LanguagesListItem>> mArchivedItems;
     private List<LanguagesListItem> mAllItemsCache;
     private List<Integer> mAttachedImagesListItemIdsCache;
 
@@ -29,11 +31,17 @@ public class LanguagesListViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<LanguagesListItem>> getUnarchived() {
-        return mLanguagesListRepository.getUnarchived();
+        if (mUnarchivedItems == null)
+            mUnarchivedItems = mLanguagesListRepository.getUnarchived();
+
+        return mUnarchivedItems;
     }
 
     public LiveData<List<LanguagesListItem>> getArchived() {
-        return mLanguagesListRepository.getArchived();
+        if (mArchivedItems == null)
+            mArchivedItems = mLanguagesListRepository.getArchived();
+
+        return mArchivedItems;
     }
 
     public LiveData<List<LanguagesListItem>> getItemsSearch(String searchQuery) {

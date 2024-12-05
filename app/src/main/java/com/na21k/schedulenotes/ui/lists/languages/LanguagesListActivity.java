@@ -98,14 +98,14 @@ public class LanguagesListActivity extends AppCompatActivity
         MenuItem menuItem = menu.findItem(R.id.menu_search);
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 isSearchMode = true;
                 mBinding.addWordOrPhraseFab.hide();
                 return true;
             }
 
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 isSearchMode = false;
                 if (addingItemsEnabled) mBinding.addWordOrPhraseFab.show();
                 return true;
@@ -218,7 +218,6 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     private void replaceItemsObserverAccordingToSearchQuery(String query) {
-        //FIXME: does not actually remove anything
         mViewModel.getUnarchived().removeObservers(this);
 
         if (mLastSearchLiveData != null) {
