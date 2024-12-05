@@ -32,7 +32,7 @@ public class LanguagesListArchiveActivity extends LanguagesListActivity {
     protected void setObservers() {
         mViewModel.getArchived().observe(this, mItemsObserver);
         mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
-            mViewModel.setAttachedImagesListItemIdsCache(integers);
+            mViewModel.setDisplayedItemsAttachedImagesListItemIdsCache(integers);
             updateListIfEnoughData();
         });
     }

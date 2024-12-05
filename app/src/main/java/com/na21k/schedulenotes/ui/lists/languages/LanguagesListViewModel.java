@@ -16,31 +16,27 @@ import java.util.List;
 public class LanguagesListViewModel extends AndroidViewModel {
 
     private final LanguagesListRepository mLanguagesListRepository;
+    private final LiveData<List<LanguagesListItem>> mUnarchivedItems;
+    private final LiveData<List<LanguagesListItem>> mArchivedItems;
     private final LiveData<List<Integer>> mAllAttachedImagesListItemIds;
-    private LiveData<List<LanguagesListItem>> mUnarchivedItems;
-    private LiveData<List<LanguagesListItem>> mArchivedItems;
-    private List<LanguagesListItem> mAllItemsCache;
-    private List<Integer> mAttachedImagesListItemIdsCache;
+    private List<LanguagesListItem> mDisplayedItemsCache;
+    private List<Integer> mDisplayedItemsAttachedImagesListItemIdsCache;
 
     public LanguagesListViewModel(@NonNull Application application) {
         super(application);
 
         mLanguagesListRepository = new LanguagesListRepository(application);
+        mUnarchivedItems = mLanguagesListRepository.getUnarchived();
+        mArchivedItems = mLanguagesListRepository.getArchived();
         mAllAttachedImagesListItemIds = new LanguagesListAttachedImagesRepository(application)
                 .getAllListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getUnarchived() {
-        if (mUnarchivedItems == null)
-            mUnarchivedItems = mLanguagesListRepository.getUnarchived();
-
         return mUnarchivedItems;
     }
 
     public LiveData<List<LanguagesListItem>> getArchived() {
-        if (mArchivedItems == null)
-            mArchivedItems = mLanguagesListRepository.getArchived();
-
         return mArchivedItems;
     }
 
@@ -70,19 +66,20 @@ public class LanguagesListViewModel extends AndroidViewModel {
         return mAllAttachedImagesListItemIds;
     }
 
-    public List<LanguagesListItem> getAllItemsCache() {
-        return mAllItemsCache;
+    public List<LanguagesListItem> getDisplayedItemsCache() {
+        return mDisplayedItemsCache;
     }
 
-    public void setAllItemsCache(List<LanguagesListItem> allItemsCache) {
-        mAllItemsCache = allItemsCache;
+    public void setDisplayedItemsCache(List<LanguagesListItem> allItemsCache) {
+        mDisplayedItemsCache = allItemsCache;
     }
 
-    public List<Integer> getAttachedImagesListItemIdsCache() {
-        return mAttachedImagesListItemIdsCache;
+    public List<Integer> getDisplayedItemsAttachedImagesListItemIdsCache() {
+        return mDisplayedItemsAttachedImagesListItemIdsCache;
     }
 
-    public void setAttachedImagesListItemIdsCache(List<Integer> attachedImagesListItemIdsCache) {
-        mAttachedImagesListItemIdsCache = attachedImagesListItemIdsCache;
+    public void setDisplayedItemsAttachedImagesListItemIdsCache(
+            List<Integer> attachedImagesListItemIdsCache) {
+        mDisplayedItemsAttachedImagesListItemIdsCache = attachedImagesListItemIdsCache;
     }
 }

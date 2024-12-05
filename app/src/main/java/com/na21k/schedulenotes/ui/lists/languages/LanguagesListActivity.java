@@ -50,7 +50,7 @@ public class LanguagesListActivity extends AppCompatActivity
             new Observer<List<LanguagesListItem>>() {
                 @Override
                 public void onChanged(List<LanguagesListItem> items) {
-                    mViewModel.setAllItemsCache(items);
+                    mViewModel.setDisplayedItemsCache(items);
                     updateListIfEnoughData();
                 }
             };
@@ -212,7 +212,7 @@ public class LanguagesListActivity extends AppCompatActivity
     protected void setObservers() {
         mViewModel.getUnarchived().observe(this, mItemsObserver);
         mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
-            mViewModel.setAttachedImagesListItemIdsCache(integers);
+            mViewModel.setDisplayedItemsAttachedImagesListItemIdsCache(integers);
             updateListIfEnoughData();
         });
     }
@@ -229,8 +229,9 @@ public class LanguagesListActivity extends AppCompatActivity
     }
 
     protected void updateListIfEnoughData() {
-        List<LanguagesListItem> itemsCache = mViewModel.getAllItemsCache();
-        List<Integer> attachedImagesListItemIdsCache = mViewModel.getAttachedImagesListItemIdsCache();
+        List<LanguagesListItem> itemsCache = mViewModel.getDisplayedItemsCache();
+        List<Integer> attachedImagesListItemIdsCache = mViewModel
+                .getDisplayedItemsAttachedImagesListItemIdsCache();
 
         boolean isEnoughData = itemsCache != null && attachedImagesListItemIdsCache != null;
 
