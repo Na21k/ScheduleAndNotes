@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.schedule;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -89,7 +88,7 @@ public class ScheduleFragment extends Fragment
         MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
         searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 isSearchMode = true;
                 mBinding.addEventFab.hide();
                 mBinding.dateSelectionArea.setVisibility(View.GONE);
@@ -97,7 +96,7 @@ public class ScheduleFragment extends Fragment
             }
 
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 isSearchMode = false;
                 mBinding.addEventFab.show();
                 mBinding.dateSelectionArea.setVisibility(View.VISIBLE);
@@ -259,7 +258,7 @@ public class ScheduleFragment extends Fragment
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getContext(), dateSetListener, year, month, day);
+        return new DatePickerDialog(requireContext(), dateSetListener, year, month, day);
     }
 
     private void onDateSelected(DatePicker view, int year, int month, int dayOfMonth) {
@@ -331,6 +330,34 @@ public class ScheduleFragment extends Fragment
     }
 
     @Override
+    public void onEventDuplicationRequested(Event event) {
+        mViewModel.duplicateEvent(event);
+    }
+
+    @Override
+    public void onEventDeletionRequested(Event event) {
+        Context context = getContext();
+
+        if (context != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.ic_delete_24);
+            builder.setTitle(R.string.event_deletion_alert_title);
+            builder.setMessage(R.string.event_deletion_alert_message);
+
+            builder.setPositiveButton(R.string.delete, (dialog, which) -> {
+                mViewModel.deleteEvent(event);
+                Snackbar.make(mBinding.getRoot(), R.string.event_deleted_snackbar,
+                                Constants.UNDO_DELETE_TIMEOUT_MILLIS)
+                        .setAction(R.string.undo, v -> mViewModel.createEvent(event)).show();
+            });
+            builder.setNegativeButton(R.string.keep, (dialog, which) -> {
+            });
+
+            builder.show();
+        }
+    }
+
+    @Override
     public void onCategorySelectionRequested(Event event) {
         Context context = getContext();
 
@@ -359,28 +386,10 @@ public class ScheduleFragment extends Fragment
         }
     }
 
-    @SuppressLint("WrongConstant")
     @Override
-    public void onEventDeletionRequested(Event event) {
-        Context context = getContext();
-
-        if (context != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setIcon(R.drawable.ic_delete_24);
-            builder.setTitle(R.string.event_deletion_alert_title);
-            builder.setMessage(R.string.event_deletion_alert_message);
-
-            builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-                mViewModel.deleteEvent(event);
-                Snackbar.make(mBinding.getRoot(), R.string.event_deleted_snackbar,
-                                Constants.UNDO_DELETE_TIMEOUT_MILLIS)
-                        .setAction(R.string.undo, v -> mViewModel.createEvent(event)).show();
-            });
-            builder.setNegativeButton(R.string.keep, (dialog, which) -> {
-            });
-
-            builder.show();
-        }
+    public void onRemoveCategoryRequested(Event event) {
+        event.setCategoryId(null);
+        mViewModel.updateEvent(event);
     }
 
     @Override
@@ -407,11 +416,5 @@ public class ScheduleFragment extends Fragment
             EventsHelper.postponeToAsync(event, date, requireContext());
             jumpToDate(date);
         }).show();
-    }
-
-    @Override
-    public void onRemoveCategoryRequested(Event event) {
-        event.setCategoryId(null);
-        mViewModel.updateEvent(event);
     }
 }

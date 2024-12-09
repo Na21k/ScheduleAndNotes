@@ -2,6 +2,7 @@
     <!--General-->
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="duplicate">Duplicate</string>
     <string name="archive">Archive</string>
     <string name="unarchive">Unarchive</string>
     <string name="toggle_archive">Archive/Unarchive</string>
