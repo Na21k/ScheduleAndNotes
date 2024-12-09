@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,7 @@ import java.util.List;
 public class ScheduleFragment extends Fragment
         implements Observer<List<Event>>, EventsListAdapter.OnEventActionRequestedListener, MenuProvider {
 
+    private static final String TAG = ScheduleFragment.class.getSimpleName();
     private ScheduleViewModel mViewModel;
     private ScheduleFragmentBinding mBinding;
     private EventsListAdapter mAdapter;
@@ -232,7 +234,12 @@ public class ScheduleFragment extends Fragment
 
         unsubscribeFromLiveData();
         mScheduleListLiveData = mViewModel.getByDate(hasStartedBefore, hasNotEndedBy);
-        mScheduleListLiveData.observe(getViewLifecycleOwner(), this);
+
+        try {
+            mScheduleListLiveData.observe(getViewLifecycleOwner(), this);
+        } catch (IllegalStateException e) {
+            Log.i(TAG, "Couldn't get the LifecycleOwner", e);
+        }
     }
 
     @Override
