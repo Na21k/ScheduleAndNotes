@@ -52,7 +52,9 @@ public class EventDetailsViewModel extends AndroidViewModel {
     public void createEvent(Event event) {
         mScheduleRepository.add(event).addOnSuccessListener(id -> {
             event.setId(Math.toIntExact(id));
-            new Thread(() -> scheduleNotificationsAndUpdateBlocking(event)).start();
+            new Thread(() ->
+                    EventsHelper.scheduleEventNotificationsBlocking(event, getApplication())
+            ).start();
         });
     }
 
@@ -65,9 +67,10 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void updateCurrentEvent(Event event) {
         event.setId(mEventId);
+        mScheduleRepository.update(event);
         new Thread(() -> {
             AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
-            scheduleNotificationsAndUpdateBlocking(event);
+            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
         }).start();
     }
 
@@ -100,10 +103,5 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void setCategoriesCache(List<Category> categoriesCache) {
         mCategoriesCache = categoriesCache;
-    }
-
-    private void scheduleNotificationsAndUpdateBlocking(@NonNull Event event) {
-        EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
-        mScheduleRepository.update(event);
     }
 }
