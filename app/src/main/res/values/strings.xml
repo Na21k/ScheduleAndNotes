@@ -2,7 +2,7 @@
     <!--General-->
     <string name="save">Save</string>
     <string name="delete">Delete</string>
-    <string name="duplicate">Duplicate</string>
+    <string name="duplicate">Duplicate…</string>
     <string name="archive">Archive</string>
     <string name="unarchive">Unarchive</string>
     <string name="toggle_archive">Archive/Unarchive</string>
@@ -139,6 +139,7 @@
     <string name="event_deletion_alert_message">Are you sure you want to delete this event?</string>
     <string name="event_title_input_hint">Event title</string>
     <string name="event_details_input_hint">Event details (optional)</string>
+    <string name="event_duplication_warning">The event duplicate will be created only once you tap the Save button</string>
     <string name="specify_event_title_snackbar">Specify event title</string>
     <string name="jump_to_today_snackbar">Jumping to Today …</string>
     <string name="event_deleted_snackbar">The event has been deleted</string>

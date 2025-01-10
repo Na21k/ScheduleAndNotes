@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_event_details_root"
     android:layout_width="match_parent"
@@ -133,6 +134,29 @@
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences|textMultiLine"
                     android:textSize="20sp" />
+
+                <android.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/duplication_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/warning_card_background"
+                    app:cardCornerRadius="@dimen/corner_radius"
+                    app:contentPadding="10dp"
+                    app:strokeColor="@color/warning_card_stroke"
+                    app:strokeWidth="@dimen/stroke_width_warning_card"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_duplication_warning" />
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

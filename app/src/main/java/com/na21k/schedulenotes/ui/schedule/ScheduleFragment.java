@@ -338,7 +338,10 @@ public class ScheduleFragment extends Fragment
 
     @Override
     public void onEventDuplicationRequested(Event event) {
-        mViewModel.duplicateEvent(event);
+        Intent duplicateIntent = new Intent(requireContext(), EventDetailsActivity.class);
+        duplicateIntent.putExtra(EventDetailsActivity.DUPLICATE_EVENT_DATA_INTENT_KEY, event);
+
+        startActivity(duplicateIntent);
     }
 
     @Override

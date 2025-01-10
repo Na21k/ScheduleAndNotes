@@ -8,4 +8,5 @@
     <dimen name="corner_radius">12dp</dimen>
     <dimen name="stroke_width">0dp</dimen>
     <dimen name="stroke_width_text_input_layout">1dp</dimen>
+    <dimen name="stroke_width_warning_card">2dp</dimen>
 </resources>

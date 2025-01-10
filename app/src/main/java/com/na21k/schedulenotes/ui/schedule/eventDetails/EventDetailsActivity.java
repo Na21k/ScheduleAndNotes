@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -37,7 +38,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Pass data using a Bundle.</br>
+ * </br>
+ * Operation modes:</br>
+ * 1. Create an event - pass time millis (long) (for the initial event date/time value);</br>
+ * 2. Duplicate an event - pass the event data as an {@link Event} object
+ * (a copy will be created);</br>
+ * 3. Edit an event - pass the event id.</br>
+ *
+ * @implNote Passing data for different operation modes at once (for example,
+ * passing an event id, as for editing, along with an {@link Event} object, as for duplicating)
+ * causes the following <b><u>operation mode priority</u></b> to be used: edit > duplicate > create.
+ * @see Constants
+ */
 public class EventDetailsActivity extends AppCompatActivity implements Observer<Event> {
+
+    private enum OperationMode {Create, Duplicate, Edit}
+
+    public static final String DUPLICATE_EVENT_DATA_INTENT_KEY = "duplicateEventDataIntentKey";
 
     private EventDetailsViewModel mViewModel;
     private ActivityEventDetailsBinding mBinding;
@@ -70,16 +89,28 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         setPickersListeners();
         Bundle bundle = getIntent().getExtras();
 
-        if (isEditing()) {
-            setTitle(R.string.title_edit_event);
+        switch (getOperationMode()) {
+            case Create:
+                setTitle(R.string.title_create_event);
 
-            int eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
-            loadEventFromDb(eventId);
-        } else {
-            setTitle(R.string.title_create_event);
+                long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
+                setSelectedDateTimes(millis);
 
-            long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
-            setSelectedDateTimes(millis);
+                break;
+            case Duplicate:
+                setTitle(R.string.title_create_event);
+
+                Event event = (Event) bundle.getSerializable(DUPLICATE_EVENT_DATA_INTENT_KEY);
+                prepareForDuplication(new Event(event));
+
+                break;
+            case Edit:
+                setTitle(R.string.title_edit_event);
+
+                int eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
+                loadEventFromDb(eventId);
+
+                break;
         }
 
         loadCategoriesFromDb();
@@ -111,7 +142,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.event_details_menu, menu);
 
-        if (!isEditing()) {
+        if (getOperationMode() != OperationMode.Edit) {
             menu.removeItem(R.id.menu_delete);
         }
 
@@ -171,7 +202,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
                 mCurrentEventsCategoryId, starts, ends, isHidden);
 
-        if (isEditing()) {
+        if (getOperationMode() == OperationMode.Edit) {
             mViewModel.updateCurrentEvent(event);
         } else {
             mViewModel.createEvent(event);
@@ -348,11 +379,21 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDateTimeEnds));
     }
 
-    private boolean isEditing() {
+    private OperationMode getOperationMode() {
         Bundle bundle = getIntent().getExtras();
-        int id = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
-        return id != 0;
-        //return bundle != null;
+
+        if (bundle == null) {
+            throw new IllegalArgumentException("No Bundle was passed, see the class' Javadoc");
+        }
+
+        if (bundle.getInt(Constants.EVENT_ID_INTENT_KEY) != 0) {
+            return OperationMode.Edit;
+        }
+        if (bundle.getSerializable(DUPLICATE_EVENT_DATA_INTENT_KEY) != null) {
+            return OperationMode.Duplicate;
+        }
+
+        return OperationMode.Create;
     }
 
     private void loadEventFromDb(int eventId) {
@@ -364,8 +405,15 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
                 categories -> mViewModel.setCategoriesCache(categories));
     }
 
-    private void showSnackbar(@StringRes int stringResourceId) {
-        Snackbar.make(mBinding.activityEventDetailsRoot, stringResourceId, 3000).show();
+    private void prepareForDuplication(Event event) {
+        mBinding.duplicationWarning.setVisibility(View.VISIBLE);
+        mBinding.eventTitle.setText(event.getTitle());
+        mBinding.eventDetails.setText(event.getDetails());
+        mBinding.isHidden.setChecked(event.isHidden());
+        setSelectedDateTimes(event.getDateTimeStarts(), event.getDateTimeEnds());
+        mCurrentEventsCategoryId = event.getCategoryId();
+
+        invalidateOptionsMenu();    //event category might have changed
     }
 
     private void setSelectedDateTimes(long millis) {
@@ -380,6 +428,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date starts = calendarStarts.getTime();
         Date ends = calendarEnds.getTime();
 
+        setSelectedDateTimes(starts, ends);
+    }
+
+    private void setSelectedDateTimes(Date starts, Date ends) {
         mViewModel.setSelectedDateTimeStarts(starts);
         mViewModel.setSelectedDateTimeEnds(ends);
 
@@ -387,5 +439,9 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(starts));
         mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(ends));
         mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(ends));
+    }
+
+    private void showSnackbar(@StringRes int stringResourceId) {
+        Snackbar.make(mBinding.activityEventDetailsRoot, stringResourceId, 3000).show();
     }
 }

@@ -61,16 +61,6 @@ public class ScheduleViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void duplicateEvent(Event event) {
-        event.setId(0);
-        mScheduleRepository.add(event).addOnSuccessListener(id -> {
-            event.setId(Math.toIntExact(id));
-            new Thread(() ->
-                    EventsHelper.scheduleEventNotificationsBlocking(event, getApplication())
-            ).start();
-        });
-    }
-
     public void postponeToNextDay(Event event) {
         Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
         Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);

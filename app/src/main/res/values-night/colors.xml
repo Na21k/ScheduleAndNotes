@@ -12,6 +12,9 @@
     <color name="neutral_button_stroke">@color/category_gray_night</color>
     <color name="warning_text">#E6AF0B</color>
 
+    <color name="warning_card_background">#262214</color>
+    <color name="warning_card_stroke">#E6AF0B</color>
+
     <!--Standard lists colors-->
     <color name="list_movies_card_background">@color/list_item</color>
     <color name="list_music_card_background">@color/list_item</color>
