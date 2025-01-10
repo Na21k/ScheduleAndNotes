@@ -122,13 +122,12 @@
 
                 <android.widget.Space
                     android:layout_width="match_parent"
-                    android:layout_height="10dp" />
+                    android:layout_height="20dp" />
 
                 <EditText
                     android:id="@+id/event_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/page_margin"
                     android:background="@null"
                     android:hint="@string/event_details_input_hint"
                     android:importantForAutofill="no"
