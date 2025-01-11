@@ -43,25 +43,29 @@ public class QuickDateTimeSuggestionsSelector extends ChipGroup {
 
     private void addSuggestions() {
         List<Chip> suggestions = Arrays.stream(SuggestionType.values()).map(type -> {
+            int chipTextRes;
+
             switch (type) {
                 case TodayAfternoon:
-                    return createChip(getStringRes(R.string.today_afternoon),
-                            SuggestionType.TodayAfternoon);
+                    chipTextRes = R.string.today_afternoon;
+                    break;
                 case TodayEvening:
-                    return createChip(getStringRes(R.string.today_evening),
-                            SuggestionType.TodayEvening);
+                    chipTextRes = R.string.today_evening;
+                    break;
                 case TomorrowNoon:
-                    return createChip(getStringRes(R.string.tomorrow_noon),
-                            SuggestionType.TomorrowNoon);
+                    chipTextRes = R.string.tomorrow_noon;
+                    break;
                 case TomorrowAfternoon:
-                    return createChip(getStringRes(R.string.tomorrow_afternoon),
-                            SuggestionType.TomorrowAfternoon);
+                    chipTextRes = R.string.tomorrow_afternoon;
+                    break;
                 case TomorrowEvening:
-                    return createChip(getStringRes(R.string.tomorrow_evening),
-                            SuggestionType.TomorrowEvening);
+                    chipTextRes = R.string.tomorrow_evening;
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + type);
             }
+
+            return createChip(getStringRes(chipTextRes), type);
         }).collect(Collectors.toList());
 
         suggestions.forEach(this::addView);
