@@ -86,7 +86,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setPickersListeners();
+        setListeners();
         Bundle bundle = getIntent().getExtras();
 
         switch (getOperationMode()) {
@@ -266,11 +266,23 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         }
     }
 
-    private void setPickersListeners() {
+    private void setListeners() {
         mBinding.dateStarts.setOnClickListener(v -> createDateStartsPicker().show());
         mBinding.dateEnds.setOnClickListener(v -> createDateEndsPicker().show());
         mBinding.timeStarts.setOnClickListener(v -> createTimeStartsPicker().show());
         mBinding.timeEnds.setOnClickListener(v -> createTimeEndsPicker().show());
+        mBinding.quickDateTimeSuggestionsSelector.setOnSelectedListener(dateTime -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateTime);
+
+            onDateStartsSet(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            onTimeStartsSet(
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE));
+        });
     }
 
     private DatePickerDialog createDateStartsPicker() {
@@ -316,6 +328,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     }
 
     private void onDateStartsSet(DatePicker view, int year, int month, int dayOfMonth) {
+        onDateStartsSet(year, month, dayOfMonth);
+    }
+
+    private void onDateStartsSet(int year, int month, int dayOfMonth) {
         Date oldDate = mViewModel.getSelectedDateTimeStarts();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Objects.requireNonNull(oldDate));
@@ -341,6 +357,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     }
 
     private void onTimeStartsSet(TimePicker view, int hourOfDay, int minute) {
+        onTimeStartsSet(hourOfDay, minute);
+    }
+
+    private void onTimeStartsSet(int hourOfDay, int minute) {
         Date oldDate = mViewModel.getSelectedDateTimeStarts();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Objects.requireNonNull(oldDate));

@@ -33,6 +33,14 @@
     <string name="title_export">Export</string>
     <!--General SECTION END-->
 
+    <!--QuickDateTimeSuggestionsSelector options-->
+    <string name="today_afternoon">Today in the afternoon</string>
+    <string name="today_evening">Today in the evening</string>
+    <string name="tomorrow_noon">Tomorrow at noon</string>
+    <string name="tomorrow_afternoon">Tomorrow in the afternoon</string>
+    <string name="tomorrow_evening">Tomorrow in the evening</string>
+    <!--QuickDateTimeSuggestionsSelector options SECTION END-->
+
     <!--Preference Titles-->
     <!--Data management preferences-->
     <string name="manage_data_header">Manage data</string>

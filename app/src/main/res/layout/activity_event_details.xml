@@ -103,6 +103,15 @@
 
                 </LinearLayout>
 
+                <androidx.legacy.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <com.na21k.schedulenotes.ui.controls.QuickDateTimeSuggestionsSelector
+                    android:id="@+id/quick_date_time_suggestions_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <android.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />

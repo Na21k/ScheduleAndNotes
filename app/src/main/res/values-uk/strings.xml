@@ -191,4 +191,9 @@
     <string name="title_languages_list_archive">Архів Списку-словника</string>
     <string name="first_time_archive_explanation_alert_title">Архівування</string>
     <string name="first_time_archive_explanation_alert_message">Використовуйте цю опцію для приховування елементів з основного Списку-словника. Ви не отримуватимете сповіщень про заархівовані елементи. Щоб перейти до архіву, натисніть кнопку [Архів] у верхній панелі на екрані списку</string>
+    <string name="today_afternoon">Сьогодні в обід</string>
+    <string name="today_evening">Сьогодні ввечері</string>
+    <string name="tomorrow_noon">Завтра опівдні</string>
+    <string name="tomorrow_afternoon">Завтра в обід</string>
+    <string name="tomorrow_evening">Завтра ввечері</string>
 </resources>
