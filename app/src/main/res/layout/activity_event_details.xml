@@ -143,14 +143,11 @@
                     android:inputType="textCapSentences|textMultiLine"
                     android:textSize="20sp" />
 
-                <android.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp" />
-
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/duplication_warning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone"
                     app:cardBackgroundColor="@color/warning_card_background"
                     app:cardCornerRadius="@dimen/corner_radius"
