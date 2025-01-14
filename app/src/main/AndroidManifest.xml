@@ -44,7 +44,8 @@
             android:label="@string/title_movies_list" />
         <activity
             android:name=".ui.schedule.eventDetails.EventDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ui.notes.noteDetails.NoteDetailsActivity"
             android:exported="false" />
