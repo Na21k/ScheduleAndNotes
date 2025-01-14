@@ -184,8 +184,7 @@ public class NotificationsHelper {
         intent.putExtras(bundle);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
-                .addParentStack(EventDetailsActivity.class)
-                .addNextIntent(intent);
+                .addNextIntentWithParentStack(intent);
 
         return taskStackBuilder.getPendingIntent(eventId,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
