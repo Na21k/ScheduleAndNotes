@@ -65,19 +65,16 @@ public class ColorSetPickerView extends HorizontalScrollView {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            String selection = bundle.getString(SELECTED_MODEL_COLOR_SET_BUNDLE_KEY);
-            ColorSet selectionColorSet = ColorSet.valueOf(selection);
-            ColorSetModel selectionColorSetModel = CategoriesHelper
-                    .getColorSetModelByColorSet(mModels, selectionColorSet);
+        Bundle bundle = (Bundle) state;
+        String selection = bundle.getString(SELECTED_MODEL_COLOR_SET_BUNDLE_KEY);
+        ColorSet selectionColorSet = ColorSet.valueOf(selection);
+        ColorSetModel selectionColorSetModel = CategoriesHelper
+                .getColorSetModelByColorSet(mModels, selectionColorSet);
 
-            setSelectedModel(selectionColorSetModel);
+        setSelectedModel(selectionColorSetModel);
 
-            state = bundle.getParcelable(SUPER_STATE_BUNDLE_KEY);
-        }
-
-        super.onRestoreInstanceState(state);
+        Parcelable superState = bundle.getParcelable(SUPER_STATE_BUNDLE_KEY);
+        super.onRestoreInstanceState(superState);
     }
 
     @Nullable
