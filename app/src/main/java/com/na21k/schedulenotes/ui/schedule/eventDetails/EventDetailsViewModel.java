@@ -14,7 +14,6 @@ import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.ScheduleRepository;
 
-import java.util.Date;
 import java.util.List;
 
 public class EventDetailsViewModel extends AndroidViewModel {
@@ -24,8 +23,6 @@ public class EventDetailsViewModel extends AndroidViewModel {
     private List<Category> mCategoriesCache = null;
     private LiveData<Event> mEvent;
     private int mEventId;
-    private Date mSelectedDateTimeStarts;
-    private Date mSelectedDateTimeEnds;
 
     public EventDetailsViewModel(@NonNull Application application) {
         super(application);
@@ -77,24 +74,6 @@ public class EventDetailsViewModel extends AndroidViewModel {
     @Nullable
     public LiveData<Event> getCurrentEvent() {
         return mEvent;
-    }
-
-    @Nullable
-    public Date getSelectedDateTimeStarts() {
-        return mSelectedDateTimeStarts;
-    }
-
-    public void setSelectedDateTimeStarts(@NonNull Date selectedDateTimeStarts) {
-        this.mSelectedDateTimeStarts = selectedDateTimeStarts;
-    }
-
-    @Nullable
-    public Date getSelectedDateTimeEnds() {
-        return mSelectedDateTimeEnds;
-    }
-
-    public void setSelectedDateTimeEnds(@NonNull Date selectedDateTimeEnds) {
-        mSelectedDateTimeEnds = selectedDateTimeEnds;
     }
 
     public List<Category> getCategoriesCache() {

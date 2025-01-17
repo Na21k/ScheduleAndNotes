@@ -41,74 +41,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/date_starts"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:textSize="28sp"
-                        tools:text="Date starts" />
-
-                    <android.widget.Space
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent" />
-
-                    <TextView
-                        android:id="@+id/time_starts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:textSize="28sp"
-                        tools:text="Time starts" />
-
-                </LinearLayout>
-
-                <android.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/date_ends"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:textSize="28sp"
-                        tools:text="Date ends" />
-
-                    <android.widget.Space
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent" />
-
-                    <TextView
-                        android:id="@+id/time_ends"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:textSize="28sp"
-                        tools:text="Time ends" />
-
-                </LinearLayout>
-
-                <androidx.legacy.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp" />
-
-                <com.na21k.schedulenotes.ui.controls.QuickDateTimeSuggestionsSelector
-                    android:id="@+id/quick_date_time_suggestions_selector"
+                <com.na21k.schedulenotes.ui.controls.DateTimeStartsEndsPickerView
+                    android:id="@+id/date_time_starts_ends_picker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

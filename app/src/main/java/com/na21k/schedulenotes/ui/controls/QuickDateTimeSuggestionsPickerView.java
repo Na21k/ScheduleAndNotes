@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QuickDateTimeSuggestionsSelector extends ChipGroup {
+public class QuickDateTimeSuggestionsPickerView extends ChipGroup {
 
     private enum SuggestionType {
         TodayAfternoon, TodayEvening, TomorrowNoon, TomorrowAfternoon, TomorrowEvening
@@ -26,17 +26,18 @@ public class QuickDateTimeSuggestionsSelector extends ChipGroup {
 
     private OnDateTimeSelectedListener mOnSelectedListener;
 
-    public QuickDateTimeSuggestionsSelector(Context context) {
+    public QuickDateTimeSuggestionsPickerView(Context context) {
         super(context);
         addSuggestions();
     }
 
-    public QuickDateTimeSuggestionsSelector(Context context, AttributeSet attrs) {
+    public QuickDateTimeSuggestionsPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         addSuggestions();
     }
 
-    public QuickDateTimeSuggestionsSelector(Context context, AttributeSet attrs, int defStyleAttr) {
+    public QuickDateTimeSuggestionsPickerView(Context context, AttributeSet attrs,
+                                              int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         addSuggestions();
     }
@@ -74,12 +75,12 @@ public class QuickDateTimeSuggestionsSelector extends ChipGroup {
     @NonNull
     private Chip createChip(String text, SuggestionType type) {
         Chip chip = new Chip(getContext());
-        chip.setText(text);
 
         ShapeAppearanceModel shapeAppearanceModel = chip.getShapeAppearanceModel()
                 .withCornerSize(getResources().getDimension(R.dimen.corner_radius));
         chip.setShapeAppearanceModel(shapeAppearanceModel);
 
+        chip.setText(text);
         chip.setTag(type);
         chip.setOnClickListener(this::onChipClick);
 
@@ -129,6 +130,6 @@ public class QuickDateTimeSuggestionsSelector extends ChipGroup {
 
     public interface OnDateTimeSelectedListener {
 
-        void onSelected(Date dateTime);
+        void onSelected(@NonNull Date dateTime);
     }
 }

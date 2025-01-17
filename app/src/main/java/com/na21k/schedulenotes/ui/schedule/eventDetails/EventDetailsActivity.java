@@ -1,7 +1,5 @@
 package com.na21k.schedulenotes.ui.schedule.eventDetails;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -28,7 +24,6 @@ import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ActivityEventDetailsBinding;
-import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 
@@ -36,7 +31,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Pass data using a Bundle.</br>
@@ -86,7 +80,6 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setListeners();
         Bundle bundle = getIntent().getExtras();
 
         switch (getOperationMode()) {
@@ -120,21 +113,11 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     public void onChanged(Event event) {
         mBinding.eventTitle.setText(event.getTitle());
         mBinding.eventDetails.setText(event.getDetails());
-        mCurrentEventsCategoryId = event.getCategoryId();
-
-        Date starts = event.getDateTimeStarts();
-        Date ends = event.getDateTimeEnds();
-
-        mViewModel.setSelectedDateTimeStarts(starts);
-        mViewModel.setSelectedDateTimeEnds(ends);
-
-        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(starts));
-        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(starts));
-        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(ends));
-        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(ends));
-
         mBinding.isHidden.setChecked(event.isHidden());
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(event.getDateTimeStarts());
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(event.getDateTimeEnds());
 
+        mCurrentEventsCategoryId = event.getCategoryId();
         invalidateOptionsMenu();    //event category might have changed
     }
 
@@ -186,8 +169,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Editable titleEditable = mBinding.eventTitle.getText();
         Editable detailsEditable = mBinding.eventDetails.getText();
         boolean isHidden = mBinding.isHidden.isChecked();
-        Date starts = DateTimeHelper.truncateSecondsAndMillis(mViewModel.getSelectedDateTimeStarts());
-        Date ends = DateTimeHelper.truncateSecondsAndMillis(mViewModel.getSelectedDateTimeEnds());
+        Date starts = mBinding.dateTimeStartsEndsPicker.getSelectedDateTimeStarts();
+        Date ends = mBinding.dateTimeStartsEndsPicker.getSelectedDateTimeEnds();
 
         if (titleEditable == null || titleEditable.toString().isEmpty()) {
             showSnackbar(R.string.specify_event_title_snackbar);
@@ -266,139 +249,6 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         }
     }
 
-    private void setListeners() {
-        mBinding.dateStarts.setOnClickListener(v -> createDateStartsPicker().show());
-        mBinding.dateEnds.setOnClickListener(v -> createDateEndsPicker().show());
-        mBinding.timeStarts.setOnClickListener(v -> createTimeStartsPicker().show());
-        mBinding.timeEnds.setOnClickListener(v -> createTimeEndsPicker().show());
-        mBinding.quickDateTimeSuggestionsSelector.setOnSelectedListener(dateTime -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dateTime);
-
-            onDateStartsSet(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH));
-            onTimeStartsSet(
-                    calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE));
-        });
-    }
-
-    private DatePickerDialog createDateStartsPicker() {
-        Date date = mViewModel.getSelectedDateTimeStarts();
-        return createDatePicker(date, this::onDateStartsSet);
-    }
-
-    private DatePickerDialog createDateEndsPicker() {
-        Date date = mViewModel.getSelectedDateTimeEnds();
-        return createDatePicker(date, this::onDateEndsSet);
-    }
-
-    private TimePickerDialog createTimeStartsPicker() {
-        Date date = mViewModel.getSelectedDateTimeStarts();
-        return createTimePicker(date, this::onTimeStartsSet);
-    }
-
-    private TimePickerDialog createTimeEndsPicker() {
-        Date date = mViewModel.getSelectedDateTimeEnds();
-        return createTimePicker(date, this::onTimeEndsSet);
-    }
-
-    private DatePickerDialog createDatePicker(Date date,
-                                              DatePickerDialog.OnDateSetListener dateSetListener) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        return new DatePickerDialog(this, dateSetListener, year, month, day);
-    }
-
-    private TimePickerDialog createTimePicker(Date date,
-                                              TimePickerDialog.OnTimeSetListener timeSetListener) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        boolean is24Hour = android.text.format.DateFormat.is24HourFormat(this);
-
-        return new TimePickerDialog(this, timeSetListener, hour, minute, is24Hour);
-    }
-
-    private void onDateStartsSet(DatePicker view, int year, int month, int dayOfMonth) {
-        onDateStartsSet(year, month, dayOfMonth);
-    }
-
-    private void onDateStartsSet(int year, int month, int dayOfMonth) {
-        Date oldDate = mViewModel.getSelectedDateTimeStarts();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.requireNonNull(oldDate));
-        calendar.set(year, month, dayOfMonth);
-        Date newDate = calendar.getTime();
-
-        Date diffDateOnly = DateTimeHelper.getDifferenceDateOnly(oldDate, newDate);
-        adjustDateTimeEndsBy(diffDateOnly);
-
-        mViewModel.setSelectedDateTimeStarts(newDate);
-        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(newDate));
-    }
-
-    private void onDateEndsSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Date oldDate = mViewModel.getSelectedDateTimeEnds();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.requireNonNull(oldDate));
-        calendar.set(year, month, dayOfMonth);
-        Date newDate = calendar.getTime();
-
-        mViewModel.setSelectedDateTimeEnds(newDate);
-        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(newDate));
-    }
-
-    private void onTimeStartsSet(TimePicker view, int hourOfDay, int minute) {
-        onTimeStartsSet(hourOfDay, minute);
-    }
-
-    private void onTimeStartsSet(int hourOfDay, int minute) {
-        Date oldDate = mViewModel.getSelectedDateTimeStarts();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.requireNonNull(oldDate));
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
-        Date newDate = calendar.getTime();
-
-        Date diffTimeOnly = DateTimeHelper.getDifferenceTimeOnly(oldDate, newDate);
-        adjustDateTimeEndsBy(diffTimeOnly);
-
-        mViewModel.setSelectedDateTimeStarts(newDate);
-        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
-    }
-
-    private void onTimeEndsSet(TimePicker view, int hourOfDay, int minute) {
-        Date oldDate = mViewModel.getSelectedDateTimeEnds();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.requireNonNull(oldDate));
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
-        Date newDate = calendar.getTime();
-
-        mViewModel.setSelectedDateTimeEnds(newDate);
-        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDate));
-    }
-
-    private void adjustDateTimeEndsBy(Date spanLongevity) {
-        Date dateTimeEnds = mViewModel.getSelectedDateTimeEnds();
-
-        assert dateTimeEnds != null;
-
-        Date newDateTimeEnds = DateTimeHelper.addDates(dateTimeEnds, spanLongevity);
-        mViewModel.setSelectedDateTimeEnds(newDateTimeEnds);
-
-        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(newDateTimeEnds));
-        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(newDateTimeEnds));
-    }
-
     private OperationMode getOperationMode() {
         Bundle bundle = getIntent().getExtras();
 
@@ -430,9 +280,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         mBinding.eventTitle.setText(event.getTitle());
         mBinding.eventDetails.setText(event.getDetails());
         mBinding.isHidden.setChecked(event.isHidden());
-        setSelectedDateTimes(event.getDateTimeStarts(), event.getDateTimeEnds());
-        mCurrentEventsCategoryId = event.getCategoryId();
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(event.getDateTimeStarts());
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(event.getDateTimeEnds());
 
+        mCurrentEventsCategoryId = event.getCategoryId();
         invalidateOptionsMenu();    //event category might have changed
     }
 
@@ -448,17 +299,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date starts = calendarStarts.getTime();
         Date ends = calendarEnds.getTime();
 
-        setSelectedDateTimes(starts, ends);
-    }
-
-    private void setSelectedDateTimes(Date starts, Date ends) {
-        mViewModel.setSelectedDateTimeStarts(starts);
-        mViewModel.setSelectedDateTimeEnds(ends);
-
-        mBinding.dateStarts.setText(DateTimeHelper.getScheduleFormattedDate(starts));
-        mBinding.timeStarts.setText(DateTimeHelper.getScheduleFormattedTime(starts));
-        mBinding.dateEnds.setText(DateTimeHelper.getScheduleFormattedDate(ends));
-        mBinding.timeEnds.setText(DateTimeHelper.getScheduleFormattedTime(ends));
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(starts);
+        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(ends);
     }
 
     private void showSnackbar(@StringRes int stringResourceId) {
