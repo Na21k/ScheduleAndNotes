@@ -96,6 +96,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.event_duplicate_menu_item:
+                    mOnEventActionRequestedListener.onEventDuplicationRequested(mEvent);
+                    return true;
                 case R.id.event_delete_menu_item:
                     mOnEventActionRequestedListener.onEventDeletionRequested(mEvent);
                     return true;
@@ -157,9 +160,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
         void onEventOpenRequested(Event event);
 
-        void onCategorySelectionRequested(Event event);
+        void onEventDuplicationRequested(Event event);
 
         void onEventDeletionRequested(Event event);
+
+        void onCategorySelectionRequested(Event event);
 
         void onRemoveCategoryRequested(Event event);
 

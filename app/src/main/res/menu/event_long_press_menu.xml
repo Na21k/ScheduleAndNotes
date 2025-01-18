@@ -5,6 +5,10 @@
         android:id="@+id/event_delete_menu_item"
         android:icon="@drawable/ic_delete_24"
         android:title="@string/delete" />
+    <item
+        android:id="@+id/event_duplicate_menu_item"
+        android:icon="@drawable/ic_content_copy_24"
+        android:title="@string/duplicate" />
 
     <group android:id="@+id/categorizing_group">
         <item

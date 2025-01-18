@@ -49,6 +49,15 @@ public class Event extends Identifiable {
         this.isHidden = isHidden;
     }
 
+    public Event(Event event) {
+        this.title = event.title;
+        this.details = event.details;
+        this.categoryId = event.categoryId;
+        this.dateTimeStarts = event.dateTimeStarts;
+        this.dateTimeEnds = event.dateTimeEnds;
+        this.isHidden = event.isHidden;
+    }
+
     @NotNull
     public String getTitle() {
         return title;

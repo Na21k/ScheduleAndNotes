@@ -95,18 +95,4 @@ public class DateTimeHelper {
 
         return new Date(diff);
     }
-
-    public static Date getDifferenceDateOnly(Date a, Date b) {
-        Date aDateOnly = truncateToDateOnly(a);
-        Date bDateOnly = truncateToDateOnly(b);
-
-        return getDifference(aDateOnly, bDateOnly);
-    }
-
-    public static Date getDifferenceTimeOnly(Date a, Date b) {
-        Date aTimeOnly = getTimeOnly(a);
-        Date bTimeOnly = getTimeOnly(b);
-
-        return getDifference(aTimeOnly, bTimeOnly);
-    }
 }

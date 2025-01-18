@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
 
 import com.na21k.schedulenotes.BroadcastReceivers.NotificationActionBroadcastReceiver;
@@ -178,12 +179,14 @@ public class NotificationsHelper {
 
     private static PendingIntent getEventNotificationPendingIntent(Context context, int eventId) {
         Intent intent = new Intent(context, EventDetailsActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.EVENT_ID_INTENT_KEY, eventId);
         intent.putExtras(bundle);
 
-        return PendingIntent.getActivity(context, eventId, intent,
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(intent);
+
+        return taskStackBuilder.getPendingIntent(eventId,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

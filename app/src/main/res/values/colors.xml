@@ -14,6 +14,9 @@
     <color name="neutral_button_stroke">@color/category_gray</color>
     <color name="warning_text">#FDBE00</color>
 
+    <color name="warning_card_background">#FFF4D6</color>
+    <color name="warning_card_stroke">#FDBE00</color>
+
     <!--Categories color sets-->
     <color name="category_gray">#EAEAEA</color>
     <color name="category_gray_night">#787878</color>
