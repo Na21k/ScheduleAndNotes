@@ -83,14 +83,14 @@ public class MusicListActivity extends AppCompatActivity
         MenuItem menuItem = menu.findItem(R.id.menu_search);
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 isSearchMode = true;
                 mBinding.addMusicFab.hide();
                 return true;
             }
 
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 isSearchMode = false;
                 mBinding.addMusicFab.show();
                 return true;
