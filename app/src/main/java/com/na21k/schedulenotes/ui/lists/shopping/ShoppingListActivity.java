@@ -90,14 +90,14 @@ public class ShoppingListActivity extends AppCompatActivity
         MenuItem menuItem = menu.findItem(R.id.menu_search);
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 mBinding.totalPriceArea.setVisibility(View.GONE);
                 mBinding.itemAdditionArea.setVisibility(View.GONE);
                 return true;
             }
 
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 mBinding.totalPriceArea.setVisibility(View.VISIBLE);
                 mBinding.itemAdditionArea.setVisibility(View.VISIBLE);
                 return true;
