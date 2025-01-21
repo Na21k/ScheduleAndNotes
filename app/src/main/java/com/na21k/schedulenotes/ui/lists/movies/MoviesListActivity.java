@@ -250,9 +250,9 @@ public class MoviesListActivity extends AppCompatActivity
                         R.string.list_item_editing_empty_input_alert_message);
             }
         });
-        builder.setNeutralButton(R.string.cancel, (dialog, which) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
         });
-        builder.setNegativeButton(R.string.delete,
+        builder.setNeutralButton(R.string.delete,
                 (dialog, which) -> onMovieDeletionRequested(movie));
 
         AlertDialog alertDialog = builder.show();
