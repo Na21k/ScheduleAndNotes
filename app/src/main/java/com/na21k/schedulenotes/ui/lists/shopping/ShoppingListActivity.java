@@ -1,6 +1,7 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.view.WindowCompat;
@@ -54,6 +56,7 @@ public class ShoppingListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ensureBackStackPresent();
         ShortcutManagerCompat.reportShortcutUsed(this, "shopping_list_shortcut");
 
         mViewModel = new ViewModelProvider(this).get(ShoppingListViewModel.class);
@@ -155,6 +158,25 @@ public class ShoppingListActivity extends AppCompatActivity
         });
 
         builder.show();
+    }
+
+    /**
+     * A hack for when the Activity is launched from the app shortcut.</br>
+     * </br>
+     * Since there is no way to control the activity-launching intent creation directly
+     * and create it with TaskStackBuilder, restart the activity with TaskStackBuilder here,
+     * having the back stack constructed.
+     */
+    private void ensureBackStackPresent() {
+        if (isTaskRoot()) {
+            Intent intent = new Intent(this, this.getClass());
+
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this)
+                    .addNextIntentWithParentStack(intent);
+
+            taskStackBuilder.startActivities();
+            finish();
+        }
     }
 
     private void setUpList() {

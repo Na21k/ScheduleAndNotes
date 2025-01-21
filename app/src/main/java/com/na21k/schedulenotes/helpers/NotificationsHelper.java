@@ -204,29 +204,33 @@ public class NotificationsHelper {
 
     private static PendingIntent getMovieNotificationPendingIntent(Context context) {
         Intent intent = new Intent(context, MoviesListActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE, null);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(intent);
+
+        return taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static PendingIntent getMusicNotificationPendingIntent(Context context) {
         Intent intent = new Intent(context, MusicListActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE, null);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(intent);
+
+        return taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static PendingIntent getLanguagesListNotificationPendingIntent(Context context,
                                                                            int wordId) {
         Intent intent = new Intent(context, WordOrPhraseDetailsActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY, wordId);
         intent.putExtras(bundle);
 
-        return PendingIntent.getActivity(context, wordId, intent,
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(intent);
+
+        return taskStackBuilder.getPendingIntent(wordId,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
