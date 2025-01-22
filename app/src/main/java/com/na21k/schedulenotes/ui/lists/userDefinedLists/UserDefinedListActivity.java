@@ -85,13 +85,13 @@ public class UserDefinedListActivity extends AppCompatActivity
         MenuItem menuItem = menu.findItem(R.id.menu_search);
         menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
                 mBinding.itemAdditionLinearLayout.setVisibility(View.GONE);
                 return true;
             }
 
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
+            public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 mBinding.itemAdditionLinearLayout.setVisibility(View.VISIBLE);
                 return true;
             }
@@ -196,9 +196,9 @@ public class UserDefinedListActivity extends AppCompatActivity
                         R.string.list_item_editing_empty_input_alert_message);
             }
         });
-        builder.setNeutralButton(R.string.cancel, (dialog, which) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
         });
-        builder.setNegativeButton(R.string.delete,
+        builder.setNeutralButton(R.string.delete,
                 (dialog, which) -> onItemDeletionRequested(userDefinedListItem));
 
         AlertDialog alertDialog = builder.show();
