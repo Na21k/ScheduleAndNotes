@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.repositories.ScheduleRepository;
 import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
 import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
@@ -27,8 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements DatePickerDialog.OnDateSetListener {
-
-    private int mBottomInset;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -41,20 +40,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
                                              @NonNull ViewGroup parent,
                                              @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState);
-        recyclerView.setPadding(0, 0, 0, mBottomInset);
         recyclerView.setClipToPadding(false);
 
+        UiHelper.handleWindowInsets(requireActivity().getWindow(), parent,
+                null, recyclerView, null, true);
+
         return recyclerView;
-    }
-
-    public void updateBottomInset(int bottomPx) {
-        RecyclerView rv = getListView();
-
-        if (rv != null) {
-            rv.setPadding(0, 0, 0, bottomPx);
-        }
-
-        mBottomInset = bottomPx;
     }
 
     @Override

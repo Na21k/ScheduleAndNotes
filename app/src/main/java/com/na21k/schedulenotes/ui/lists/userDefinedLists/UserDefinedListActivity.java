@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.lists.userDefinedLists;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -207,7 +206,6 @@ public class UserDefinedListActivity extends AppCompatActivity
                 .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onItemDeletionRequested(UserDefinedListItem userDefinedListItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

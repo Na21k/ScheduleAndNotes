@@ -3,7 +3,6 @@ package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,10 +19,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,7 +47,6 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private ActivityWordOrPhraseDetailsBinding mBinding;
     private LanguagesListItem mItem;
     private ActivityResultLauncher<Intent> mOpenImageActivityResultLauncher;
-    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +57,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -133,21 +127,10 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-            mBinding.includedImagesList.imagesList.setPadding(0, 0, 0, i.bottom);
-
-            mMostRecentBottomInset = i.bottom;
-
-            return WindowInsetsCompat.CONSUMED;
-        });
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.includedImagesList.imagesList, null,
+                true);
     }
 
     private void setUpAttachedImagesList() {
@@ -196,8 +179,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
         if (wordOrPhraseEditable == null ||
                 (wordOrPhrase = wordOrPhraseEditable.toString()).isEmpty()) {
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.specify_word_or_phrase_snackbar, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.specify_word_or_phrase_snackbar);
+
             return;
         }
 
@@ -208,8 +191,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
         if (transcriptionEditable == null || translationEditable == null ||
                 explanationEditable == null || usageExampleEditable == null) {
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.unexpected_error, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.unexpected_error);
+
             return;
         }
 
@@ -318,8 +301,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         } catch (FileNotFoundException | SecurityException e) {
             e.printStackTrace();
 
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.unexpected_error, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.unexpected_error);
+
             return;
         }
 
@@ -328,8 +311,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
 
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.unexpected_error, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.unexpected_error);
+
             return;
         }
 
@@ -345,8 +328,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     @Override
     public void onImageAdditionRequested() {
         if (mViewModel.isLoadingAttachedImages() && isEditing()) {
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.loading_attached_images_snackbar, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.loading_attached_images_snackbar);
 
             return;
         }
@@ -358,7 +340,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
                     R.string.cant_attach_more_images_snackbar,
                     Constants.ATTACHED_IMAGES_COUNT_LIMIT);
 
-            UiHelper.showSnackbar(this, mBinding.getRoot(), message, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), message);
 
             return;
         }

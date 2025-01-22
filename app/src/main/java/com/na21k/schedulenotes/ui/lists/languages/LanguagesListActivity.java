@@ -1,11 +1,8 @@
 package com.na21k.schedulenotes.ui.lists.languages;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +12,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,6 +19,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.LanguagesListItemsSortingOrder;
 import com.na21k.schedulenotes.R;
@@ -60,7 +53,6 @@ public class LanguagesListActivity extends AppCompatActivity
     private LiveData<List<LanguagesListItem>> mLastSearchLiveData;
     private boolean isSearchMode = false;
     private boolean addingItemsEnabled = true;
-    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +63,7 @@ public class LanguagesListActivity extends AppCompatActivity
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -173,30 +165,10 @@ public class LanguagesListActivity extends AppCompatActivity
         return true;
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-
-            CoordinatorLayout.LayoutParams newFabParams = UiHelper.generateNewFabLayoutParams(
-                    this,
-                    mBinding.addWordOrPhraseFab,
-                    i.bottom,
-                    Gravity.END | Gravity.BOTTOM);
-
-            mBinding.addWordOrPhraseFab.setLayoutParams(newFabParams);
-            mBinding.wordsAndPhrasesListRecyclerView.setPadding(0, 0, 0, i.bottom);
-            mBinding.wordsAndPhrasesListRecyclerView.setClipToPadding(false);
-
-            mMostRecentBottomInset = i.bottom;
-
-            return WindowInsetsCompat.CONSUMED;
-        });
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.wordsAndPhrasesListRecyclerView,
+                mBinding.addWordOrPhraseFab, true);
     }
 
     private void setUpList() {
@@ -318,7 +290,6 @@ public class LanguagesListActivity extends AppCompatActivity
         else mViewModel.unarchive(item);
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onItemDeletionRequested(LanguagesListItemModel item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -330,17 +301,16 @@ public class LanguagesListActivity extends AppCompatActivity
             Handler deletionHandler = new Handler();
             Runnable deletionRunnable = () -> {
                 mViewModel.delete(item);
-                UiHelper.showSnackbar(this, mBinding.getRoot(),
-                        R.string.list_item_deleted_snackbar, mMostRecentBottomInset);
+                UiHelper.showSnackbar(mBinding.getRoot(), R.string.list_item_deleted_snackbar);
             };
             deletionHandler.postDelayed(deletionRunnable,
                     Constants.UNDO_DELETE_TIMEOUT_MILLIS + 300);
 
-            UiHelper.makeSnackbar(this, mBinding.getRoot(),
+            Snackbar.make(mBinding.getRoot(),
                             R.string.list_item_scheduled_for_deletion_snackbar,
-                            mMostRecentBottomInset,
                             Constants.UNDO_DELETE_TIMEOUT_MILLIS)
-                    .setAction(R.string.cancel, v -> deletionHandler.removeCallbacks(deletionRunnable))
+                    .setAction(R.string.cancel,
+                            v -> deletionHandler.removeCallbacks(deletionRunnable))
                     .show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {

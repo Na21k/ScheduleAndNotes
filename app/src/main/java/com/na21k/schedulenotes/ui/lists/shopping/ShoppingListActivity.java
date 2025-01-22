@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -347,7 +346,6 @@ public class ShoppingListActivity extends AppCompatActivity
         mViewModel.update(item);
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onShoppingItemDeletionRequested(ShoppingListItem item) {
         mViewModel.delete(item);

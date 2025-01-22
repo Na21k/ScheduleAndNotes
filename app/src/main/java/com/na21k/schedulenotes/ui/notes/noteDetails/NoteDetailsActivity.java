@@ -146,8 +146,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
             finish();
         } else {
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.specify_note_title_snackbar, 0);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.specify_note_title_snackbar);
         }
     }
 
@@ -174,8 +173,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
     private void removeCategory() {
         mViewModel.getNoteCache().setCategoryId(null);
-        UiHelper.showSnackbar(this, mBinding.getRoot(),
-                R.string.excluded_from_category_snackbar, 0);
+        UiHelper.showSnackbar(mBinding.getRoot(), R.string.excluded_from_category_snackbar);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
     }
@@ -207,10 +205,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
                     mViewModel.getNoteCache().setCategoryId(categoryId);
                 }
 
-                UiHelper.showSnackbar(this,
-                        mBinding.getRoot(),
-                        R.string.category_set_snackbar,
-                        0);
+                UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
 
                 invalidateOptionsMenu();    //show the Exclude from category button
             });

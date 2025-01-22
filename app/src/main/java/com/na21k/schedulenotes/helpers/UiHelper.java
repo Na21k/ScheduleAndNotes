@@ -3,8 +3,10 @@ package com.na21k.schedulenotes.helpers;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,10 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 
 public class UiHelper {
@@ -110,41 +117,62 @@ public class UiHelper {
         return layoutManager;
     }
 
-    public static void showSnackbar(@NonNull Context context,
-                                    @NonNull View view,
-                                    @StringRes int stringResourceId,
-                                    int bottomInset) {
-        makeSnackbar(context, view, stringResourceId, bottomInset, 3000).show();
+    public static void showSnackbar(@NonNull View view, @StringRes int stringResourceId) {
+        Snackbar.make(view, stringResourceId, Constants.DEFAULT_SNACKBAR_TIMEOUT_MILLIS).show();
     }
 
-    public static void showSnackbar(@NonNull Context context,
-                                    @NonNull View view,
-                                    @NonNull String message,
-                                    int bottomInset) {
-        Snackbar snackbar = Snackbar
-                .make(view, message, 3000);
-
-        CoordinatorLayout.LayoutParams params = UiHelper
-                .generateNewSnackbarLayoutParams(context, snackbar, bottomInset);
-        snackbar.getView().setLayoutParams(params);
-
-        snackbar.show();
+    public static void showSnackbar(@NonNull View view, @NonNull String message) {
+        Snackbar.make(view, message, Constants.DEFAULT_SNACKBAR_TIMEOUT_MILLIS).show();
     }
 
-    @NonNull
-    public static Snackbar makeSnackbar(@NonNull Context context,
-                                        @NonNull View view,
-                                        @StringRes int stringResourceId,
-                                        int bottomInset,
-                                        int durationMillis) {
-        Snackbar snackbar = Snackbar
-                .make(view, stringResourceId, durationMillis);
+    /**
+     * Makes sure respective insets are set as respective paddings/margins for the views passed.</br>
+     * This takes system bars, display cutout, amd IME into account.
+     * All other paddings for <tt>containerView</tt> and <tt>bottomInsetView</tt> will be set to 0.</br>
+     * If a floating action button is passed,
+     * its {@link CoordinatorLayout.LayoutParams} will be replaced
+     *
+     * @param rootView        the view to set {@link androidx.core.view.OnApplyWindowInsetsListener} on
+     * @param containerView   the view to set left, top, and right insets as respective paddings for
+     * @param bottomInsetView the view to set bottom inset as bottom padding for
+     * @param fab             the floating action button to set bottom inset + page_margin
+     *                        (from resources) as bottom margin for
+     * @param consume         whether the {@link androidx.core.view.OnApplyWindowInsetsListener}
+     *                        should consume the insets
+     */
+    public static void handleWindowInsets(@NonNull Window window, @NonNull View rootView,
+                                          @Nullable View containerView,
+                                          @Nullable View bottomInsetView,
+                                          @Nullable ExtendedFloatingActionButton fab,
+                                          boolean consume) {
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+        window.setNavigationBarColor(Color.TRANSPARENT);
 
-        CoordinatorLayout.LayoutParams params = UiHelper
-                .generateNewSnackbarLayoutParams(context, snackbar, bottomInset);
-        snackbar.getView().setLayoutParams(params);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            final Insets i = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+                            | WindowInsetsCompat.Type.ime());
 
-        return snackbar;
+            if (containerView != null) {
+                containerView.setPadding(i.left, i.top, i.right, 0);
+            }
+            if (bottomInsetView != null) {
+                bottomInsetView.setPadding(0, 0, 0, i.bottom);
+            }
+
+            if (fab != null) {
+                CoordinatorLayout.LayoutParams newFabParams = generateNewFabLayoutParams(
+                        rootView.getContext(),
+                        fab,
+                        i.bottom,
+                        Gravity.END | Gravity.BOTTOM);
+
+                fab.setLayoutParams(newFabParams);
+            }
+
+            return consume ? WindowInsetsCompat.CONSUMED : insets;
+        });
     }
 
     @NonNull
@@ -161,21 +189,6 @@ public class UiHelper {
 
         params.setMargins(params.leftMargin, params.topMargin, params.rightMargin,
                 pageMargin + bottomInset);
-
-        return params;
-    }
-
-    @NonNull
-    public static CoordinatorLayout.LayoutParams generateNewSnackbarLayoutParams(
-            @NonNull Context context,
-            @NonNull Snackbar snackbar,
-            int bottomInset) {
-        CoordinatorLayout.LayoutParams params = new CoordinatorLayout
-                .LayoutParams(snackbar.getView().getLayoutParams());
-
-        int margin = (int) (context.getResources().getDimension(R.dimen.page_margin) / 2);
-        params.setMargins(margin, margin, margin, bottomInset + margin);
-        params.gravity = Gravity.BOTTOM;
 
         return params;
     }

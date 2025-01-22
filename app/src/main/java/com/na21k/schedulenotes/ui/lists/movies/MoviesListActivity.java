@@ -1,10 +1,7 @@
 package com.na21k.schedulenotes.ui.lists.movies;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -14,17 +11,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
@@ -53,7 +46,6 @@ public class MoviesListActivity extends AppCompatActivity
     private MoviesListAdapter mListAdapter;
     private LiveData<List<MoviesListItem>> mLastSearchLiveData;
     private boolean isSearchMode = false;
-    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +56,7 @@ public class MoviesListActivity extends AppCompatActivity
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -121,30 +113,10 @@ public class MoviesListActivity extends AppCompatActivity
         return true;
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-
-            CoordinatorLayout.LayoutParams newFabParams = UiHelper.generateNewFabLayoutParams(
-                    this,
-                    mBinding.addMovieFab,
-                    i.bottom,
-                    Gravity.END | Gravity.BOTTOM);
-
-            mBinding.addMovieFab.setLayoutParams(newFabParams);
-            mBinding.includedList.simpleList.setPadding(0, 0, 0, i.bottom);
-            mBinding.includedList.simpleList.setClipToPadding(false);
-
-            mMostRecentBottomInset = i.bottom;
-
-            return WindowInsetsCompat.CONSUMED;
-        });
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.includedList.simpleList, mBinding.addMovieFab,
+                true);
     }
 
     private void setUpList() {
@@ -260,7 +232,6 @@ public class MoviesListActivity extends AppCompatActivity
                 .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onMovieDeletionRequested(MoviesListItem movie) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -270,10 +241,11 @@ public class MoviesListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
             mViewModel.delete(movie);
-            UiHelper.makeSnackbar(this, mBinding.getRoot(),
-                            R.string.list_item_deleted_snackbar, mMostRecentBottomInset,
+            Snackbar.make(mBinding.getRoot(),
+                            R.string.list_item_deleted_snackbar,
                             Constants.UNDO_DELETE_TIMEOUT_MILLIS)
-                    .setAction(R.string.undo, v -> mViewModel.addNew(movie)).show();
+                    .setAction(R.string.undo, v -> mViewModel.addNew(movie))
+                    .show();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });
