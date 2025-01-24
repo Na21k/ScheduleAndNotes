@@ -130,7 +130,7 @@ public class UiHelper {
      * This takes system bars, display cutout, amd IME into account.
      * All other paddings for <tt>containerView</tt> and <tt>bottomInsetView</tt> will be set to 0.</br>
      * If a floating action button is passed,
-     * its {@link CoordinatorLayout.LayoutParams} will be replaced
+     * its {@link CoordinatorLayout.LayoutParams} will be replaced.
      *
      * @param rootView        the view to set {@link androidx.core.view.OnApplyWindowInsetsListener} on
      * @param containerView   the view to set left, top, and right insets as respective paddings for
@@ -139,6 +139,7 @@ public class UiHelper {
      *                        (from resources) as bottom margin for
      * @param consume         whether the {@link androidx.core.view.OnApplyWindowInsetsListener}
      *                        should consume the insets
+     * @implNote <tt>containerView</tt> and <tt>bottomInsetView</tt> may be the same object.
      */
     public static void handleWindowInsets(@NonNull Window window, @NonNull View rootView,
                                           @Nullable View containerView,
@@ -154,11 +155,15 @@ public class UiHelper {
                             | WindowInsetsCompat.Type.displayCutout()
                             | WindowInsetsCompat.Type.ime());
 
-            if (containerView != null) {
-                containerView.setPadding(i.left, i.top, i.right, 0);
-            }
-            if (bottomInsetView != null) {
-                bottomInsetView.setPadding(0, 0, 0, i.bottom);
+            if (containerView == bottomInsetView && containerView != null) {
+                containerView.setPadding(i.left, i.top, i.right, i.bottom);
+            } else {
+                if (containerView != null) {
+                    containerView.setPadding(i.left, i.top, i.right, 0);
+                }
+                if (bottomInsetView != null) {
+                    bottomInsetView.setPadding(0, 0, 0, i.bottom);
+                }
             }
 
             if (fab != null) {
