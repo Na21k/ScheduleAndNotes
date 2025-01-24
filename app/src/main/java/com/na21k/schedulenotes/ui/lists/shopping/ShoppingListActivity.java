@@ -72,6 +72,8 @@ public class ShoppingListActivity extends AppCompatActivity
         WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
                 .setAppearanceLightStatusBars(!isInDarkMode);
 
+        handleWindowInsets();
+
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -136,6 +138,11 @@ public class ShoppingListActivity extends AppCompatActivity
         return true;
     }
 
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.container, null, true);
+    }
+
     private void clearList() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_delete_sweep_24);
@@ -144,13 +151,16 @@ public class ShoppingListActivity extends AppCompatActivity
 
         builder.setPositiveButton(R.string.clear_list_dialog_button, (dialog, which) -> {
             mViewModel.deleteAll();
-            Snackbar.make(mBinding.getRoot(), R.string.list_cleared_snackbar, 3000)
+            Snackbar.make(mBinding.getRoot(),
+                            R.string.list_cleared_snackbar,
+                            Constants.DEFAULT_SNACKBAR_TIMEOUT_MILLIS)
                     .setAnchorView(mBinding.itemAdditionLinearLayout).show();
         });
         builder.setNeutralButton(R.string.clear_checked_dialog_button, (dialog, which) -> {
             mViewModel.deleteChecked();
-            Snackbar.make(mBinding.getRoot(), R.string.list_cleared_of_checked_items_snackbar,
-                            3000)
+            Snackbar.make(mBinding.getRoot(),
+                            R.string.list_cleared_of_checked_items_snackbar,
+                            Constants.DEFAULT_SNACKBAR_TIMEOUT_MILLIS)
                     .setAnchorView(mBinding.itemAdditionLinearLayout).show();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -240,7 +250,9 @@ public class ShoppingListActivity extends AppCompatActivity
             mBinding.addItemCountEditText.setText("1");
             mBinding.addItemPriceEditText.setText("");
         } else {
-            Snackbar.make(mBinding.getRoot(), R.string.specify_item_text_snackbar, 3000)
+            Snackbar.make(mBinding.getRoot(),
+                            R.string.specify_item_text_snackbar,
+                            Constants.DEFAULT_SNACKBAR_TIMEOUT_MILLIS)
                     .setAnchorView(mBinding.itemAdditionLinearLayout).show();
         }
 

@@ -50,6 +50,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
                 .setAppearanceLightStatusBars(!isInDarkMode);
 
+        handleWindowInsets();
+
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -121,6 +123,11 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.scrollView, null, true);
     }
 
     private void saveNote() {
