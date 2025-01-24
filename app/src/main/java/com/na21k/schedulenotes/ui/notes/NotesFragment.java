@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.notes;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -276,7 +275,6 @@ public class NotesFragment extends Fragment
         }
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onNoteDeletionRequested(Note note) {
         Context context = getContext();

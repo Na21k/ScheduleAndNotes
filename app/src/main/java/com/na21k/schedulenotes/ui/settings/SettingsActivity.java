@@ -1,18 +1,14 @@
 package com.na21k.schedulenotes.ui.settings;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.databinding.ActivitySettingsBinding;
+import com.na21k.schedulenotes.helpers.UiHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -40,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .getFragment(savedInstanceState, SETTINGS_FRAGMENT_KEY);
         }
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -49,18 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-            mSettingsFragment.updateBottomInset(i.bottom);
-
-            return WindowInsetsCompat.CONSUMED;
-        });
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, null, null, false);
     }
 
     @Override

@@ -20,6 +20,8 @@ public class Constants {
     public static final String IS_OPEN_FROM_ARCHIVE_INTENT_KEY = "isOpenFromArchive";
     public static final ColorSet DEFAULT_COLOR_SET = ColorSet.GRAY;
     @IntRange(from = 1)
+    public static final int DEFAULT_SNACKBAR_TIMEOUT_MILLIS = 3000;
+    @IntRange(from = 1)
     public static final int UNDO_DELETE_TIMEOUT_MILLIS = 7000;
     public static final int ATTACHED_IMAGES_COUNT_LIMIT = 5;
     public static final String OPEN_IMAGE_TMP_FILE_NAME = "openImageTmpFile";

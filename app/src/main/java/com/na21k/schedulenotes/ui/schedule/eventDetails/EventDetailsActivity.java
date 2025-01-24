@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Categories.Category;
@@ -73,6 +71,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         //fixes the status bar  color
         WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
                 .setAppearanceLightStatusBars(!isInDarkMode);
+
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -165,6 +165,11 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         return true;
     }
 
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.scrollableContent, null, true);
+    }
+
     private void saveEvent() {
         Editable titleEditable = mBinding.eventTitle.getText();
         Editable detailsEditable = mBinding.eventDetails.getText();
@@ -173,12 +178,16 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Date ends = mBinding.dateTimeStartsEndsPicker.getSelectedDateTimeEnds();
 
         if (titleEditable == null || titleEditable.toString().isEmpty()) {
-            showSnackbar(R.string.specify_event_title_snackbar);
+            UiHelper.showSnackbar(
+                    mBinding.getRoot(), R.string.specify_event_title_snackbar);
+
             return;
         }
 
         if (starts.compareTo(ends) > 0) {
-            showSnackbar(R.string.start_time_less_than_end_time_snackbar);
+            UiHelper.showSnackbar(
+                    mBinding.getRoot(), R.string.start_time_less_than_end_time_snackbar);
+
             return;
         }
 
@@ -217,7 +226,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     private void removeCategory() {
         mCurrentEventsCategoryId = null;
-        showSnackbar(R.string.excluded_from_category_snackbar);
+        UiHelper.showSnackbar(mBinding.getRoot(), R.string.excluded_from_category_snackbar);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
     }
@@ -241,7 +250,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
                     android.R.layout.simple_list_item_1, categories);
             builder.setAdapter(adapter, (dialog, which) -> {
                 mCurrentEventsCategoryId = categories.get(which).getId();
-                showSnackbar(R.string.category_set_snackbar);
+                UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
                 invalidateOptionsMenu();    //show the Exclude from category button
             });
 
@@ -301,9 +310,5 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
         mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(starts);
         mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(ends);
-    }
-
-    private void showSnackbar(@StringRes int stringResourceId) {
-        Snackbar.make(mBinding.activityEventDetailsRoot, stringResourceId, 3000).show();
     }
 }

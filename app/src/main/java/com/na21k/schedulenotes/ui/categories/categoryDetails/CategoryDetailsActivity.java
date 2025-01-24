@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.categories.categoryDetails;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -10,10 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,7 +29,6 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
 
     private CategoryDetailsViewModel mViewModel;
     private ActivityCategoryDetailsBinding mBinding;
-    private int mMostRecentBottomInset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +39,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -100,21 +94,9 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         return true;
     }
 
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-            mBinding.bodyLinearLayout.setPadding(0, 0, 0, i.bottom);
-
-            mMostRecentBottomInset = i.bottom;
-
-            return WindowInsetsCompat.CONSUMED;
-        });
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.bodyLinearLayout, null, true);
     }
 
     @Override
@@ -146,8 +128,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         Editable editable = mBinding.categoryNameInput.getText();
 
         if (editable == null || editable.toString().isEmpty()) {
-            UiHelper.showSnackbar(this, mBinding.getRoot(),
-                    R.string.specify_category_name_snackbar, mMostRecentBottomInset);
+            UiHelper.showSnackbar(mBinding.getRoot(), R.string.specify_category_name_snackbar);
 
             return;
         }

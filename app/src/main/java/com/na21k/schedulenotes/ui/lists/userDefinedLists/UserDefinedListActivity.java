@@ -1,6 +1,5 @@
 package com.na21k.schedulenotes.ui.lists.userDefinedLists;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -68,6 +67,8 @@ public class UserDefinedListActivity extends AppCompatActivity
         WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
                 .setAppearanceLightStatusBars(!isInDarkMode);
 
+        handleWindowInsets();
+
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -120,6 +121,11 @@ public class UserDefinedListActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.container, null, true);
     }
 
     private void setUpList() {
@@ -207,7 +213,6 @@ public class UserDefinedListActivity extends AppCompatActivity
                 .SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onItemDeletionRequested(UserDefinedListItem userDefinedListItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

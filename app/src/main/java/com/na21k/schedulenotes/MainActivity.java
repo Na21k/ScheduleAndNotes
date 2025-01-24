@@ -3,7 +3,6 @@ package com.na21k.schedulenotes;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,10 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,6 +27,7 @@ import com.na21k.schedulenotes.databinding.ActivityMainBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
+import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.settings.SettingsActivity;
 import com.na21k.schedulenotes.workers.RecommendationsWorker;
 
@@ -59,28 +55,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(mBinding.navView, navController);
 
-        makeNavBarLookNice();
+        handleWindowInsets();
 
         requestNotificationsPermission();
 
         createNotificationChannels();
         ensureEventNotificationsScheduledAsync();
         ensureRecommendationsWorkerIsScheduled();
-    }
-
-    private void makeNavBarLookNice() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> {
-            Insets i = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
-
-            mBinding.container.setPadding(i.left, i.top, i.right, 0);
-            mBinding.navView.setPadding(0, 0, 0, i.bottom);
-
-            return WindowInsetsCompat.CONSUMED;
-        });
     }
 
     @Override
@@ -99,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handleWindowInsets() {
+        UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
+                mBinding.container, mBinding.navView, null, true);
     }
 
     private void ensureEventNotificationsScheduledAsync() {
