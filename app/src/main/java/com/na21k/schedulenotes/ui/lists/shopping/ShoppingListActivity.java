@@ -16,7 +16,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.view.WindowCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -62,15 +61,6 @@ public class ShoppingListActivity extends AppCompatActivity
         mBinding = ActivityShoppingListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
-
-        boolean isInDarkMode = UiHelper.isInDarkMode(this);
-        //breaks the status bar color on Android 12+ for some reason
-        //and makes it white in light theme
-        WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
-                .setAppearanceLightNavigationBars(!isInDarkMode);
-        //fixes the status bar  color
-        WindowCompat.getInsetsController(getWindow(), mBinding.getRoot())
-                .setAppearanceLightStatusBars(!isInDarkMode);
 
         handleWindowInsets();
 

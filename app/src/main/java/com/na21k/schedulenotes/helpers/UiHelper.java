@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -32,10 +31,6 @@ public class UiHelper {
 
     public static boolean isInDarkMode(@NonNull Fragment fragment) {
         return isInDarkMode(fragment.getResources());
-    }
-
-    public static boolean isInDarkMode(@NonNull AppCompatActivity activity) {
-        return isInDarkMode(activity.getResources());
     }
 
     public static boolean isInDarkMode(@NonNull Resources resources) {
@@ -146,6 +141,15 @@ public class UiHelper {
                                           @Nullable View bottomInsetView,
                                           @Nullable ExtendedFloatingActionButton fab,
                                           boolean consume) {
+        boolean isInDarkMode = UiHelper.isInDarkMode(rootView.getResources());
+        //breaks the status bar color on Android 12, 13, 14 for some reason
+        //and makes it white in light theme
+        WindowCompat.getInsetsController(window, rootView)
+                .setAppearanceLightNavigationBars(!isInDarkMode);
+        //fixes the status bar  color
+        WindowCompat.getInsetsController(window, rootView)
+                .setAppearanceLightStatusBars(!isInDarkMode);
+
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
