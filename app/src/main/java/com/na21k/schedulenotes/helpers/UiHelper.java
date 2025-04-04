@@ -146,7 +146,7 @@ public class UiHelper {
         //and makes it white in light theme
         WindowCompat.getInsetsController(window, rootView)
                 .setAppearanceLightNavigationBars(!isInDarkMode);
-        //fixes the status bar  color
+        //fixes the status bar color
         WindowCompat.getInsetsController(window, rootView)
                 .setAppearanceLightStatusBars(!isInDarkMode);
 
