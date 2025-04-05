@@ -130,7 +130,7 @@ public class ShoppingListActivity extends AppCompatActivity
 
     private void handleWindowInsets() {
         UiHelper.handleWindowInsets(getWindow(), mBinding.getRoot(),
-                mBinding.container, mBinding.container, null, true);
+                mBinding.container, mBinding.itemAdditionArea, null, true);
     }
 
     private void clearList() {
