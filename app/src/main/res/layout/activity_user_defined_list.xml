@@ -43,7 +43,9 @@
                 android:drawableStart="@drawable/ic_add_24"
                 android:hint="@string/add_list_item_input_hint"
                 android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxHeight="170dp"
+                android:scrollbars="vertical" />
 
             <Button
                 android:id="@+id/add_item_btn"
