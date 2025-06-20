@@ -1,24 +1,26 @@
 package com.na21k.schedulenotes.ui.lists.shopping;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class ShoppingListViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class ShoppingListViewModel extends ViewModel {
+
+    @NonNull
     private final ShoppingListRepository mShoppingListRepository;
 
-    public ShoppingListViewModel(@NonNull Application application) {
-        super(application);
+    private ShoppingListViewModel(@NonNull ShoppingListRepository shoppingListRepository) {
+        super();
 
-        mShoppingListRepository = new ShoppingListRepository(application);
+        mShoppingListRepository = shoppingListRepository;
     }
 
     public LiveData<List<ShoppingListItem>> getAll() {
@@ -47,5 +49,25 @@ public class ShoppingListViewModel extends AndroidViewModel {
 
     public void deleteAll() {
         mShoppingListRepository.clear();
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final ShoppingListRepository mShoppingListRepository;
+
+        @Inject
+        public Factory(@NonNull ShoppingListRepository shoppingListRepository) {
+            mShoppingListRepository = shoppingListRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            ShoppingListViewModel vm = new ShoppingListViewModel(mShoppingListRepository);
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

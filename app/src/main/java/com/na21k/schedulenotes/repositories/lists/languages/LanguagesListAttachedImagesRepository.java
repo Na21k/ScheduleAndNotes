@@ -12,12 +12,15 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LanguagesListAttachedImagesRepository
         extends MutableRepository<LanguagesListItemAttachedImage> {
 
     private final LanguagesListItemAttachedImageDao mAttachedImageDao =
             db.languagesListItemAttachedImageDao();
 
+    @Inject
     public LanguagesListAttachedImagesRepository(@NonNull Context context) {
         super(context);
     }

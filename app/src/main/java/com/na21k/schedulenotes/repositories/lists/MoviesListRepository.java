@@ -15,12 +15,15 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class MoviesListRepository extends MutableRepository<MoviesListItem>
         implements CanSearchRepository<MoviesListItem>, CanClearRepository,
         CanProvideRandomRepository<MoviesListItem> {
 
     private final MoviesListItemDao mMoviesListItemDao = db.moviesListItemDao();
 
+    @Inject
     public MoviesListRepository(@NonNull Context context) {
         super(context);
     }

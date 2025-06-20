@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.databinding.ActivityUserDefinedListBinding;
 import com.na21k.schedulenotes.databinding.UserDefinedListItemInfoAlertViewBinding;
@@ -28,6 +29,8 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class UserDefinedListActivity extends AppCompatActivity
         implements UserDefinedListAdapter.OnItemActionRequestedListener {
@@ -42,6 +45,8 @@ public class UserDefinedListActivity extends AppCompatActivity
             mListAdapter.setItems(userDefinedListItems);
         }
     };
+    @Inject
+    protected UserDefinedListViewModel.Factory mViewModelFactory;
     private UserDefinedListViewModel mViewModel;
     private ActivityUserDefinedListBinding mBinding;
     private UserDefinedListAdapter mListAdapter;
@@ -49,9 +54,12 @@ public class UserDefinedListActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(UserDefinedListViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(UserDefinedListViewModel.class);
         mViewModel.configure(getListId());
         mBinding = ActivityUserDefinedListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());

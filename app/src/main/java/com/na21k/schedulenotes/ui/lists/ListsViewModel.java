@@ -1,31 +1,38 @@
 package com.na21k.schedulenotes.ui.lists;
 
-import android.app.Application;
 import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class ListsViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class ListsViewModel extends ViewModel {
+
+    @NonNull
     private final UserDefinedListsRepository mListsRepository;
+    @NonNull
     private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
     private List<UserDefinedList> mListsCache = null;
     private List<UserDefinedListItem> mListItemsCache = null;
 
-    public ListsViewModel(@NonNull Application application) {
-        super(application);
+    private ListsViewModel(
+            @NonNull UserDefinedListsRepository userDefinedListsRepository,
+            @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository
+    ) {
+        super();
 
-        mListsRepository = new UserDefinedListsRepository(application);
-        mUserDefinedListItemsRepository = new UserDefinedListItemsRepository(application);
+        mListsRepository = userDefinedListsRepository;
+        mUserDefinedListItemsRepository = userDefinedListItemsRepository;
     }
 
     public LiveData<List<UserDefinedList>> getAllLists() {
@@ -72,5 +79,33 @@ public class ListsViewModel extends AndroidViewModel {
 
     public void setListItemsCache(List<UserDefinedListItem> listItemsCache) {
         mListItemsCache = listItemsCache;
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final UserDefinedListsRepository mListsRepository;
+        @NonNull
+        private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+
+        @Inject
+        public Factory(
+                @NonNull UserDefinedListsRepository listsRepository,
+                @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository
+        ) {
+            mListsRepository = listsRepository;
+            mUserDefinedListItemsRepository = userDefinedListItemsRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            ListsViewModel vm = new ListsViewModel(
+                    mListsRepository, mUserDefinedListItemsRepository
+            );
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

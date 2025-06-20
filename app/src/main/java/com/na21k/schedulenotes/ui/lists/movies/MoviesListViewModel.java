@@ -1,24 +1,26 @@
 package com.na21k.schedulenotes.ui.lists.movies;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class MoviesListViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class MoviesListViewModel extends ViewModel {
+
+    @NonNull
     private final MoviesListRepository mMoviesListRepository;
 
-    public MoviesListViewModel(@NonNull Application application) {
-        super(application);
+    private MoviesListViewModel(@NonNull MoviesListRepository moviesListRepository) {
+        super();
 
-        mMoviesListRepository = new MoviesListRepository(application);
+        mMoviesListRepository = moviesListRepository;
     }
 
     public LiveData<List<MoviesListItem>> getAll() {
@@ -39,5 +41,25 @@ public class MoviesListViewModel extends AndroidViewModel {
 
     public void delete(MoviesListItem moviesListItem) {
         mMoviesListRepository.delete(moviesListItem);
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final MoviesListRepository mMoviesListRepository;
+
+        @Inject
+        public Factory(@NonNull MoviesListRepository moviesListRepository) {
+            mMoviesListRepository = moviesListRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            MoviesListViewModel vm = new MoviesListViewModel(mMoviesListRepository);
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

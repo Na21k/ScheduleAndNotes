@@ -14,11 +14,14 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ShoppingListRepository extends MutableRepository<ShoppingListItem>
         implements CanSearchRepository<ShoppingListItem>, CanClearRepository {
 
     private final ShoppingListItemDao mShoppingListItemDao = db.shoppingListItemDao();
 
+    @Inject
     public ShoppingListRepository(@NonNull Context context) {
         super(context);
     }

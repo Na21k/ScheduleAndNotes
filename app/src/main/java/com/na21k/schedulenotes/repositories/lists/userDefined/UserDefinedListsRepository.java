@@ -14,11 +14,14 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class UserDefinedListsRepository extends MutableRepository<UserDefinedList>
         implements CanSearchRepository<UserDefinedList>, CanClearRepository {
 
     private final UserDefinedListDao mUserDefinedListDao = db.userDefinedListDao();
 
+    @Inject
     public UserDefinedListsRepository(@NonNull Context context) {
         super(context);
     }

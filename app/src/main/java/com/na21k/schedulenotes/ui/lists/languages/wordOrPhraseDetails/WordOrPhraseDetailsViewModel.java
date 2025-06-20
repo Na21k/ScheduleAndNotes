@@ -1,35 +1,41 @@
 package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class WordOrPhraseDetailsViewModel extends ViewModel {
+
+    @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
-    private final LanguagesListAttachedImagesRepository mAttachedImagesRepository;
+    @NonNull
+    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
     private List<LanguagesListItemAttachedImage> mImagesBefore = new ArrayList<>();
     private List<LanguagesListItemAttachedImage> mImagesAfter = new ArrayList<>();
     private boolean mIsLoadingAttachedImages = true;
     private int mItemId;
 
-    public WordOrPhraseDetailsViewModel(@NonNull Application application) {
-        super(application);
+    private WordOrPhraseDetailsViewModel(
+            @NonNull LanguagesListRepository languagesListRepository,
+            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+    ) {
+        super();
 
-        mLanguagesListRepository = new LanguagesListRepository(application);
-        mAttachedImagesRepository = new LanguagesListAttachedImagesRepository(application);
+        mLanguagesListRepository = languagesListRepository;
+        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
     }
 
     public LiveData<LanguagesListItem> getById(int id) {
@@ -71,7 +77,7 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<LanguagesListItemAttachedImage>> getAttachedImagesByItemId(int itemId) {
-        return mAttachedImagesRepository.getByListItemId(itemId);
+        return mLanguagesListAttachedImagesRepository.getByListItemId(itemId);
     }
 
     public void addAttachedImage(LanguagesListItemAttachedImage attachedImage) {
@@ -106,12 +112,12 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
             List<LanguagesListItemAttachedImage> added = getAddedImages();
 
             for (LanguagesListItemAttachedImage image : deleted) {
-                mAttachedImagesRepository.delete(image);
+                mLanguagesListAttachedImagesRepository.delete(image);
             }
 
             for (LanguagesListItemAttachedImage image : added) {
                 image.setLanguagesListItemId(mItemId);
-                mAttachedImagesRepository.add(image);
+                mLanguagesListAttachedImagesRepository.add(image);
             }
         }
     }
@@ -142,5 +148,33 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
         }
 
         return added;
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final LanguagesListRepository mLanguagesListRepository;
+        @NonNull
+        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+
+        @Inject
+        public Factory(
+                @NonNull LanguagesListRepository languagesListRepository,
+                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+        ) {
+            mLanguagesListRepository = languagesListRepository;
+            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            WordOrPhraseDetailsViewModel vm = new WordOrPhraseDetailsViewModel(
+                    mLanguagesListRepository, mLanguagesListAttachedImagesRepository
+            );
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

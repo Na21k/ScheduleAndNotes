@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.na21k.schedulenotes.BuildConfig;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.databinding.ActivityWordOrPhraseDetailsBinding;
@@ -38,11 +39,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 public class WordOrPhraseDetailsActivity extends AppCompatActivity
         implements OnImageActionRequestedListener {
 
     private final AttachedImagesListAdapter mAttachedImagesListAdapter =
             new AttachedImagesListAdapter(this);
+    @Inject
+    protected WordOrPhraseDetailsViewModel.Factory mViewModelFactory;
     private WordOrPhraseDetailsViewModel mViewModel;
     private ActivityWordOrPhraseDetailsBinding mBinding;
     private LanguagesListItem mItem;
@@ -50,9 +55,13 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(WordOrPhraseDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(WordOrPhraseDetailsViewModel.class);
         mBinding = ActivityWordOrPhraseDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

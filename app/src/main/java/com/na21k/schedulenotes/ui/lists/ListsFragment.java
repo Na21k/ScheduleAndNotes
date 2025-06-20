@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.models.UserDefinedListModel;
@@ -45,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ListsFragment extends Fragment
         implements ListsListAdapter.OnListActionRequestedListener, MenuProvider {
 
@@ -55,6 +58,8 @@ public class ListsFragment extends Fragment
             updateListIfEnoughData();
         }
     };
+    @Inject
+    protected ListsViewModel.Factory mViewModelFactory;
     private ListsViewModel mViewModel;
     private ListsFragmentBinding mBinding;
     private ListsListAdapter mListAdapter;
@@ -62,9 +67,17 @@ public class ListsFragment extends Fragment
     private boolean isSearchMode = false;
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ListsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(ListsViewModel.class);
     }
 
     @Override

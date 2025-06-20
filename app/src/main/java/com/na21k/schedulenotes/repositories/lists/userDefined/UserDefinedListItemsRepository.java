@@ -12,10 +12,13 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class UserDefinedListItemsRepository extends MutableRepository<UserDefinedListItem> {
 
     private final UserDefinedListItemDao mUserDefinedListItemDao = db.userDefinedListItemDao();
 
+    @Inject
     public UserDefinedListItemsRepository(@NonNull Context context) {
         super(context);
     }
