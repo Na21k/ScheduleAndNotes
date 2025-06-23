@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleFragmentBinding;
@@ -45,10 +46,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ScheduleFragment extends Fragment
         implements Observer<List<Event>>, EventsListAdapter.OnEventActionRequestedListener, MenuProvider {
 
     private static final String TAG = ScheduleFragment.class.getSimpleName();
+    @Inject
+    protected ScheduleViewModel.Factory mViewModelFactory;
     private ScheduleViewModel mViewModel;
     private ScheduleFragmentBinding mBinding;
     private EventsListAdapter mAdapter;
@@ -56,9 +61,17 @@ public class ScheduleFragment extends Fragment
     private boolean isSearchMode = false;
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(ScheduleViewModel.class);
     }
 
     @Override

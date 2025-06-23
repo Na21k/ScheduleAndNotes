@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ActivityEventDetailsBinding;
@@ -28,6 +29,8 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Pass data using a Bundle.</br>
@@ -49,15 +52,21 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     public static final String DUPLICATE_EVENT_DATA_INTENT_KEY = "duplicateEventDataIntentKey";
 
+    @Inject
+    protected EventDetailsViewModel.Factory mViewModelFactory;
     private EventDetailsViewModel mViewModel;
     private ActivityEventDetailsBinding mBinding;
     private Integer mCurrentEventsCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(EventDetailsViewModel.class);
         mBinding = ActivityEventDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

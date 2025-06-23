@@ -15,6 +15,8 @@ import com.na21k.schedulenotes.ui.lists.shopping.ShoppingListActivity;
 import com.na21k.schedulenotes.ui.lists.userDefinedLists.UserDefinedListActivity;
 import com.na21k.schedulenotes.ui.notes.NotesFragment;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
+import com.na21k.schedulenotes.ui.schedule.ScheduleFragment;
+import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -26,6 +28,8 @@ import dagger.Component;
         }
 )
 public interface ApplicationComponent {
+
+    void inject(EventDetailsActivity eventDetailsActivity);
 
     void inject(NoteDetailsActivity noteDetailsActivity);
 
@@ -42,6 +46,8 @@ public interface ApplicationComponent {
     void inject(UserDefinedListActivity userDefinedListActivity);
 
     void inject(CategoryDetailsActivity categoryDetailsActivity);
+
+    void inject(ScheduleFragment scheduleFragment);
 
     void inject(NotesFragment notesFragment);
 
