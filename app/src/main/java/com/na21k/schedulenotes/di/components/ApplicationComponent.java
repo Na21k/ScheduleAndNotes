@@ -17,6 +17,8 @@ import com.na21k.schedulenotes.ui.notes.NotesFragment;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 import com.na21k.schedulenotes.ui.schedule.ScheduleFragment;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
+import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
+import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -46,6 +48,10 @@ public interface ApplicationComponent {
     void inject(UserDefinedListActivity userDefinedListActivity);
 
     void inject(CategoryDetailsActivity categoryDetailsActivity);
+
+    void inject(ImportActivity importActivity);
+
+    void inject(ExportActivity exportActivity);
 
     void inject(ScheduleFragment scheduleFragment);
 

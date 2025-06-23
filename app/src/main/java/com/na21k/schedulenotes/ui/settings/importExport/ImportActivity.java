@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
@@ -30,15 +31,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ImportActivity extends AppCompatActivity {
 
+    @Inject
+    protected ImportActivityViewModel.Factory mViewModelFactory;
     private ImportActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_import);
-        mViewModel = new ViewModelProvider(this).get(ImportActivityViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(ImportActivityViewModel.class);
 
         startImport();
     }
