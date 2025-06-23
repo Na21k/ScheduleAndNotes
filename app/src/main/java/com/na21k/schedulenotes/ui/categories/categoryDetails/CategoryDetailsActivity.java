@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
@@ -25,16 +26,24 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class CategoryDetailsActivity extends AppCompatActivity implements Observer<Category> {
 
+    @Inject
+    protected CategoryDetailsViewModel.Factory mViewModelFactory;
     private CategoryDetailsViewModel mViewModel;
     private ActivityCategoryDetailsBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(CategoryDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(CategoryDetailsViewModel.class);
         mBinding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.databinding.CategoriesFragmentBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
@@ -34,6 +35,8 @@ import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActi
 
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class CategoriesFragment extends Fragment
         implements CategoriesListAdapter.OnCategoryActionRequestedListener, MenuProvider {
@@ -48,6 +51,8 @@ public class CategoriesFragment extends Fragment
             mListAdapter.setCategories(categories);
         }
     };
+    @Inject
+    protected CategoriesViewModel.Factory mViewModelFactory;
     private CategoriesViewModel mViewModel;
     private CategoriesFragmentBinding mBinding;
     private CategoriesListAdapter mListAdapter;
@@ -55,9 +60,17 @@ public class CategoriesFragment extends Fragment
     private boolean isSearchMode = false;
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(CategoriesViewModel.class);
     }
 
     @Override
