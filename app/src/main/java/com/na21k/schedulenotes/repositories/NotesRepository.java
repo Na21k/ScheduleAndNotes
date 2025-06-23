@@ -11,11 +11,14 @@ import com.na21k.schedulenotes.data.database.Notes.NoteDao;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class NotesRepository extends MutableRepository<Note>
         implements CanSearchRepository<Note>, CanClearRepository {
 
     private final NoteDao mNoteDao = db.noteDao();
 
+    @Inject
     public NotesRepository(@NonNull Context context) {
         super(context);
     }

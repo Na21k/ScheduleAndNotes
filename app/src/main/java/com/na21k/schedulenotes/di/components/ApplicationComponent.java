@@ -13,6 +13,8 @@ import com.na21k.schedulenotes.ui.lists.movies.MoviesListActivity;
 import com.na21k.schedulenotes.ui.lists.music.MusicListActivity;
 import com.na21k.schedulenotes.ui.lists.shopping.ShoppingListActivity;
 import com.na21k.schedulenotes.ui.lists.userDefinedLists.UserDefinedListActivity;
+import com.na21k.schedulenotes.ui.notes.NotesFragment;
+import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -24,6 +26,8 @@ import dagger.Component;
         }
 )
 public interface ApplicationComponent {
+
+    void inject(NoteDetailsActivity noteDetailsActivity);
 
     void inject(MoviesListActivity moviesListActivity);
 
@@ -38,6 +42,8 @@ public interface ApplicationComponent {
     void inject(UserDefinedListActivity userDefinedListActivity);
 
     void inject(CategoryDetailsActivity categoryDetailsActivity);
+
+    void inject(NotesFragment notesFragment);
 
     void inject(ListsFragment listsFragment);
 

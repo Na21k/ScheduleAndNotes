@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.databinding.ActivityNoteDetailsBinding;
@@ -26,16 +27,23 @@ import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActi
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class NoteDetailsActivity extends AppCompatActivity implements Observer<Note> {
 
+    @Inject
+    protected NoteDetailsViewModel.Factory mViewModelFactory;
     private NoteDetailsViewModel mViewModel;
     private ActivityNoteDetailsBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(NoteDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(NoteDetailsViewModel.class);
         mBinding = ActivityNoteDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
