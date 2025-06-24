@@ -13,6 +13,7 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListIt
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.NotesRepository;
 import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.repositories.ScheduleRepository;
@@ -40,6 +41,9 @@ public interface AppModule {
 
     @Binds
     Repository<Category> bindCategoriesRepository(CategoriesRepository categoriesRepository);
+
+    @Binds
+    MutableRepository<Category> bindCategoriesRepositoryMutable(CategoriesRepository categoriesRepository);
 
     @Binds
     Repository<UserDefinedList> bindUserDefinedListsRepository(UserDefinedListsRepository userDefinedListsRepository);

@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,9 +36,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ((ScheduleNotesApplication) getApplicationContext())
-                .getAppComponent()
-                .inject(this);
+        inject();
         super.onCreate(savedInstanceState);
 
         mViewModel = new ViewModelProvider(this, mViewModelFactory)
@@ -56,24 +53,34 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setTitle(mViewModel.isEditing()
+                ? R.string.title_edit_category
+                : R.string.title_create_category);
+
         renderColorPickerItems();
+        observeCategory();
+    }
 
-        if (isEditing()) {
-            setTitle(R.string.title_edit_category);
+    private void inject() {
+        int categoryId = 0;
+        Bundle bundle = getIntent().getExtras();
 
-            Bundle bundle = getIntent().getExtras();
-            int categoryId = bundle.getInt(Constants.CATEGORY_ID_INTENT_KEY);
-            loadCategoryFromDb(categoryId);
-        } else {
-            setTitle(R.string.title_create_category);
+        if (bundle != null) {
+            categoryId = bundle.getInt(Constants.CATEGORY_ID_INTENT_KEY);
         }
+
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .getCategorySubcomponentFactory()
+                .create(categoryId)
+                .inject(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.category_details_menu, menu);
 
-        if (!isEditing()) {
+        if (!mViewModel.isEditing()) {
             menu.removeItem(R.id.menu_delete);
         }
 
@@ -110,6 +117,11 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
 
     @Override
     public void onChanged(Category category) {
+        if (category == null) {
+            //ignore when not editing or during deletion
+            return;
+        }
+
         mBinding.categoryNameInput.setText(category.getTitle());
 
         List<ColorSetModel> models = mViewModel.getColorSetModels();
@@ -124,13 +136,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
                 mViewModel.getDefaultColorSetModel());
     }
 
-    private boolean isEditing() {
-        Bundle bundle = getIntent().getExtras();
-        return bundle != null;
-    }
-
-    private void loadCategoryFromDb(int categoryId) {
-        mViewModel.getCategory(categoryId).observe(this, this);
+    private void observeCategory() {
+        mViewModel.getCategory().observe(this, this);
     }
 
     private void saveCategory() {
@@ -151,12 +158,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         ColorSet selectedColorSet = selectedColorSetModel.getColorSet();
         Category category = new Category(0, editable.toString(), selectedColorSet);
 
-        if (isEditing()) {
-            mViewModel.updateCurrentCategory(category);
-        } else {
-            mViewModel.createCategory(category);
-        }
-
+        mViewModel.saveCategory(category);
         finish();
     }
 
@@ -167,13 +169,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         builder.setMessage(R.string.category_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            LiveData<Category> category = mViewModel.getCurrentCategory();
-
-            if (category != null) {
-                category.removeObserver(this);
-                mViewModel.deleteCurrentCategory();
-                finish();
-            }
+            mViewModel.deleteCategory();
+            finish();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });

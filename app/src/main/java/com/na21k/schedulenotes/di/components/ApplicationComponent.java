@@ -2,10 +2,9 @@ package com.na21k.schedulenotes.di.components;
 
 import android.app.Application;
 
+import com.na21k.schedulenotes.di.components.subcomponents.CategorySubcomponent;
 import com.na21k.schedulenotes.di.modules.AppModule;
-import com.na21k.schedulenotes.di.modules.CategoriesModule;
 import com.na21k.schedulenotes.ui.categories.CategoriesFragment;
-import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 import com.na21k.schedulenotes.ui.lists.ListsFragment;
 import com.na21k.schedulenotes.ui.lists.languages.LanguagesListActivity;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhraseDetailsActivity;
@@ -26,7 +25,7 @@ import dagger.Component;
 @Component(
         modules = {
                 AppModule.class,
-                CategoriesModule.class
+                CategorySubcomponent.InstallationModule.class
         }
 )
 public interface ApplicationComponent {
@@ -47,8 +46,6 @@ public interface ApplicationComponent {
 
     void inject(UserDefinedListActivity userDefinedListActivity);
 
-    void inject(CategoryDetailsActivity categoryDetailsActivity);
-
     void inject(ImportActivity importActivity);
 
     void inject(ExportActivity exportActivity);
@@ -60,6 +57,8 @@ public interface ApplicationComponent {
     void inject(ListsFragment listsFragment);
 
     void inject(CategoriesFragment categoriesFragment);
+
+    CategorySubcomponent.Factory getCategorySubcomponentFactory();
 
     @Component.Factory
     interface Factory {

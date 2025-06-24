@@ -5,6 +5,7 @@ import android.content.Context;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
@@ -15,7 +16,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public interface CategoriesModule {
+public interface CategoryModule {
 
     @Provides
     @CategoriesColorSets
@@ -24,6 +25,7 @@ public interface CategoriesModule {
     }
 
     @Qualifier
+    @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface CategoriesColorSets {
     }
