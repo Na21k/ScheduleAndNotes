@@ -6,15 +6,15 @@ import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
-import com.na21k.schedulenotes.di.components.subcomponents.CategorySubcomponent;
-import com.na21k.schedulenotes.di.modules.CategoryModule;
+import com.na21k.schedulenotes.di.modules.CategoriesModule;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 
 public class CategoryDetailsViewModel extends ViewModel {
 
@@ -78,11 +78,11 @@ public class CategoryDetailsViewModel extends ViewModel {
         @NonNull
         private final List<ColorSetModel> mColorSetModels;
 
-        @Inject
+        @AssistedInject
         public Factory(
                 @NonNull MutableRepository<Category> categoriesRepository,
-                @CategorySubcomponent.CategoryId int categoryId,
-                @NonNull @CategoryModule.CategoriesColorSets List<ColorSetModel> colorSetModels
+                @Assisted int categoryId,
+                @NonNull @CategoriesModule.CategoriesColorSets List<ColorSetModel> colorSetModels
         ) {
             mCategoriesRepository = categoriesRepository;
             mCategoryId = categoryId;
@@ -98,6 +98,12 @@ public class CategoryDetailsViewModel extends ViewModel {
             ensureViewModelType(vm, modelClass);
 
             return (T) vm;
+        }
+
+        @dagger.assisted.AssistedFactory
+        public interface AssistedFactory {
+
+            Factory create(int categoryId);
         }
     }
 }

@@ -29,14 +29,15 @@ import javax.inject.Inject;
 
 public class CategoryDetailsActivity extends AppCompatActivity implements Observer<Category> {
 
-    @Inject
-    protected CategoryDetailsViewModel.Factory mViewModelFactory;
+    private CategoryDetailsViewModel.Factory mViewModelFactory;
     private CategoryDetailsViewModel mViewModel;
     private ActivityCategoryDetailsBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        inject();
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
         mViewModel = new ViewModelProvider(this, mViewModelFactory)
@@ -61,7 +62,10 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         observeCategory();
     }
 
-    private void inject() {
+    @Inject
+    protected void initViewModelFactory(
+            CategoryDetailsViewModel.Factory.AssistedFactory viewModelFactoryAssistedFactory
+    ) {
         int categoryId = 0;
         Bundle bundle = getIntent().getExtras();
 
@@ -69,11 +73,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
             categoryId = bundle.getInt(Constants.CATEGORY_ID_INTENT_KEY);
         }
 
-        ((ScheduleNotesApplication) getApplicationContext())
-                .getAppComponent()
-                .getCategorySubcomponentFactory()
-                .create(categoryId)
-                .inject(this);
+        mViewModelFactory = viewModelFactoryAssistedFactory.create(categoryId);
     }
 
     @Override
