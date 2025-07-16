@@ -303,6 +303,10 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         Bundle bundle = getIntent().getExtras();
         long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
 
+        setSelectedDateTimes(millis);
+    }
+
+    private void setSelectedDateTimes(long millis) {
         Date selectedDateTime = new Date(millis);
 
         Calendar calendarStarts = Calendar.getInstance();
