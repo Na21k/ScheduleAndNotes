@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,10 +30,11 @@ import javax.inject.Inject;
 
 public class NoteDetailsActivity extends AppCompatActivity implements Observer<Note> {
 
-    @Inject
-    protected NoteDetailsViewModel.Factory mViewModelFactory;
+    private NoteDetailsViewModel.Factory mViewModelFactory;
     private NoteDetailsViewModel mViewModel;
     private ActivityNoteDetailsBinding mBinding;
+    private List<Category> mCategoriesLatest;
+    private Integer mCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,38 +56,37 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (isEditing()) {
-            setTitle(R.string.title_edit_note);
+        setTitle(mViewModel.isEditing()
+                ? R.string.title_edit_note
+                : R.string.title_create_note);
 
-            Bundle bundle = getIntent().getExtras();
-            int noteId = bundle.getInt(Constants.NOTE_ID_INTENT_KEY);
-            loadNoteFromDb(noteId);
-        } else {
-            setTitle(R.string.title_create_note);
-        }
-
-        loadCategoriesFromDb();
+        observeNote();
+        observeCategories();
     }
 
-    @Override
-    public void onChanged(Note note) {
-        mBinding.noteTitle.setText(note.getTitle());
-        mBinding.noteDetails.setText(note.getDetails());
-        mViewModel.setNoteCache(note);
+    @Inject
+    protected void initViewModelFactory(
+            NoteDetailsViewModel.Factory.AssistedFactory viewModelFactoryAssistedFactory
+    ) {
+        int noteId = 0;
+        Bundle bundle = getIntent().getExtras();
 
-        invalidateOptionsMenu();    //note category might have changed
+        if (bundle != null) {
+            noteId = bundle.getInt(Constants.NOTE_ID_INTENT_KEY);
+        }
+
+        mViewModelFactory = viewModelFactoryAssistedFactory.create(noteId);
     }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.note_details_menu, menu);
 
-        if (!isEditing()) {
+        if (!mViewModel.isEditing()) {
             menu.removeItem(R.id.menu_delete);
         }
 
-        if (mViewModel.getNoteCache() == null
-                || mViewModel.getNoteCache().getCategoryId() == null) {
+        if (mCategoryId == null) {
             menu.removeItem(R.id.menu_remove_category);
         }
 
@@ -128,31 +127,43 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
                 mBinding.container, mBinding.scrollView, null, true);
     }
 
+    @Override
+    public void onChanged(Note note) {
+        if (note == null) {
+            //ignore when not editing or during deletion
+            return;
+        }
+
+        mBinding.noteTitle.setText(note.getTitle());
+        mBinding.noteDetails.setText(note.getDetails());
+        mCategoryId = note.getCategoryId();
+
+        invalidateOptionsMenu();    //note category might have changed
+    }
+
+    private void observeNote() {
+        mViewModel.getNote().observe(this, this);
+    }
+
+    private void observeCategories() {
+        mViewModel.getCategories().observe(this,
+                categories -> mCategoriesLatest = categories);
+    }
+
     private void saveNote() {
         Editable titleEditable = mBinding.noteTitle.getText();
         Editable detailsEditable = mBinding.noteDetails.getText();
 
-        if (titleEditable != null && !titleEditable.toString().isEmpty()) {
-            Note cachedNote = mViewModel.getNoteCache();
-
-            if (cachedNote == null) {
-                cachedNote = mViewModel
-                        .setNoteCache(new Note(0, "", null, null));
-            }
-
-            Note note = new Note(cachedNote.getId(), titleEditable.toString(),
-                    detailsEditable.toString(), cachedNote.getCategoryId());
-
-            if (isEditing()) {
-                mViewModel.updateNote(note);
-            } else {
-                mViewModel.createNote(note);
-            }
-
-            finish();
-        } else {
+        if (titleEditable == null || titleEditable.toString().isEmpty()) {
             UiHelper.showSnackbar(mBinding.getRoot(), R.string.specify_note_title_snackbar);
+
+            return;
         }
+
+        Note note = new Note(0, titleEditable.toString(), detailsEditable.toString(), mCategoryId);
+
+        mViewModel.saveNote(note);
+        finish();
     }
 
     private void deleteNote() {
@@ -162,13 +173,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
         builder.setMessage(R.string.note_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            LiveData<Note> note = mViewModel.getCurrentNoteLiveData();
-
-            if (note != null) {
-                note.removeObserver(this);
-                mViewModel.deleteNote(mViewModel.getNoteCache());
-                finish();
-            }
+            mViewModel.deleteNote();
+            finish();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });
@@ -177,7 +183,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
     }
 
     private void removeCategory() {
-        mViewModel.getNoteCache().setCategoryId(null);
+        mCategoryId = null;
         UiHelper.showSnackbar(mBinding.getRoot(), R.string.excluded_from_category_snackbar);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
@@ -193,22 +199,14 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             startActivity(intent);
         });
 
-        List<Category> categories = mViewModel.getCategoriesCache();
-
-        if (categories != null) {
-            categories.sort(Comparator.comparing(Category::getTitle));
+        if (mCategoriesLatest != null) {
+            mCategoriesLatest.sort(Comparator.comparing(Category::getTitle));
 
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
-                    android.R.layout.simple_list_item_1, categories);
+                    android.R.layout.simple_list_item_1, mCategoriesLatest);
             builder.setAdapter(adapter, (dialog, which) -> {
-                Category category = categories.get(which);
-                int categoryId = category.getId();
-
-                if (mViewModel.getNoteCache() == null) {
-                    mViewModel.setNoteCache(new Note(0, "", null, categoryId));
-                } else {
-                    mViewModel.getNoteCache().setCategoryId(categoryId);
-                }
+                Category category = mCategoriesLatest.get(which);
+                mCategoryId = category.getId();
 
                 UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
 
@@ -217,19 +215,5 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
 
             builder.show();
         }
-    }
-
-    private boolean isEditing() {
-        Bundle bundle = getIntent().getExtras();
-        return bundle != null;
-    }
-
-    private void loadNoteFromDb(int noteId) {
-        mViewModel.getNoteLiveData(noteId).observe(this, this);
-    }
-
-    private void loadCategoriesFromDb() {
-        mViewModel.getAllCategoriesLiveData().observe(this,
-                categories -> mViewModel.setCategoriesCache(categories));
     }
 }
