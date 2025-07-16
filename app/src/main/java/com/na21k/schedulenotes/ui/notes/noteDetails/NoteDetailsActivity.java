@@ -193,8 +193,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
                     android.R.layout.simple_list_item_1, categories);
             builder.setAdapter(adapter, (dialog, which) -> {
-                Category category = categories.get(which);
-                int categoryId = category.getId();
+                int categoryId = categories.get(which).getId();
 
                 if (mViewModel.getNoteCache() == null) {
                     mViewModel.setNoteCache(new Note(0, "", null, categoryId));
