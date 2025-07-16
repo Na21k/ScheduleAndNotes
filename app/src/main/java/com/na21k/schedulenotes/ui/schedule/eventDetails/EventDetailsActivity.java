@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -38,7 +37,7 @@ import javax.inject.Inject;
  * Operation modes:</br>
  * 1. Create an event - pass time millis (long) (for the initial event date/time value);</br>
  * 2. Duplicate an event - pass the event data as an {@link Event} object
- * (a copy will be created);</br>
+ * (use the constant in this class for the Bundle key);</br>
  * 3. Edit an event - pass the event id.</br>
  *
  * @implNote Passing data for different operation modes at once (for example,
@@ -52,11 +51,11 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
 
     public static final String DUPLICATE_EVENT_DATA_INTENT_KEY = "duplicateEventDataIntentKey";
 
-    @Inject
-    protected EventDetailsViewModel.Factory mViewModelFactory;
+    private EventDetailsViewModel.Factory mViewModelFactory;
     private EventDetailsViewModel mViewModel;
     private ActivityEventDetailsBinding mBinding;
-    private Integer mCurrentEventsCategoryId;
+    private List<Category> mCategoriesLatest;
+    private Integer mCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,45 +78,37 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Bundle bundle = getIntent().getExtras();
+        setTitle(getOperationMode() == OperationMode.Edit
+                ? R.string.title_edit_event
+                : R.string.title_create_event);
 
         switch (getOperationMode()) {
             case Create:
-                setTitle(R.string.title_create_event);
-
-                long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
-                setSelectedDateTimes(millis);
-
+                prepareForCreation();
                 break;
             case Duplicate:
-                setTitle(R.string.title_create_event);
-
-                Event event = (Event) bundle.getSerializable(DUPLICATE_EVENT_DATA_INTENT_KEY);
-                prepareForDuplication(new Event(event));
-
+                prepareForDuplication();
                 break;
             case Edit:
-                setTitle(R.string.title_edit_event);
-
-                int eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
-                loadEventFromDb(eventId);
-
+                observeEvent();
                 break;
         }
 
-        loadCategoriesFromDb();
+        observeCategories();
     }
 
-    @Override
-    public void onChanged(Event event) {
-        mBinding.eventTitle.setText(event.getTitle());
-        mBinding.eventDetails.setText(event.getDetails());
-        mBinding.isHidden.setChecked(event.isHidden());
-        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(event.getDateTimeStarts());
-        mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(event.getDateTimeEnds());
+    @Inject
+    protected void initViewModelFactory(
+            EventDetailsViewModel.Factory.AssistedFactory viewModelFactoryAssistedFactory
+    ) {
+        int eventId = 0;
+        Bundle bundle = getIntent().getExtras();
 
-        mCurrentEventsCategoryId = event.getCategoryId();
-        invalidateOptionsMenu();    //event category might have changed
+        if (bundle != null) {
+            eventId = bundle.getInt(Constants.EVENT_ID_INTENT_KEY);
+        }
+
+        mViewModelFactory = viewModelFactoryAssistedFactory.create(eventId);
     }
 
     @Override
@@ -128,7 +119,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             menu.removeItem(R.id.menu_delete);
         }
 
-        if (mCurrentEventsCategoryId == null) {
+        if (mCategoryId == null) {
             menu.removeItem(R.id.menu_remove_category);
         }
 
@@ -169,6 +160,25 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
                 mBinding.container, mBinding.scrollableContent, null, true);
     }
 
+    @Override
+    public void onChanged(Event event) {
+        if (event == null) {
+            //ignore during deletion
+            return;
+        }
+
+        setUiValuesFromEvent(event);
+    }
+
+    private void observeEvent() {
+        mViewModel.getEvent().observe(this, this);
+    }
+
+    private void observeCategories() {
+        mViewModel.getCategories().observe(this,
+                categories -> mCategoriesLatest = categories);
+    }
+
     private void saveEvent() {
         Editable titleEditable = mBinding.eventTitle.getText();
         Editable detailsEditable = mBinding.eventDetails.getText();
@@ -191,14 +201,9 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         }
 
         Event event = new Event(0, titleEditable.toString(), detailsEditable.toString(),
-                mCurrentEventsCategoryId, starts, ends, isHidden);
+                mCategoryId, starts, ends, isHidden);
 
-        if (getOperationMode() == OperationMode.Edit) {
-            mViewModel.updateCurrentEvent(event);
-        } else {
-            mViewModel.createEvent(event);
-        }
-
+        mViewModel.saveEvent(event);
         finish();
     }
 
@@ -209,13 +214,8 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         builder.setMessage(R.string.event_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            LiveData<Event> event = mViewModel.getCurrentEvent();
-
-            if (event != null) {
-                event.removeObserver(this);
-                mViewModel.deleteCurrentEvent();
-                finish();
-            }
+            mViewModel.deleteEvent();
+            finish();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });
@@ -224,7 +224,7 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
     }
 
     private void removeCategory() {
-        mCurrentEventsCategoryId = null;
+        mCategoryId = null;
         UiHelper.showSnackbar(mBinding.getRoot(), R.string.excluded_from_category_snackbar);
 
         invalidateOptionsMenu();    //hide the Exclude from category button
@@ -240,15 +240,13 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
             startActivity(intent);
         });
 
-        List<Category> categories = mViewModel.getCategoriesCache();
-
-        if (categories != null) {
-            categories.sort(Comparator.comparing(Category::getTitle));
+        if (mCategoriesLatest != null) {
+            mCategoriesLatest.sort(Comparator.comparing(Category::getTitle));
 
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(EventDetailsActivity.this,
-                    android.R.layout.simple_list_item_1, categories);
+                    android.R.layout.simple_list_item_1, mCategoriesLatest);
             builder.setAdapter(adapter, (dialog, which) -> {
-                mCurrentEventsCategoryId = categories.get(which).getId();
+                mCategoryId = mCategoriesLatest.get(which).getId();
                 UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
                 invalidateOptionsMenu();    //show the Exclude from category button
             });
@@ -274,28 +272,37 @@ public class EventDetailsActivity extends AppCompatActivity implements Observer<
         return OperationMode.Create;
     }
 
-    private void loadEventFromDb(int eventId) {
-        mViewModel.getEvent(eventId).observe(this, this);
-    }
+    private void prepareForDuplication() {
+        if (getOperationMode() != OperationMode.Duplicate) {
+            throw new IllegalStateException("Inappropriate " + OperationMode.class.getName());
+        }
 
-    private void loadCategoriesFromDb() {
-        mViewModel.getAllCategories().observe(this,
-                categories -> mViewModel.setCategoriesCache(categories));
-    }
+        Bundle bundle = getIntent().getExtras();
+        Event event = (Event) bundle.getSerializable(DUPLICATE_EVENT_DATA_INTENT_KEY);
 
-    private void prepareForDuplication(Event event) {
         mBinding.duplicationWarning.setVisibility(View.VISIBLE);
+        setUiValuesFromEvent(event);
+    }
+
+    private void setUiValuesFromEvent(Event event) {
         mBinding.eventTitle.setText(event.getTitle());
         mBinding.eventDetails.setText(event.getDetails());
         mBinding.isHidden.setChecked(event.isHidden());
         mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeStarts(event.getDateTimeStarts());
         mBinding.dateTimeStartsEndsPicker.setSelectedDateTimeEnds(event.getDateTimeEnds());
 
-        mCurrentEventsCategoryId = event.getCategoryId();
+        mCategoryId = event.getCategoryId();
         invalidateOptionsMenu();    //event category might have changed
     }
 
-    private void setSelectedDateTimes(long millis) {
+    private void prepareForCreation() {
+        if (getOperationMode() != OperationMode.Create) {
+            throw new IllegalStateException("Inappropriate " + OperationMode.class.getName());
+        }
+
+        Bundle bundle = getIntent().getExtras();
+        long millis = bundle.getLong(Constants.SELECTED_TIME_MILLIS_INTENT_KEY);
+
         Date selectedDateTime = new Date(millis);
 
         Calendar calendarStarts = Calendar.getInstance();
