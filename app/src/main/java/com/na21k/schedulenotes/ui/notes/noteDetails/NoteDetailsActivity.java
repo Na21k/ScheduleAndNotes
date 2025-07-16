@@ -205,8 +205,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
             ArrayAdapter<Category> adapter = new ArrayAdapter<>(NoteDetailsActivity.this,
                     android.R.layout.simple_list_item_1, mCategoriesLatest);
             builder.setAdapter(adapter, (dialog, which) -> {
-                Category category = mCategoriesLatest.get(which);
-                mCategoryId = category.getId();
+                mCategoryId = mCategoriesLatest.get(which).getId();
 
                 UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
 
