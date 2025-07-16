@@ -206,9 +206,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Observer<N
                     android.R.layout.simple_list_item_1, mCategoriesLatest);
             builder.setAdapter(adapter, (dialog, which) -> {
                 mCategoryId = mCategoriesLatest.get(which).getId();
-
                 UiHelper.showSnackbar(mBinding.getRoot(), R.string.category_set_snackbar);
-
                 invalidateOptionsMenu();    //show the Exclude from category button
             });
 
