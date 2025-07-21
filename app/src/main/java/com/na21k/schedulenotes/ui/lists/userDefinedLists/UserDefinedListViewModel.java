@@ -10,43 +10,42 @@ import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 
 public class UserDefinedListViewModel extends ViewModel {
 
     @NonNull
     private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
-    private Integer mListId = null;
+    private final int mListId;
+    @NonNull
+    private final LiveData<List<UserDefinedListItem>> mItems;
 
     private UserDefinedListViewModel(
-            @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository
+            @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
+            int listId
     ) {
         super();
 
         mUserDefinedListItemsRepository = userDefinedListItemsRepository;
-    }
-
-    public void configure(int listId) {
         mListId = listId;
+
+        mItems = userDefinedListItemsRepository.getAllForList(listId);
     }
 
-    private void ensureConfigured() {
-        if (mListId == null) {
-            throw new IllegalStateException("The ViewModel has not been configured.");
-        }
-    }
-
+    @NonNull
     public LiveData<List<UserDefinedListItem>> getItems() {
-        ensureConfigured();
-        return mUserDefinedListItemsRepository.getAllForList(mListId);
+        return mItems;
     }
 
+    @NonNull
     public LiveData<List<UserDefinedListItem>> getItemsSearch(String searchQuery) {
-        ensureConfigured();
         return mUserDefinedListItemsRepository.getSearch(mListId, searchQuery);
     }
 
     public void addNew(UserDefinedListItem userDefinedListItem) {
+        userDefinedListItem.setListId(mListId);
+
         mUserDefinedListItemsRepository.add(userDefinedListItem)
                 .addOnFailureListener(Throwable::printStackTrace);
     }
@@ -65,21 +64,30 @@ public class UserDefinedListViewModel extends ViewModel {
 
         @NonNull
         private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+        private final int mListId;
 
-        @Inject
-        public Factory(@NonNull UserDefinedListItemsRepository userDefinedListItemsRepository) {
+        @AssistedInject
+        public Factory(@NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
+                       @Assisted int listId) {
             mUserDefinedListItemsRepository = userDefinedListItemsRepository;
+            mListId = listId;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             UserDefinedListViewModel vm = new UserDefinedListViewModel(
-                    mUserDefinedListItemsRepository
+                    mUserDefinedListItemsRepository, mListId
             );
             ensureViewModelType(vm, modelClass);
 
             return (T) vm;
+        }
+
+        @dagger.assisted.AssistedFactory
+        public interface AssistedFactory {
+
+            Factory create(int listId);
         }
     }
 }
