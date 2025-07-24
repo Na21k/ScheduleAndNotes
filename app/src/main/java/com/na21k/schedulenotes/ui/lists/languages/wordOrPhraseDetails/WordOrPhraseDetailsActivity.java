@@ -46,8 +46,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
     private final AttachedImagesListAdapter mAttachedImagesListAdapter =
             new AttachedImagesListAdapter(this);
-    @Inject
-    protected WordOrPhraseDetailsViewModel.Factory mViewModelFactory;
+    private WordOrPhraseDetailsViewModel.Factory mViewModelFactory;
     private WordOrPhraseDetailsViewModel mViewModel;
     private ActivityWordOrPhraseDetailsBinding mBinding;
     private LanguagesListItem mItem;
@@ -77,16 +76,29 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         registerForImageSelectionActivityResult();
         setUpAttachedImagesList();
 
-        if (isEditing()) {
-            setTitle(R.string.title_edit_item);
+        setTitle(mViewModel.isEditing()
+                ? R.string.title_edit_item
+                : R.string.title_create_item);
 
-            Bundle bundle = getIntent().getExtras();
-            int itemId = bundle.getInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY);
-            loadItemFromDb(itemId);
+        if (mViewModel.isEditing()) {
+            observe();
         } else {
-            setTitle(R.string.title_create_item);
             mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
         }
+    }
+
+    @Inject
+    protected void initViewModelFactory(
+            WordOrPhraseDetailsViewModel.Factory.AssistedFactory viewModelFactoryAssistedFactory
+    ) {
+        int itemId = 0;
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            itemId = bundle.getInt(Constants.LANGUAGES_LIST_ITEM_ID_INTENT_KEY);
+        }
+
+        mViewModelFactory = viewModelFactoryAssistedFactory.create(itemId);
     }
 
     @Override
@@ -99,7 +111,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.word_or_phrase_details_menu, menu);
 
-        if (!isEditing()) {
+        if (!mViewModel.isEditing()) {
             menu.removeItem(R.id.menu_delete);
             menu.removeItem(R.id.menu_archive);
         }
@@ -147,16 +159,16 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         recyclerView.setAdapter(mAttachedImagesListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if (mViewModel.getAttachedImagesCount() > 0) {
+        if (mViewModel.getTrackedAttachedImagesCount() > 0) {
             //the ViewModel already has attached images cached
             //after a configuration change
-            mAttachedImagesListAdapter.setData(mViewModel.getAttachedImages());
+            mAttachedImagesListAdapter.setData(mViewModel.getTrackedAttachedImages());
             mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
         }
     }
 
-    private void loadItemFromDb(int itemId) {
-        mViewModel.getById(itemId).observe(this, item -> {
+    private void observe() {
+        mViewModel.getItem().observe(this, item -> {
             if (item != null) {
                 mItem = item;
                 mBinding.wordOrPhrase.setText(item.getText());
@@ -169,14 +181,14 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             }
         });
 
-        if (mViewModel.getAttachedImagesCount() > 0) {
+        if (mViewModel.getTrackedAttachedImagesCount() > 0) {
             //the ViewModel already has attached images cached
             //after a configuration change
             return;
         }
 
-        mViewModel.getAttachedImagesByItemId(itemId).observe(this, attachedImages -> {
-            mViewModel.setAttachedImages(attachedImages);
+        mViewModel.getAttachedImages().observe(this, attachedImages -> {
+            mViewModel.setTrackedAttachedImages(attachedImages);
             mAttachedImagesListAdapter.setData(attachedImages);
             mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
         });
@@ -210,25 +222,19 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         String explanation = explanationEditable.toString();
         String usageExample = usageExampleEditable.toString();
 
-        if (isEditing() && mItem != null) {
-            mItem.setText(wordOrPhrase);
-            mItem.setTranscription(transcription);
-            mItem.setTranslation(translation);
-            mItem.setExplanation(explanation);
-            mItem.setUsageExampleText(usageExample);
+        LanguagesListItem item = new LanguagesListItem(
+                0, wordOrPhrase, transcription, translation, explanation, usageExample);
+        item.setArchived(mItem != null && mItem.isArchived());
 
-            mViewModel.update(mItem);
-        } else {
-            mViewModel.addNew(new LanguagesListItem(0, wordOrPhrase, transcription,
-                    translation, explanation, usageExample));
-        }
-
+        mViewModel.save(item);
         finish();
     }
 
     private void archiveItem() {
         mViewModel.isArchiveEmpty().addOnSuccessListener(isEmpty -> {
             if (!isEmpty) {
+                // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
+                // This also doesn't save the fields from the Editables.
                 mViewModel.archive(mItem);
                 finish();
 
@@ -241,6 +247,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             builder.setMessage(R.string.first_time_archive_explanation_alert_message);
 
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
                 mViewModel.archive(mItem);
                 finish();
             });
@@ -252,6 +259,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     }
 
     private void unarchiveItem() {
+        // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
         mViewModel.unarchive(mItem);
         finish();
     }
@@ -263,18 +271,13 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         builder.setMessage(R.string.list_item_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            mViewModel.delete(mItem);
+            mViewModel.delete();
             finish();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });
 
         builder.show();
-    }
-
-    private boolean isEditing() {
-        Bundle bundle = getIntent().getExtras();
-        return bundle != null;
     }
 
     private boolean isOpenFromArchive() {
@@ -330,19 +333,19 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
     @Override
     public void onImageDeletionRequested(LanguagesListItemAttachedImage attachedImage) {
-        mViewModel.deleteAttachedImage(attachedImage);
+        mViewModel.trackDeleteAttachedImage(attachedImage);
         mAttachedImagesListAdapter.removeItem(attachedImage);
     }
 
     @Override
     public void onImageAdditionRequested() {
-        if (mViewModel.isLoadingAttachedImages() && isEditing()) {
+        if (mViewModel.isEditing() && !mViewModel.trackedAttachedImagesSetExternally()) {
             UiHelper.showSnackbar(mBinding.getRoot(), R.string.loading_attached_images_snackbar);
 
             return;
         }
 
-        int currentCount = mViewModel.getAttachedImagesCount();
+        int currentCount = mViewModel.getTrackedAttachedImagesCount();
 
         if (currentCount >= Constants.ATTACHED_IMAGES_COUNT_LIMIT) {
             String message = getResources().getString(
@@ -378,7 +381,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
                                 Bitmap bitmap = imageUriToBitmap(uri);
                                 LanguagesListItemAttachedImage image =
                                         new LanguagesListItemAttachedImage(0, bitmap);
-                                mViewModel.addAttachedImage(image);
+                                mViewModel.trackAddAttachedImage(image);
                                 mAttachedImagesListAdapter.addItem(image);
                             } catch (IOException e) {
                                 Toast.makeText(getApplicationContext(),
