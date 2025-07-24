@@ -54,7 +54,7 @@ public class NoteDetailsViewModel extends ViewModel {
     }
 
     public void saveNote(@NonNull Note note) {
-        note.setId(isEditing() ? mNoteId : 0);
+        note.setId(mNoteId);
 
         if (isEditing()) mNotesRepository.update(note);
         else mNotesRepository.add(note);

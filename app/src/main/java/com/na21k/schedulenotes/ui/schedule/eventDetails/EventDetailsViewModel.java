@@ -60,7 +60,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
     }
 
     public void saveEvent(@NonNull Event event) {
-        event.setId(isEditing() ? mEventId : 0);
+        event.setId(mEventId);
 
         if (isEditing()) {
             mScheduleRepository.update(event);

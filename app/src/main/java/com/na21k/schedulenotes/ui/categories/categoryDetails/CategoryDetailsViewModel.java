@@ -50,7 +50,7 @@ public class CategoryDetailsViewModel extends ViewModel {
     }
 
     public void saveCategory(@NonNull Category category) {
-        category.setId(isEditing() ? mCategoryId : 0);
+        category.setId(mCategoryId);
 
         if (isEditing()) mCategoriesRepository.update(category);
         else mCategoriesRepository.add(category);
