@@ -1,36 +1,43 @@
 package com.na21k.schedulenotes.ui.notes;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.NotesRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class NotesViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class NotesViewModel extends ViewModel {
+
+    @NonNull
     private final NotesRepository mNotesRepository;
+    @NonNull
     private final LiveData<List<Note>> mAllNotes;
+    @NonNull
     private final LiveData<List<Category>> mAllCategories;
     private List<Note> mNotesCache = null;
     private List<Category> mCategoriesCache = null;
 
-    public NotesViewModel(@NonNull Application application) {
-        super(application);
+    private NotesViewModel(
+            @NonNull NotesRepository notesRepository,
+            @NonNull CategoriesRepository categoriesRepository
+    ) {
+        super();
 
-        mNotesRepository = new NotesRepository(application);
-        CategoriesRepository categoriesRepository = new CategoriesRepository(application);
+        mNotesRepository = notesRepository;
 
-        mAllNotes = mNotesRepository.getAll();
+        mAllNotes = notesRepository.getAll();
         mAllCategories = categoriesRepository.getAll();
     }
 
+    @NonNull
     public LiveData<List<Note>> getAllNotes() {
         return mAllNotes;
     }
@@ -39,6 +46,7 @@ public class NotesViewModel extends AndroidViewModel {
         return mNotesRepository.getSearch(searchQuery);
     }
 
+    @NonNull
     public LiveData<List<Category>> getAllCategories() {
         return mAllCategories;
     }
@@ -69,5 +77,31 @@ public class NotesViewModel extends AndroidViewModel {
 
     public void setCategoriesCache(List<Category> categoriesCache) {
         mCategoriesCache = categoriesCache;
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final NotesRepository mNotesRepository;
+        @NonNull
+        private final CategoriesRepository mCategoriesRepository;
+
+        @Inject
+        public Factory(
+                @NonNull NotesRepository notesRepository,
+                @NonNull CategoriesRepository categoriesRepository
+        ) {
+            mNotesRepository = notesRepository;
+            mCategoriesRepository = categoriesRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            NotesViewModel vm = new NotesViewModel(mNotesRepository, mCategoriesRepository);
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

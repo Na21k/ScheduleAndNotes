@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
@@ -30,15 +31,24 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ExportActivity extends AppCompatActivity {
 
+    @Inject
+    protected ExportActivityViewModel.Factory mViewModelFactory;
     private ExportActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_export);
-        mViewModel = new ViewModelProvider(this).get(ExportActivityViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(ExportActivityViewModel.class);
 
         startExport();
     }

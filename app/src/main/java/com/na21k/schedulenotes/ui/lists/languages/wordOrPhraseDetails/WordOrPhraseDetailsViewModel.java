@@ -1,117 +1,140 @@
 package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 
+public class WordOrPhraseDetailsViewModel extends ViewModel {
+
+    @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
-    private final LanguagesListAttachedImagesRepository mAttachedImagesRepository;
+    private final int mItemId;
+    @NonNull
+    private final LiveData<LanguagesListItem> mItem;
+    @NonNull
+    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    @NonNull
+    private final LiveData<List<LanguagesListItemAttachedImage>> mAttachedImages;
     private List<LanguagesListItemAttachedImage> mImagesBefore = new ArrayList<>();
     private List<LanguagesListItemAttachedImage> mImagesAfter = new ArrayList<>();
-    private boolean mIsLoadingAttachedImages = true;
-    private int mItemId;
+    private boolean mTrackedAttachedImagesSetExternally;
 
-    public WordOrPhraseDetailsViewModel(@NonNull Application application) {
-        super(application);
+    private WordOrPhraseDetailsViewModel(
+            @NonNull LanguagesListRepository languagesListRepository,
+            int itemId,
+            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+    ) {
+        super();
 
-        mLanguagesListRepository = new LanguagesListRepository(application);
-        mAttachedImagesRepository = new LanguagesListAttachedImagesRepository(application);
+        mLanguagesListRepository = languagesListRepository;
+        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mItemId = itemId;
+
+        mItem = languagesListRepository.getById(itemId);
+        mAttachedImages = languagesListAttachedImagesRepository.getByListItemId(itemId);
     }
 
-    public LiveData<LanguagesListItem> getById(int id) {
-        mItemId = id;
-        return mLanguagesListRepository.getById(id);
+    public boolean isEditing() {
+        return mItemId != 0;
     }
 
-    public void addNew(LanguagesListItem item) {
-        mLanguagesListRepository.add(item)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mItemId = Math.toIntExact(task.getResult());
-                        updateImagesIfChanged();
-                    }
-                });
-    }
-
-    public void update(LanguagesListItem item) {
-        mLanguagesListRepository.update(item);
-        updateImagesIfChanged();
-    }
-
-    Task<Boolean> isArchiveEmpty() {
+    public Task<Boolean> isArchiveEmpty() {
         return mLanguagesListRepository.isArchiveEmpty();
     }
 
-    public void archive(LanguagesListItem item) {
+    @NonNull
+    public LiveData<LanguagesListItem> getItem() {
+        return mItem;
+    }
+
+    @NonNull
+    public LiveData<List<LanguagesListItemAttachedImage>> getAttachedImages() {
+        return mAttachedImages;
+    }
+
+    public void save(@NonNull LanguagesListItem item) {
+        item.setId(mItemId);
+
+        if (isEditing()) {
+            mLanguagesListRepository.update(item);
+            updateImagesIfChanged(mItemId);
+        } else {
+            mLanguagesListRepository.add(item)
+                    .addOnSuccessListener(id -> {
+                        int newItemId = Math.toIntExact(id);
+
+                        item.setId(newItemId);
+                        updateImagesIfChanged(newItemId);
+                    });
+        }
+    }
+
+    public void archive(@NonNull LanguagesListItem item) {
         item.setArchived(true);
-        update(item);
+        save(item);
     }
 
-    public void unarchive(LanguagesListItem item) {
+    public void unarchive(@NonNull LanguagesListItem item) {
         item.setArchived(false);
-        update(item);
+        save(item);
     }
 
-    public void delete(LanguagesListItem item) {
-        mLanguagesListRepository.delete(item);
+    public void delete() {
+        mLanguagesListRepository.delete(mItemId);
     }
 
-    public LiveData<List<LanguagesListItemAttachedImage>> getAttachedImagesByItemId(int itemId) {
-        return mAttachedImagesRepository.getByListItemId(itemId);
-    }
-
-    public void addAttachedImage(LanguagesListItemAttachedImage attachedImage) {
-        mImagesAfter.add(attachedImage);
-    }
-
-    public void deleteAttachedImage(LanguagesListItemAttachedImage attachedImage) {
-        mImagesAfter.remove(attachedImage);
-    }
-
-    public void setAttachedImages(@NonNull List<LanguagesListItemAttachedImage> images) {
+    public void setTrackedAttachedImages(@NonNull List<LanguagesListItemAttachedImage> images) {
         mImagesBefore = images;
         mImagesAfter = new ArrayList<>(images);
-        mIsLoadingAttachedImages = false;
+        mTrackedAttachedImagesSetExternally = true;
     }
 
-    public List<LanguagesListItemAttachedImage> getAttachedImages() {
+    public boolean trackedAttachedImagesSetExternally() {
+        return mTrackedAttachedImagesSetExternally;
+    }
+
+    public List<LanguagesListItemAttachedImage> getTrackedAttachedImages() {
         return mImagesAfter;
     }
 
-    public int getAttachedImagesCount() {
+    public int getTrackedAttachedImagesCount() {
         return mImagesAfter.size();
     }
 
-    public boolean isLoadingAttachedImages() {
-        return mIsLoadingAttachedImages;
+    public void trackAddAttachedImage(LanguagesListItemAttachedImage attachedImage) {
+        mImagesAfter.add(attachedImage);
     }
 
-    private void updateImagesIfChanged() {
+    public void trackDeleteAttachedImage(LanguagesListItemAttachedImage attachedImage) {
+        mImagesAfter.remove(attachedImage);
+    }
+
+    private void updateImagesIfChanged(int addedImagesListItemId) {
         if (!imagesBeforeEqualsAfter()) {
             List<LanguagesListItemAttachedImage> deleted = getDeletedImages();
             List<LanguagesListItemAttachedImage> added = getAddedImages();
 
             for (LanguagesListItemAttachedImage image : deleted) {
-                mAttachedImagesRepository.delete(image);
+                mLanguagesListAttachedImagesRepository.delete(image);
             }
 
             for (LanguagesListItemAttachedImage image : added) {
-                image.setLanguagesListItemId(mItemId);
-                mAttachedImagesRepository.add(image);
+                image.setLanguagesListItemId(addedImagesListItemId);
+                mLanguagesListAttachedImagesRepository.add(image);
             }
         }
     }
@@ -142,5 +165,42 @@ public class WordOrPhraseDetailsViewModel extends AndroidViewModel {
         }
 
         return added;
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final LanguagesListRepository mLanguagesListRepository;
+        @NonNull
+        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+        private final int mItemId;
+
+        @AssistedInject
+        public Factory(
+                @NonNull LanguagesListRepository languagesListRepository,
+                @Assisted int itemId,
+                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+        ) {
+            mLanguagesListRepository = languagesListRepository;
+            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+            mItemId = itemId;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            WordOrPhraseDetailsViewModel vm = new WordOrPhraseDetailsViewModel(
+                    mLanguagesListRepository, mItemId, mLanguagesListAttachedImagesRepository
+            );
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
+
+        @dagger.assisted.AssistedFactory
+        public interface AssistedFactory {
+
+            Factory create(int itemId);
+        }
     }
 }

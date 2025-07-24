@@ -9,12 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSet;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
@@ -25,16 +25,23 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class CategoryDetailsActivity extends AppCompatActivity implements Observer<Category> {
 
+    private CategoryDetailsViewModel.Factory mViewModelFactory;
     private CategoryDetailsViewModel mViewModel;
     private ActivityCategoryDetailsBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(CategoryDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory)
+                .get(CategoryDetailsViewModel.class);
         mBinding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
@@ -47,24 +54,33 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setTitle(mViewModel.isEditing()
+                ? R.string.title_edit_category
+                : R.string.title_create_category);
+
         renderColorPickerItems();
+        observeCategory();
+    }
 
-        if (isEditing()) {
-            setTitle(R.string.title_edit_category);
+    @Inject
+    protected void initViewModelFactory(
+            CategoryDetailsViewModel.Factory.AssistedFactory viewModelFactoryAssistedFactory
+    ) {
+        int categoryId = 0;
+        Bundle bundle = getIntent().getExtras();
 
-            Bundle bundle = getIntent().getExtras();
-            int categoryId = bundle.getInt(Constants.CATEGORY_ID_INTENT_KEY);
-            loadCategoryFromDb(categoryId);
-        } else {
-            setTitle(R.string.title_create_category);
+        if (bundle != null) {
+            categoryId = bundle.getInt(Constants.CATEGORY_ID_INTENT_KEY);
         }
+
+        mViewModelFactory = viewModelFactoryAssistedFactory.create(categoryId);
     }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.category_details_menu, menu);
 
-        if (!isEditing()) {
+        if (!mViewModel.isEditing()) {
             menu.removeItem(R.id.menu_delete);
         }
 
@@ -101,6 +117,11 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
 
     @Override
     public void onChanged(Category category) {
+        if (category == null) {
+            //ignore when not editing or during deletion
+            return;
+        }
+
         mBinding.categoryNameInput.setText(category.getTitle());
 
         List<ColorSetModel> models = mViewModel.getColorSetModels();
@@ -115,13 +136,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
                 mViewModel.getDefaultColorSetModel());
     }
 
-    private boolean isEditing() {
-        Bundle bundle = getIntent().getExtras();
-        return bundle != null;
-    }
-
-    private void loadCategoryFromDb(int categoryId) {
-        mViewModel.getCategory(categoryId).observe(this, this);
+    private void observeCategory() {
+        mViewModel.getCategory().observe(this, this);
     }
 
     private void saveCategory() {
@@ -142,12 +158,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         ColorSet selectedColorSet = selectedColorSetModel.getColorSet();
         Category category = new Category(0, editable.toString(), selectedColorSet);
 
-        if (isEditing()) {
-            mViewModel.updateCurrentCategory(category);
-        } else {
-            mViewModel.createCategory(category);
-        }
-
+        mViewModel.saveCategory(category);
         finish();
     }
 
@@ -158,13 +169,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Observ
         builder.setMessage(R.string.category_deletion_alert_message);
 
         builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-            LiveData<Category> category = mViewModel.getCurrentCategory();
-
-            if (category != null) {
-                category.removeObserver(this);
-                mViewModel.deleteCurrentCategory();
-                finish();
-            }
+            mViewModel.deleteCategory();
+            finish();
         });
         builder.setNegativeButton(R.string.keep, (dialog, which) -> {
         });

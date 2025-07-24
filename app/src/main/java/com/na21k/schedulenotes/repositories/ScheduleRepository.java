@@ -13,11 +13,14 @@ import com.na21k.schedulenotes.data.database.Schedule.EventDao;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ScheduleRepository extends MutableRepository<Event>
         implements CanSearchRepository<Event>, CanClearRepository {
 
     private final EventDao mEventDao = db.eventDao();
 
+    @Inject
     public ScheduleRepository(@NonNull Context context) {
         super(context);
     }

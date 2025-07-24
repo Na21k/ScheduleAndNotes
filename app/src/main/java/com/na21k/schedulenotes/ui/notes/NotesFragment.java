@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.models.ColorSet;
@@ -41,6 +42,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 public class NotesFragment extends Fragment
         implements NotesListAdapter.OnNoteActionRequestedListener, MenuProvider {
@@ -56,6 +59,8 @@ public class NotesFragment extends Fragment
             updateListIfEnoughData();
         }
     };
+    @Inject
+    protected NotesViewModel.Factory mViewModelFactory;
     private NotesViewModel mViewModel;
     private NotesFragmentBinding mBinding;
     private NotesListAdapter mListAdapter;
@@ -63,9 +68,17 @@ public class NotesFragment extends Fragment
     private boolean isSearchMode = false;
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(NotesViewModel.class);
     }
 
     @Override

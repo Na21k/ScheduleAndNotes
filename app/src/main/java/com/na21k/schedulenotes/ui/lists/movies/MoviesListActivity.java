@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.databinding.ActivityMoviesListBinding;
 import com.na21k.schedulenotes.databinding.MovieInfoAlertViewBinding;
@@ -27,6 +28,8 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class MoviesListActivity extends AppCompatActivity
         implements MoviesListAdapter.OnMovieActionRequestedListener {
@@ -41,6 +44,8 @@ public class MoviesListActivity extends AppCompatActivity
             mListAdapter.setMovies(moviesListItems);
         }
     };
+    @Inject
+    protected MoviesListViewModel.Factory mViewModelFactory;
     private MoviesListViewModel mViewModel;
     private ActivityMoviesListBinding mBinding;
     private MoviesListAdapter mListAdapter;
@@ -49,9 +54,12 @@ public class MoviesListActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(MoviesListViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(MoviesListViewModel.class);
         mBinding = ActivityMoviesListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

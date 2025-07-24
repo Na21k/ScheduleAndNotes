@@ -1,58 +1,63 @@
 package com.na21k.schedulenotes.ui.categories.categoryDetails;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.models.ColorSetModel;
+import com.na21k.schedulenotes.di.modules.CategoriesModule;
 import com.na21k.schedulenotes.helpers.CategoriesHelper;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class CategoryDetailsViewModel extends AndroidViewModel {
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 
-    private final CategoriesRepository mCategoriesRepository;
-    private LiveData<Category> mCategory;
-    private int mCategoryId;
+public class CategoryDetailsViewModel extends ViewModel {
+
+    @NonNull
+    private final MutableRepository<Category> mCategoriesRepository;
+    private final int mCategoryId;
+    @NonNull
+    private final LiveData<Category> mCategory;
+    @NonNull
     private final List<ColorSetModel> mColorSetModels;
 
-    public CategoryDetailsViewModel(@NonNull Application application) {
-        super(application);
+    private CategoryDetailsViewModel(
+            @NonNull MutableRepository<Category> categoriesRepository,
+            int categoryId,
+            @NonNull List<ColorSetModel> colorSetModels
+    ) {
+        super();
 
-        mCategoriesRepository = new CategoriesRepository(application);
-        mColorSetModels = CategoriesHelper.getCategoriesColorSets(application);
+        mCategoriesRepository = categoriesRepository;
+        mCategoryId = categoryId;
+        mColorSetModels = colorSetModels;
+
+        mCategory = categoriesRepository.getById(categoryId);
     }
 
-    public LiveData<Category> getCategory(int id) {
-        if (mCategoryId != id) {
-            mCategory = mCategoriesRepository.getById(id);
-            mCategoryId = id;
-        }
+    public boolean isEditing() {
+        return mCategoryId != 0;
+    }
 
+    @NonNull
+    public LiveData<Category> getCategory() {
         return mCategory;
     }
 
-    public void createCategory(Category category) {
-        mCategoriesRepository.add(category);
-    }
-
-    public void deleteCurrentCategory() {
-        mCategoriesRepository.delete(mCategoryId);
-    }
-
-    public void updateCurrentCategory(@NonNull Category category) {
+    public void saveCategory(@NonNull Category category) {
         category.setId(mCategoryId);
-        mCategoriesRepository.update(category);
+
+        if (isEditing()) mCategoriesRepository.update(category);
+        else mCategoriesRepository.add(category);
     }
 
-    @Nullable
-    public LiveData<Category> getCurrentCategory() {
-        return mCategory;
+    public void deleteCategory() {
+        mCategoriesRepository.delete(mCategoryId);
     }
 
     @NonNull
@@ -60,7 +65,45 @@ public class CategoryDetailsViewModel extends AndroidViewModel {
         return mColorSetModels;
     }
 
+    @NonNull
     public ColorSetModel getDefaultColorSetModel() {
         return CategoriesHelper.getDefaultColorSetModel(mColorSetModels);
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final MutableRepository<Category> mCategoriesRepository;
+        private final int mCategoryId;
+        @NonNull
+        private final List<ColorSetModel> mColorSetModels;
+
+        @AssistedInject
+        public Factory(
+                @NonNull MutableRepository<Category> categoriesRepository,
+                @Assisted int categoryId,
+                @NonNull @CategoriesModule.CategoriesColorSets List<ColorSetModel> colorSetModels
+        ) {
+            mCategoriesRepository = categoriesRepository;
+            mCategoryId = categoryId;
+            mColorSetModels = colorSetModels;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            CategoryDetailsViewModel vm = new CategoryDetailsViewModel(
+                    mCategoriesRepository, mCategoryId, mColorSetModels
+            );
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
+
+        @dagger.assisted.AssistedFactory
+        public interface AssistedFactory {
+
+            Factory create(int categoryId);
+        }
     }
 }

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.databinding.ActivityMusicListBinding;
 import com.na21k.schedulenotes.databinding.MusicInfoAlertViewBinding;
@@ -27,6 +28,8 @@ import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class MusicListActivity extends AppCompatActivity
         implements MusicListAdapter.OnMusicActionRequestedListener {
@@ -41,6 +44,8 @@ public class MusicListActivity extends AppCompatActivity
             mListAdapter.setMusic(musicListItems);
         }
     };
+    @Inject
+    protected MusicListViewModel.Factory mViewModelFactory;
     private MusicListViewModel mViewModel;
     private ActivityMusicListBinding mBinding;
     private MusicListAdapter mListAdapter;
@@ -49,9 +54,12 @@ public class MusicListActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(MusicListViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(MusicListViewModel.class);
         mBinding = ActivityMusicListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

@@ -25,12 +25,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.databinding.ActivityShoppingListBinding;
 import com.na21k.schedulenotes.databinding.ShoppingListItemInfoAlertViewBinding;
 import com.na21k.schedulenotes.helpers.UiHelper;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class ShoppingListActivity extends AppCompatActivity
         implements ShoppingListAdapter.OnShoppingItemActionRequestedListener {
@@ -46,6 +49,8 @@ public class ShoppingListActivity extends AppCompatActivity
             updateTotalPrice(goods);
         }
     };
+    @Inject
+    protected ShoppingListViewModel.Factory mViewModelFactory;
     private ShoppingListViewModel mViewModel;
     private ActivityShoppingListBinding mBinding;
     private ShoppingListAdapter mListAdapter;
@@ -53,11 +58,14 @@ public class ShoppingListActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
         ensureBackStackPresent();
         ShortcutManagerCompat.reportShortcutUsed(this, "shopping_list_shortcut");
 
-        mViewModel = new ViewModelProvider(this).get(ShoppingListViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(ShoppingListViewModel.class);
         mBinding = ActivityShoppingListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);

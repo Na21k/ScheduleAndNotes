@@ -1,20 +1,22 @@
 package com.na21k.schedulenotes.ui.lists.languages;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
+import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
 
-public class LanguagesListViewModel extends AndroidViewModel {
+import javax.inject.Inject;
 
+public class LanguagesListViewModel extends ViewModel {
+
+    @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
     private final LiveData<List<LanguagesListItem>> mUnarchivedItems;
     private final LiveData<List<LanguagesListItem>> mArchivedItems;
@@ -22,14 +24,16 @@ public class LanguagesListViewModel extends AndroidViewModel {
     private List<LanguagesListItem> mDisplayedItemsCache;
     private List<Integer> mDisplayedItemsAttachedImagesListItemIdsCache;
 
-    public LanguagesListViewModel(@NonNull Application application) {
-        super(application);
+    private LanguagesListViewModel(
+            @NonNull LanguagesListRepository languagesListRepository,
+            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+    ) {
+        super();
 
-        mLanguagesListRepository = new LanguagesListRepository(application);
-        mUnarchivedItems = mLanguagesListRepository.getUnarchived();
-        mArchivedItems = mLanguagesListRepository.getArchived();
-        mAllAttachedImagesListItemIds = new LanguagesListAttachedImagesRepository(application)
-                .getAllListItemIds();
+        mLanguagesListRepository = languagesListRepository;
+        mUnarchivedItems = languagesListRepository.getUnarchived();
+        mArchivedItems = languagesListRepository.getArchived();
+        mAllAttachedImagesListItemIds = languagesListAttachedImagesRepository.getAllListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getUnarchived() {
@@ -81,5 +85,33 @@ public class LanguagesListViewModel extends AndroidViewModel {
     public void setDisplayedItemsAttachedImagesListItemIdsCache(
             List<Integer> attachedImagesListItemIdsCache) {
         mDisplayedItemsAttachedImagesListItemIdsCache = attachedImagesListItemIdsCache;
+    }
+
+    public static class Factory extends BaseViewModelFactory {
+
+        @NonNull
+        private final LanguagesListRepository mLanguagesListRepository;
+        @NonNull
+        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+
+        @Inject
+        public Factory(
+                @NonNull LanguagesListRepository languagesListRepository,
+                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+        ) {
+            mLanguagesListRepository = languagesListRepository;
+            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            LanguagesListViewModel vm = new LanguagesListViewModel(
+                    mLanguagesListRepository, mLanguagesListAttachedImagesRepository
+            );
+            ensureViewModelType(vm, modelClass);
+
+            return (T) vm;
+        }
     }
 }

@@ -17,12 +17,15 @@ import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LanguagesListRepository extends MutableRepository<LanguagesListItem>
         implements CanSearchRepository<LanguagesListItem>, CanClearRepository,
         CanProvideRandomRepository<LanguagesListItem> {
 
     private final LanguagesListItemDao mLanguagesListItemDao = db.languagesListItemDao();
 
+    @Inject
     public LanguagesListRepository(@NonNull Context context) {
         super(context);
     }

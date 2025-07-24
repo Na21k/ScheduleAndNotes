@@ -11,11 +11,14 @@ import com.na21k.schedulenotes.data.database.Categories.CategoryDao;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class CategoriesRepository extends MutableRepository<Category>
         implements CanSearchRepository<Category>, CanClearRepository {
 
     private final CategoryDao mCategoryDao = db.categoryDao();
 
+    @Inject
     public CategoriesRepository(@NonNull Context context) {
         super(context);
     }

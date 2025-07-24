@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.LanguagesListItemsSortingOrder;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.models.LanguagesListItemModel;
 import com.na21k.schedulenotes.databinding.ActivityLanguagesListBinding;
@@ -32,6 +33,8 @@ import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhra
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class LanguagesListActivity extends AppCompatActivity
         implements LanguagesListAdapter.OnLanguagesItemActionRequestedListener {
@@ -47,6 +50,8 @@ public class LanguagesListActivity extends AppCompatActivity
                     updateListIfEnoughData();
                 }
             };
+    @Inject
+    protected LanguagesListViewModel.Factory mViewModelFactory;
     protected LanguagesListViewModel mViewModel;
     protected ActivityLanguagesListBinding mBinding;
     private LanguagesListAdapter mListAdapter;
@@ -56,9 +61,12 @@ public class LanguagesListActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(LanguagesListViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(LanguagesListViewModel.class);
         mBinding = ActivityLanguagesListBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.appBar.appBar);
