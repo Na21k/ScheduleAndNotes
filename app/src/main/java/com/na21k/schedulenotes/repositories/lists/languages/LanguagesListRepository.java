@@ -54,6 +54,17 @@ public class LanguagesListRepository extends MutableRepository<LanguagesListItem
         return source.getTask();
     }
 
+    public Task<Void> setArchived(int itemId, boolean archived) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            mLanguagesListItemDao.setArchived(itemId, archived);
+            source.setResult(null);
+        }).start();
+
+        return source.getTask();
+    }
+
     @Override
     public LiveData<List<LanguagesListItem>> getSearch(String query) {
         return mLanguagesListItemDao.search(query);

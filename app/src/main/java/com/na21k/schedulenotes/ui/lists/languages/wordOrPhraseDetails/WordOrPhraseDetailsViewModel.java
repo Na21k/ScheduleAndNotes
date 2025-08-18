@@ -83,14 +83,8 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         }
     }
 
-    public void archive(@NonNull LanguagesListItem item) {
-        item.setArchived(true);
-        save(item);
-    }
-
-    public void unarchive(@NonNull LanguagesListItem item) {
-        item.setArchived(false);
-        save(item);
+    public void setArchived(boolean archived) {
+        mLanguagesListRepository.setArchived(mItemId, archived);
     }
 
     public void delete() {

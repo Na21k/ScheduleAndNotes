@@ -49,7 +49,6 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private WordOrPhraseDetailsViewModel.Factory mViewModelFactory;
     private WordOrPhraseDetailsViewModel mViewModel;
     private ActivityWordOrPhraseDetailsBinding mBinding;
-    private LanguagesListItem mItem;
     private ActivityResultLauncher<Intent> mOpenImageActivityResultLauncher;
 
     @Override
@@ -170,7 +169,6 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private void observe() {
         mViewModel.getItem().observe(this, item -> {
             if (item != null) {
-                mItem = item;
                 mBinding.wordOrPhrase.setText(item.getText());
                 mBinding.transcription.setText(item.getTranscription());
                 mBinding.translation.setText(item.getTranslation());
@@ -224,7 +222,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
         LanguagesListItem item = new LanguagesListItem(
                 0, wordOrPhrase, transcription, translation, explanation, usageExample);
-        item.setArchived(mItem != null && mItem.isArchived());
+        item.setArchived(isOpenFromArchive());
 
         mViewModel.save(item);
         finish();
@@ -233,9 +231,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private void archiveItem() {
         mViewModel.isArchiveEmpty().addOnSuccessListener(isEmpty -> {
             if (!isEmpty) {
-                // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
-                // This also doesn't save the fields from the Editables.
-                mViewModel.archive(mItem);
+                mViewModel.setArchived(true);
                 finish();
 
                 return;
@@ -247,8 +243,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             builder.setMessage(R.string.first_time_archive_explanation_alert_message);
 
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
-                mViewModel.archive(mItem);
+                mViewModel.setArchived(true);
                 finish();
             });
             builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
@@ -259,8 +254,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     }
 
     private void unarchiveItem() {
-        // FIXME: this is pretty bad, the VM should be able to (un)archive by id.
-        mViewModel.unarchive(mItem);
+        mViewModel.setArchived(false);
         finish();
     }
 

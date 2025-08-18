@@ -47,6 +47,9 @@ public interface LanguagesListItemDao extends BaseDao<LanguagesListItem>,
     @Query("select (select count(*) from languages_list_items where is_archived = 1) = 0")
     boolean isArchiveEmptyBlocking();
 
+    @Query("update languages_list_items set is_archived = :archived where id = :entityId")
+    void setArchived(int entityId, boolean archived);
+
     @Override
     @Query("select * from languages_list_items I where I.is_archived = 0 and " +
             "(I.text like '%'||:query||'%'" +
