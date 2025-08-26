@@ -4,15 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.BroadcastReceivers.EventNotificationAlarmReceiver;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepositoryImpl;
 import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepository;
 
 import java.util.List;
 
@@ -23,56 +22,57 @@ public class AlarmsHelper {
     @NonNull
     private final Context mContext;
     @NonNull
+    private final AlarmManager mAlarmMgr;
+    @NonNull
     private final MutableRepository<Event> mScheduleRepository;
+    @NonNull
+    private final EventNotificationAlarmPendingIntentRepository mPendingIntentRepository;
 
     @Inject
     public AlarmsHelper(
             @NonNull Context context,
-            @NonNull MutableRepository<Event> scheduleRepository
+            @NonNull MutableRepository<Event> scheduleRepository,
+            @NonNull EventNotificationAlarmPendingIntentRepository pendingIntentRepository
     ) {
         mContext = context;
         mScheduleRepository = scheduleRepository;
+        mPendingIntentRepository = pendingIntentRepository;
+
+        mAlarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public static void scheduleEventNotificationAlarm(int eventId,
-                                                      long triggerAtMillis,
-                                                      int pendingIntentRequestCode,
-                                                      @NonNull Context context) {
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = getEventNotificationIntent(eventId, context);
+    public void scheduleEventNotificationAlarm(long triggerAtMillis, int pendingIntentRequestCode) {
+        Intent intent = new Intent(mContext, EventNotificationAlarmReceiver.class);
         intent.putExtra(EventNotificationAlarmReceiver
                         .EVENT_NOTIFICATION_ALARM_PENDING_INTENT_ID_INTENT_KEY,
                 pendingIntentRequestCode);
 
+        //specifying a requestCode to make sure PendingIntents for different Events
+        //and for [starts] and [starts soon] notifications don't overwrite each other
+        //(even though EventNotificationAlarmReceiver uses the Event id from Intent's Extras
+        //to decide which message to show)
         PendingIntent alarmIntent = PendingIntent.getBroadcast(
-                context, pendingIntentRequestCode, intent,
+                mContext, pendingIntentRequestCode, intent,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, alarmIntent);
+        mAlarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, alarmIntent);
     }
 
-    public static void cancelEventNotificationAlarmsBlocking(int eventId,
-                                                             @NonNull Context context) {
-        //FIXME: rewrite for instance usage with the repository injected
-        EventNotificationAlarmPendingIntentRepositoryImpl pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepositoryImpl(context);
+    public void cancelEventNotificationAlarmsBlocking(int eventId) {
+        Intent intent = new Intent(mContext, EventNotificationAlarmReceiver.class);
 
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = getEventNotificationIntent(eventId, context);
-
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
+        List<EventNotificationAlarmPendingIntent> pendingIntents = mPendingIntentRepository
                 .getByEventIdBlocking(eventId);
 
         for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
             int pendingIntentRequestCode = pendingIntent.getId();
 
             PendingIntent alarmIntent = PendingIntent.getBroadcast(
-                    context, pendingIntentRequestCode, intent,
+                    mContext, pendingIntentRequestCode, intent,
                     PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
 
             if (alarmIntent != null) {
-                alarmMgr.cancel(alarmIntent);
+                mAlarmMgr.cancel(alarmIntent);
             }
         }
     }
@@ -81,30 +81,7 @@ public class AlarmsHelper {
         List<Event> events = mScheduleRepository.getAllBlocking();
 
         for (Event event : events) {
-            cancelEventNotificationAlarmsBlocking(event.getId(), mContext);
+            cancelEventNotificationAlarmsBlocking(event.getId());
         }
-    }
-
-    @NonNull
-    private static Intent getEventNotificationIntent(int eventId, @NonNull Context context) {
-        Intent intent = new Intent(context, EventNotificationAlarmReceiver.class);
-
-        //otherwise, only extras would differ and there would be only one intent (containing the
-        //last added extras) for all events.
-        //NOTICE: the same intent is used for 'started' and 'starts soon' notifications but
-        //there are 2 separate pending intents (this is how EventNotificationAlarmReceiver.onReceive
-        //is able to tell what to say in the notification sent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            intent.setIdentifier(getEventNotificationIntentId(eventId));
-        } else {
-            intent.setType(getEventNotificationIntentId(eventId));
-        }
-
-        return intent;
-    }
-
-    @NonNull
-    private static String getEventNotificationIntentId(int eventId) {
-        return "EventNotificationAlarmReceiver.onReceive intent (eventId = " + eventId + ")";
     }
 }

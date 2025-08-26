@@ -1,9 +1,6 @@
 package com.na21k.schedulenotes.ui.schedule;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,7 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ScheduleViewModel extends AndroidViewModel {
+public class ScheduleViewModel extends ViewModel {
 
     @NonNull
     private final MutableRepository<Event> mMutableScheduleRepository;
@@ -37,17 +34,19 @@ public class ScheduleViewModel extends AndroidViewModel {
     private List<Category> mCategoriesCache = null;
     private Date mSelectedDate = null;
     @NonNull
+    private final AlarmsHelper mAlarmsHelper;
+    @NonNull
     private final EventsHelper mEventsHelper;
 
     private ScheduleViewModel(
-            @NonNull Application application,
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             @NonNull ScheduleRepository scheduleRepository,
             @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
             @NonNull CategoriesRepository categoriesRepository,
+            @NonNull AlarmsHelper alarmsHelper,
             @NonNull EventsHelper eventsHelper
     ) {
-        super(application);
+        super();
 
         mMutableScheduleRepository = mutableScheduleRepository;
         mScheduleRepository = scheduleRepository;
@@ -55,6 +54,7 @@ public class ScheduleViewModel extends AndroidViewModel {
 
         mAllCategories = categoriesRepository.getAll();
 
+        mAlarmsHelper = alarmsHelper;
         mEventsHelper = eventsHelper;
     }
 
@@ -80,7 +80,7 @@ public class ScheduleViewModel extends AndroidViewModel {
 
     public void deleteEvent(Event event) {
         new Thread(() -> {
-            AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
+            mAlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId());
             mMutableScheduleRepository.delete(event);
         }).start();
     }
@@ -130,8 +130,6 @@ public class ScheduleViewModel extends AndroidViewModel {
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
-        private final Application mApplication;
-        @NonNull
         private final MutableRepository<Event> mMutableScheduleRepository;
         @NonNull
         private final ScheduleRepository mScheduleRepository;
@@ -140,22 +138,24 @@ public class ScheduleViewModel extends AndroidViewModel {
         @NonNull
         private final CategoriesRepository mCategoriesRepository;
         @NonNull
+        private final AlarmsHelper mAlarmsHelper;
+        @NonNull
         private final EventsHelper mEventsHelper;
 
         @Inject
         public Factory(
-                @NonNull Application application,
                 @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @NonNull ScheduleRepository scheduleRepository,
                 @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
                 @NonNull CategoriesRepository categoriesRepository,
+                @NonNull AlarmsHelper alarmsHelper,
                 @NonNull EventsHelper eventsHelper
         ) {
-            mApplication = application;
             mMutableScheduleRepository = mutableScheduleRepository;
             mScheduleRepository = scheduleRepository;
             mCanSearchScheduleRepository = canSearchScheduleRepository;
             mCategoriesRepository = categoriesRepository;
+            mAlarmsHelper = alarmsHelper;
             mEventsHelper = eventsHelper;
         }
 
@@ -163,8 +163,9 @@ public class ScheduleViewModel extends AndroidViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             ScheduleViewModel vm = new ScheduleViewModel(
-                    mApplication, mMutableScheduleRepository, mScheduleRepository,
-                    mCanSearchScheduleRepository, mCategoriesRepository, mEventsHelper
+                    mMutableScheduleRepository, mScheduleRepository, mCanSearchScheduleRepository,
+                    mCategoriesRepository,
+                    mAlarmsHelper, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

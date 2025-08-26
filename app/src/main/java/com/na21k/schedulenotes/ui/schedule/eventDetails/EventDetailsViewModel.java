@@ -1,9 +1,6 @@
 package com.na21k.schedulenotes.ui.schedule.eventDetails;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,7 +17,7 @@ import java.util.List;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedInject;
 
-public class EventDetailsViewModel extends AndroidViewModel {
+public class EventDetailsViewModel extends ViewModel {
 
     @NonNull
     private final MutableRepository<Event> mMutableScheduleRepository;
@@ -30,16 +27,18 @@ public class EventDetailsViewModel extends AndroidViewModel {
     @NonNull
     private final LiveData<List<Category>> mCategories;
     @NonNull
+    private final AlarmsHelper mAlarmsHelper;
+    @NonNull
     private final EventsHelper mEventsHelper;
 
     private EventDetailsViewModel(
-            @NonNull Application application,
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             int eventId,
             @NonNull CategoriesRepository categoriesRepository,
+            @NonNull AlarmsHelper alarmsHelper,
             @NonNull EventsHelper eventsHelper
     ) {
-        super(application);
+        super();
 
         mMutableScheduleRepository = mutableScheduleRepository;
         mEventId = eventId;
@@ -47,6 +46,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
         mEvent = mMutableScheduleRepository.getById(eventId);
         mCategories = categoriesRepository.getAll();
 
+        mAlarmsHelper = alarmsHelper;
         mEventsHelper = eventsHelper;
     }
 
@@ -70,7 +70,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
         if (isEditing()) {
             mMutableScheduleRepository.update(event);
             new Thread(() -> {
-                AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
+                mAlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId());
                 mEventsHelper.scheduleEventNotificationsBlocking(event);
             }).start();
         } else {
@@ -85,7 +85,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
 
     public void deleteEvent() {
         new Thread(() -> {
-            AlarmsHelper.cancelEventNotificationAlarmsBlocking(mEventId, getApplication());
+            mAlarmsHelper.cancelEventNotificationAlarmsBlocking(mEventId);
             mMutableScheduleRepository.delete(mEventId);
         }).start();
     }
@@ -93,27 +93,27 @@ public class EventDetailsViewModel extends AndroidViewModel {
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
-        private final Application mApplication;
-        @NonNull
         private final MutableRepository<Event> mMutableScheduleRepository;
         @NonNull
         private final CategoriesRepository mCategoriesRepository;
         private final int mEventId;
         @NonNull
+        private final AlarmsHelper mAlarmsHelper;
+        @NonNull
         private final EventsHelper mEventsHelper;
 
         @AssistedInject
         public Factory(
-                @NonNull Application application,
                 @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @Assisted int eventId,
                 @NonNull CategoriesRepository categoriesRepository,
+                @NonNull AlarmsHelper alarmsHelper,
                 @NonNull EventsHelper eventsHelper
         ) {
-            mApplication = application;
             mMutableScheduleRepository = mutableScheduleRepository;
             mCategoriesRepository = categoriesRepository;
             mEventId = eventId;
+            mAlarmsHelper = alarmsHelper;
             mEventsHelper = eventsHelper;
         }
 
@@ -121,9 +121,8 @@ public class EventDetailsViewModel extends AndroidViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             EventDetailsViewModel vm = new EventDetailsViewModel(
-                    mApplication,
                     mMutableScheduleRepository, mEventId, mCategoriesRepository,
-                    mEventsHelper
+                    mAlarmsHelper, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

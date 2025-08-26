@@ -1,7 +1,5 @@
 package com.na21k.schedulenotes.helpers;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.data.database.Schedule.Event;
@@ -18,25 +16,25 @@ public class EventsHelper {
 
     private static final int EVENT_STARTS_SOON_TIME_OFFSET_MINS = -30;
     @NonNull
-    private final Context mContext;
-    @NonNull
     private final MutableRepository<Event> mMutableScheduleRepository;
     @NonNull
     private final MutableRepository<EventNotificationAlarmPendingIntent> mMutablePendingIntentRepository;
     @NonNull
     private final EventNotificationAlarmPendingIntentRepository mPendingIntentRepository;
+    @NonNull
+    private final AlarmsHelper mAlarmsHelper;
 
     @Inject
     public EventsHelper(
-            @NonNull Context context,
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             @NonNull MutableRepository<EventNotificationAlarmPendingIntent> mutablePendingIntentRepository,
-            @NonNull EventNotificationAlarmPendingIntentRepository pendingIntentRepository
+            @NonNull EventNotificationAlarmPendingIntentRepository pendingIntentRepository,
+            @NonNull AlarmsHelper alarmsHelper
     ) {
-        mContext = context;
         mMutableScheduleRepository = mutableScheduleRepository;
         mMutablePendingIntentRepository = mutablePendingIntentRepository;
         mPendingIntentRepository = pendingIntentRepository;
+        mAlarmsHelper = alarmsHelper;
     }
 
     /**
@@ -95,14 +93,14 @@ public class EventsHelper {
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStarted));
 
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                eventId, startsSoon.getTime(), startsSoonPendingIntentRequestCode, mContext);
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                eventId, starts.getTime(), startsPendingIntentRequestCode, mContext);
+        mAlarmsHelper.scheduleEventNotificationAlarm(
+                startsSoon.getTime(), startsSoonPendingIntentRequestCode);
+        mAlarmsHelper.scheduleEventNotificationAlarm(
+                starts.getTime(), startsPendingIntentRequestCode);
     }
 
     private void cancelEventNotificationsBlocking(@NonNull Event event) {
-        AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), mContext);
+        mAlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId());
 
         List<EventNotificationAlarmPendingIntent> pendingIntents = mPendingIntentRepository
                 .getByEventIdBlocking(event.getId());
@@ -144,8 +142,7 @@ public class EventsHelper {
                         "Unexpected notification type: " + notificationType.name());
         }
 
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                event.getId(), triggerAtMillis, pendingIntent.getId(), mContext);
+        mAlarmsHelper.scheduleEventNotificationAlarm(triggerAtMillis, pendingIntent.getId());
     }
 
     @NonNull
