@@ -34,10 +34,13 @@ import com.na21k.schedulenotes.workers.RecommendationsWorker;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
     //TODO: use a VM to schedule stuff and create notification channels or smth
+    @Inject
     protected EventsHelper2 mEventsHelper;
 
     @Override
