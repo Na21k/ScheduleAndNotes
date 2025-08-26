@@ -17,7 +17,7 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListIt
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
@@ -63,7 +63,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     @NonNull
     private final AlarmsHelper mAlarmsHelper;
     @NonNull
-    private final EventsHelper2 mEventsHelper;
+    private final EventsHelper mEventsHelper;
 
     private ImportActivityViewModel(
             @NonNull Application application,
@@ -79,7 +79,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull LanguagesListRepository languagesListRepository,
             @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
             @NonNull AlarmsHelper alarmsHelper,
-            @NonNull EventsHelper2 eventsHelper
+            @NonNull EventsHelper eventsHelper
     ) {
         super(application);
 
@@ -190,7 +190,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final AlarmsHelper mAlarmsHelper;
         @NonNull
-        private final EventsHelper2 mEventsHelper;
+        private final EventsHelper mEventsHelper;
 
         @Inject
         public Factory(
@@ -207,7 +207,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull LanguagesListRepository languagesListRepository,
                 @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
                 @NonNull AlarmsHelper alarmsHelper,
-                @NonNull EventsHelper2 eventsHelper
+                @NonNull EventsHelper eventsHelper
         ) {
             mApplication = application;
             mMutableScheduleRepository = mutableScheduleRepository;

@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.na21k.schedulenotes.ScheduleNotesApplication;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 
 import java.util.Objects;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
 
-    protected EventsHelper2 mEventsHelper;
+    protected EventsHelper mEventsHelper;
 
     private void inject(Context context) {
         ((ScheduleNotesApplication) context.getApplicationContext())

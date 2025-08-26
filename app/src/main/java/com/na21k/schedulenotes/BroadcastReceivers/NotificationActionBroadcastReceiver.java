@@ -12,7 +12,7 @@ import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.Repository;
@@ -28,7 +28,7 @@ public class NotificationActionBroadcastReceiver extends BroadcastReceiver {
     @Inject
     protected MutableRepository<LanguagesListItem> mLanguagesListRepository;
     @Inject
-    protected EventsHelper2 mEventsHelper;
+    protected EventsHelper mEventsHelper;
 
     private void inject(Context context) {
         ((ScheduleNotesApplication) context.getApplicationContext())

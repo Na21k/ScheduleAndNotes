@@ -25,7 +25,7 @@ import androidx.work.WorkManager;
 
 import com.na21k.schedulenotes.databinding.ActivityMainBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.settings.SettingsActivity;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mBinding;
     //TODO: use a VM to schedule stuff and create notification channels or smth
     @Inject
-    protected EventsHelper2 mEventsHelper;
+    protected EventsHelper mEventsHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
@@ -30,14 +30,14 @@ public class EventDetailsViewModel extends AndroidViewModel {
     @NonNull
     private final LiveData<List<Category>> mCategories;
     @NonNull
-    private final EventsHelper2 mEventsHelper;
+    private final EventsHelper mEventsHelper;
 
     private EventDetailsViewModel(
             @NonNull Application application,
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             int eventId,
             @NonNull CategoriesRepository categoriesRepository,
-            @NonNull EventsHelper2 eventsHelper
+            @NonNull EventsHelper eventsHelper
     ) {
         super(application);
 
@@ -100,7 +100,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
         private final CategoriesRepository mCategoriesRepository;
         private final int mEventId;
         @NonNull
-        private final EventsHelper2 mEventsHelper;
+        private final EventsHelper mEventsHelper;
 
         @AssistedInject
         public Factory(
@@ -108,7 +108,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
                 @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @Assisted int eventId,
                 @NonNull CategoriesRepository categoriesRepository,
-                @NonNull EventsHelper2 eventsHelper
+                @NonNull EventsHelper eventsHelper
         ) {
             mApplication = application;
             mMutableScheduleRepository = mutableScheduleRepository;

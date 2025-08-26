@@ -11,7 +11,7 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
@@ -37,7 +37,7 @@ public class ScheduleViewModel extends AndroidViewModel {
     private List<Category> mCategoriesCache = null;
     private Date mSelectedDate = null;
     @NonNull
-    private final EventsHelper2 mEventsHelper;
+    private final EventsHelper mEventsHelper;
 
     private ScheduleViewModel(
             @NonNull Application application,
@@ -45,7 +45,7 @@ public class ScheduleViewModel extends AndroidViewModel {
             @NonNull ScheduleRepository scheduleRepository,
             @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
             @NonNull CategoriesRepository categoriesRepository,
-            @NonNull EventsHelper2 eventsHelper
+            @NonNull EventsHelper eventsHelper
     ) {
         super(application);
 
@@ -140,7 +140,7 @@ public class ScheduleViewModel extends AndroidViewModel {
         @NonNull
         private final CategoriesRepository mCategoriesRepository;
         @NonNull
-        private final EventsHelper2 mEventsHelper;
+        private final EventsHelper mEventsHelper;
 
         @Inject
         public Factory(
@@ -149,7 +149,7 @@ public class ScheduleViewModel extends AndroidViewModel {
                 @NonNull ScheduleRepository scheduleRepository,
                 @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
                 @NonNull CategoriesRepository categoriesRepository,
-                @NonNull EventsHelper2 eventsHelper
+                @NonNull EventsHelper eventsHelper
         ) {
             mApplication = application;
             mMutableScheduleRepository = mutableScheduleRepository;
