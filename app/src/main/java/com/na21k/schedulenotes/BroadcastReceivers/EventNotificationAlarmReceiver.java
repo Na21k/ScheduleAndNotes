@@ -8,40 +8,48 @@ import android.content.Intent;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
-import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
+
+import javax.inject.Inject;
 
 public class EventNotificationAlarmReceiver extends BroadcastReceiver {
 
     public static final String EVENT_NOTIFICATION_ALARM_PENDING_INTENT_ID_INTENT_KEY =
             "eventNotificationAlarmPendingIntentId";
-    private int mEventNotificationAlarmPendingIntentId;
-    private ScheduleRepository mScheduleRepository;
-    private EventNotificationAlarmPendingIntentRepository mEventNotificationAlarmPendingIntentRepository;
+    @Inject
+    protected Repository<Event> mScheduleRepository;
+    @Inject
+    protected MutableRepository<EventNotificationAlarmPendingIntent> mEventNotificationAlarmPendingIntentRepository;
+
+    private void inject(Context context) {
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        inject(context);
+
         if (!NotificationsHelper.shouldNotify(
                 context, Constants.RECEIVE_SCHEDULE_NOTIFICATIONS_PREFERENCE_KEY)) {
             return;
         }
 
-        mEventNotificationAlarmPendingIntentId = intent
+        int eventNotificationAlarmPendingIntentId = intent
                 .getIntExtra(EVENT_NOTIFICATION_ALARM_PENDING_INTENT_ID_INTENT_KEY, 0);
-
-        mScheduleRepository = new ScheduleRepository(context);
-        mEventNotificationAlarmPendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
 
         PendingResult pendingResult = goAsync();
 
         new Thread(() -> {
             EventNotificationAlarmPendingIntent pendingIntent =
                     mEventNotificationAlarmPendingIntentRepository
-                            .getByIdBlocking(mEventNotificationAlarmPendingIntentId);
+                            .getByIdBlocking(eventNotificationAlarmPendingIntentId);
 
             if (pendingIntent != null) {
                 int eventId = pendingIntent.getEventId();

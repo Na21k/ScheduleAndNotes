@@ -11,12 +11,28 @@ import androidx.annotation.NonNull;
 import com.na21k.schedulenotes.BroadcastReceivers.EventNotificationAlarmReceiver;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepositoryImpl;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AlarmsHelper {
+
+    @NonNull
+    private final Context mContext;
+    @NonNull
+    private final MutableRepository<Event> mScheduleRepository;
+
+    @Inject
+    public AlarmsHelper(
+            @NonNull Context context,
+            @NonNull MutableRepository<Event> scheduleRepository
+    ) {
+        mContext = context;
+        mScheduleRepository = scheduleRepository;
+    }
 
     public static void scheduleEventNotificationAlarm(int eventId,
                                                       long triggerAtMillis,
@@ -38,8 +54,9 @@ public class AlarmsHelper {
 
     public static void cancelEventNotificationAlarmsBlocking(int eventId,
                                                              @NonNull Context context) {
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
+        //FIXME: rewrite for instance usage with the repository injected
+        EventNotificationAlarmPendingIntentRepositoryImpl pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepositoryImpl(context);
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = getEventNotificationIntent(eventId, context);
@@ -60,12 +77,11 @@ public class AlarmsHelper {
         }
     }
 
-    public static void cancelAllEventNotificationAlarmsBlocking(@NonNull Context context) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
-        List<Event> events = scheduleRepository.getAllBlocking();
+    public void cancelAllEventNotificationAlarmsBlocking() {
+        List<Event> events = mScheduleRepository.getAllBlocking();
 
         for (Event event : events) {
-            cancelEventNotificationAlarmsBlocking(event.getId(), context);
+            cancelEventNotificationAlarmsBlocking(event.getId(), mContext);
         }
     }
 

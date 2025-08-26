@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper2;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -23,26 +23,31 @@ import dagger.assisted.AssistedInject;
 public class EventDetailsViewModel extends AndroidViewModel {
 
     @NonNull
-    private final ScheduleRepository mScheduleRepository;
+    private final MutableRepository<Event> mMutableScheduleRepository;
     private final int mEventId;
     @NonNull
     private final LiveData<Event> mEvent;
     @NonNull
     private final LiveData<List<Category>> mCategories;
+    @NonNull
+    private final EventsHelper2 mEventsHelper;
 
     private EventDetailsViewModel(
             @NonNull Application application,
-            @NonNull ScheduleRepository scheduleRepository,
+            @NonNull MutableRepository<Event> mutableScheduleRepository,
             int eventId,
-            @NonNull CategoriesRepository categoriesRepository
+            @NonNull CategoriesRepository categoriesRepository,
+            @NonNull EventsHelper2 eventsHelper
     ) {
         super(application);
 
-        mScheduleRepository = scheduleRepository;
+        mMutableScheduleRepository = mutableScheduleRepository;
         mEventId = eventId;
 
-        mEvent = scheduleRepository.getById(eventId);
+        mEvent = mMutableScheduleRepository.getById(eventId);
         mCategories = categoriesRepository.getAll();
+
+        mEventsHelper = eventsHelper;
     }
 
     public boolean isEditing() {
@@ -63,16 +68,16 @@ public class EventDetailsViewModel extends AndroidViewModel {
         event.setId(mEventId);
 
         if (isEditing()) {
-            mScheduleRepository.update(event);
+            mMutableScheduleRepository.update(event);
             new Thread(() -> {
                 AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
-                EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
+                mEventsHelper.scheduleEventNotificationsBlocking(event);
             }).start();
         } else {
-            mScheduleRepository.add(event).addOnSuccessListener(id -> {
+            mMutableScheduleRepository.add(event).addOnSuccessListener(id -> {
                 event.setId(Math.toIntExact(id));
                 new Thread(() ->
-                        EventsHelper.scheduleEventNotificationsBlocking(event, getApplication())
+                        mEventsHelper.scheduleEventNotificationsBlocking(event)
                 ).start();
             });
         }
@@ -81,7 +86,7 @@ public class EventDetailsViewModel extends AndroidViewModel {
     public void deleteEvent() {
         new Thread(() -> {
             AlarmsHelper.cancelEventNotificationAlarmsBlocking(mEventId, getApplication());
-            mScheduleRepository.delete(mEventId);
+            mMutableScheduleRepository.delete(mEventId);
         }).start();
     }
 
@@ -90,29 +95,35 @@ public class EventDetailsViewModel extends AndroidViewModel {
         @NonNull
         private final Application mApplication;
         @NonNull
-        private final ScheduleRepository mScheduleRepository;
+        private final MutableRepository<Event> mMutableScheduleRepository;
         @NonNull
         private final CategoriesRepository mCategoriesRepository;
         private final int mEventId;
+        @NonNull
+        private final EventsHelper2 mEventsHelper;
 
         @AssistedInject
         public Factory(
                 @NonNull Application application,
-                @NonNull ScheduleRepository scheduleRepository,
+                @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @Assisted int eventId,
-                @NonNull CategoriesRepository categoriesRepository
+                @NonNull CategoriesRepository categoriesRepository,
+                @NonNull EventsHelper2 eventsHelper
         ) {
             mApplication = application;
-            mScheduleRepository = scheduleRepository;
+            mMutableScheduleRepository = mutableScheduleRepository;
             mCategoriesRepository = categoriesRepository;
             mEventId = eventId;
+            mEventsHelper = eventsHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             EventDetailsViewModel vm = new EventDetailsViewModel(
-                    mApplication, mScheduleRepository, mEventId, mCategoriesRepository
+                    mApplication,
+                    mMutableScheduleRepository, mEventId, mCategoriesRepository,
+                    mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

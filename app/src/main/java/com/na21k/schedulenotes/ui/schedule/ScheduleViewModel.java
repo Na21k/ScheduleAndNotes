@@ -11,9 +11,11 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.schedule.ScheduleRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.Date;
@@ -24,22 +26,36 @@ import javax.inject.Inject;
 public class ScheduleViewModel extends AndroidViewModel {
 
     @NonNull
+    private final MutableRepository<Event> mMutableScheduleRepository;
+    @NonNull
     private final ScheduleRepository mScheduleRepository;
+    @NonNull
+    private final CanSearchRepository<Event> mCanSearchScheduleRepository;
     @NonNull
     private final LiveData<List<Category>> mAllCategories;
     private List<Event> mEventsCache = null;
     private List<Category> mCategoriesCache = null;
     private Date mSelectedDate = null;
+    @NonNull
+    private final EventsHelper2 mEventsHelper;
 
     private ScheduleViewModel(
             @NonNull Application application,
+            @NonNull MutableRepository<Event> mutableScheduleRepository,
             @NonNull ScheduleRepository scheduleRepository,
-            @NonNull CategoriesRepository categoriesRepository) {
+            @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
+            @NonNull CategoriesRepository categoriesRepository,
+            @NonNull EventsHelper2 eventsHelper
+    ) {
         super(application);
 
+        mMutableScheduleRepository = mutableScheduleRepository;
         mScheduleRepository = scheduleRepository;
+        mCanSearchScheduleRepository = canSearchScheduleRepository;
 
         mAllCategories = categoriesRepository.getAll();
+
+        mEventsHelper = eventsHelper;
     }
 
     public LiveData<List<Event>> getByDate(Date hasStartedBefore, Date hasNotEndedBy) {
@@ -47,7 +63,7 @@ public class ScheduleViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Event>> getEventsSearch(String searchQuery) {
-        return mScheduleRepository.getSearch(searchQuery);
+        return mCanSearchScheduleRepository.getSearch(searchQuery);
     }
 
     public LiveData<List<Category>> getAllCategories() {
@@ -55,17 +71,17 @@ public class ScheduleViewModel extends AndroidViewModel {
     }
 
     public void createEvent(Event event) {
-        mScheduleRepository.add(event);
+        mMutableScheduleRepository.add(event);
     }
 
     public void updateEvent(Event event) {
-        mScheduleRepository.update(event);
+        mMutableScheduleRepository.update(event);
     }
 
     public void deleteEvent(Event event) {
         new Thread(() -> {
             AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), getApplication());
-            mScheduleRepository.delete(event);
+            mMutableScheduleRepository.delete(event);
         }).start();
     }
 
@@ -73,14 +89,18 @@ public class ScheduleViewModel extends AndroidViewModel {
         Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
         Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);
 
-        EventsHelper.postponeToAsync(event, newStartsDateOnly, getApplication());
+        postponeTo(event, newStartsDateOnly);
     }
 
     public void postponeToTomorrow(Event event) {
         Date tomorrow = DateTimeHelper.addDays(new Date(), 1);
         Date tomorrowDateOnly = DateTimeHelper.truncateToDateOnly(tomorrow);
 
-        EventsHelper.postponeToAsync(event, tomorrowDateOnly, getApplication());
+        postponeTo(event, tomorrowDateOnly);
+    }
+
+    public void postponeTo(Event event, Date dateOnly) {
+        mEventsHelper.postponeToAsync(event, dateOnly);
     }
 
     public List<Event> getEventsCache() {
@@ -112,26 +132,39 @@ public class ScheduleViewModel extends AndroidViewModel {
         @NonNull
         private final Application mApplication;
         @NonNull
+        private final MutableRepository<Event> mMutableScheduleRepository;
+        @NonNull
         private final ScheduleRepository mScheduleRepository;
         @NonNull
+        private final CanSearchRepository<Event> mCanSearchScheduleRepository;
+        @NonNull
         private final CategoriesRepository mCategoriesRepository;
+        @NonNull
+        private final EventsHelper2 mEventsHelper;
 
         @Inject
         public Factory(
                 @NonNull Application application,
+                @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @NonNull ScheduleRepository scheduleRepository,
-                @NonNull CategoriesRepository categoriesRepository
+                @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
+                @NonNull CategoriesRepository categoriesRepository,
+                @NonNull EventsHelper2 eventsHelper
         ) {
             mApplication = application;
+            mMutableScheduleRepository = mutableScheduleRepository;
             mScheduleRepository = scheduleRepository;
+            mCanSearchScheduleRepository = canSearchScheduleRepository;
             mCategoriesRepository = categoriesRepository;
+            mEventsHelper = eventsHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             ScheduleViewModel vm = new ScheduleViewModel(
-                    mApplication, mScheduleRepository, mCategoriesRepository
+                    mApplication, mMutableScheduleRepository, mScheduleRepository,
+                    mCanSearchScheduleRepository, mCategoriesRepository, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

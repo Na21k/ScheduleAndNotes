@@ -11,12 +11,11 @@ import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.data.database.Schedule.Event;
+import com.na21k.schedulenotes.di.modules.repositories.ScheduleRepositoriesModule;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.NotesRepository;
 import com.na21k.schedulenotes.repositories.Repository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
@@ -27,14 +26,11 @@ import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRe
 import dagger.Binds;
 import dagger.Module;
 
-@Module
+@Module(includes = {ScheduleRepositoriesModule.class})
 public interface AppModule {
 
     @Binds
     Context applicationContext(Application application);
-
-    @Binds
-    Repository<Event> bindEentsRepository(ScheduleRepository scheduleRepository);
 
     @Binds
     Repository<Note> bindNotesRepository(NotesRepository notesRepository);
@@ -62,4 +58,7 @@ public interface AppModule {
 
     @Binds
     Repository<LanguagesListItem> bindLanguagesListItemsRepository(LanguagesListRepository languagesListRepository);
+
+    @Binds
+    MutableRepository<LanguagesListItem> bindLanguagesListItemsRepositoryMutable(LanguagesListRepository languagesListRepository);
 }

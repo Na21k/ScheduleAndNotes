@@ -19,15 +19,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.helpers.UiHelper;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.schedule.ScheduleRepository;
 import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
 import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 public class SettingsFragment extends PreferenceFragmentCompat implements DatePickerDialog.OnDateSetListener {
+
+    @Inject
+    protected ScheduleRepository mScheduleRepository;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -122,9 +136,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements DatePi
         Context context = getContext();
         if (context == null) return;
 
-        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
-
-        scheduleRepository.clearOlderThan(date).addOnSuccessListener(
+        mScheduleRepository.clearOlderThan(date).addOnSuccessListener(
                 unused -> showSnackbar(R.string.delete_events_older_than_succeeded_snackbar));
     }
 

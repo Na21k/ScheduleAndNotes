@@ -16,10 +16,12 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.helpers.AlarmsHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper2;
+import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.CategoriesRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.NotesRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
@@ -37,7 +39,9 @@ import javax.inject.Inject;
 public class ImportActivityViewModel extends AndroidViewModel {
 
     @NonNull
-    private final ScheduleRepository mScheduleRepository;
+    private final MutableRepository<Event> mMutableScheduleRepository;
+    @NonNull
+    private final CanClearRepository<Event> mCanClearScheduleRepository;
     @NonNull
     private final NotesRepository mNotesRepository;
     @NonNull
@@ -56,10 +60,15 @@ public class ImportActivityViewModel extends AndroidViewModel {
     private final LanguagesListRepository mLanguagesListRepository;
     @NonNull
     private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    @NonNull
+    private final AlarmsHelper mAlarmsHelper;
+    @NonNull
+    private final EventsHelper2 mEventsHelper;
 
     private ImportActivityViewModel(
             @NonNull Application application,
-            @NonNull ScheduleRepository scheduleRepository,
+            @NonNull MutableRepository<Event> mutableScheduleRepository,
+            @NonNull CanClearRepository<Event> canClearScheduleRepository,
             @NonNull NotesRepository notesRepository,
             @NonNull CategoriesRepository categoriesRepository,
             @NonNull UserDefinedListsRepository userDefinedListsRepository,
@@ -68,11 +77,14 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull MusicListRepository musicListRepository,
             @NonNull ShoppingListRepository shoppingListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
-            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
+            @NonNull AlarmsHelper alarmsHelper,
+            @NonNull EventsHelper2 eventsHelper
     ) {
         super(application);
 
-        mScheduleRepository = scheduleRepository;
+        mMutableScheduleRepository = mutableScheduleRepository;
+        mCanClearScheduleRepository = canClearScheduleRepository;
         mNotesRepository = notesRepository;
         mCategoriesRepository = categoriesRepository;
         mUserDefinedListsRepository = userDefinedListsRepository;
@@ -82,10 +94,14 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mShoppingListRepository = shoppingListRepository;
         mLanguagesListRepository = languagesListRepository;
         mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mAlarmsHelper = alarmsHelper;
+        mEventsHelper = eventsHelper;
     }
 
-    public void clearDatabaseBlocking() {
-        mScheduleRepository.clearBlocking();
+    public void cancelAllEventNotificationAlarmsAndClearDatabaseBlocking() {
+        mAlarmsHelper.cancelAllEventNotificationAlarmsBlocking();
+
+        mCanClearScheduleRepository.clearBlocking();
         mNotesRepository.clearBlocking();
         mCategoriesRepository.clearBlocking();
         mUserDefinedListsRepository.clearBlocking();
@@ -96,7 +112,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertEventsBlocking(List<Event> events) {
-        mScheduleRepository.addBlocking(events);
+        mMutableScheduleRepository.addBlocking(events);
         Date now = new Date();
 
         for (Event event : events) {
@@ -104,7 +120,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 continue;
             }
 
-            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
+            mEventsHelper.scheduleEventNotificationsBlocking(event);
         }
     }
 
@@ -150,7 +166,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final Application mApplication;
         @NonNull
-        private final ScheduleRepository mScheduleRepository;
+        private final MutableRepository<Event> mMutableScheduleRepository;
+        @NonNull
+        private final CanClearRepository<Event> mCanClearScheduleRepository;
         @NonNull
         private final NotesRepository mNotesRepository;
         @NonNull
@@ -169,11 +187,16 @@ public class ImportActivityViewModel extends AndroidViewModel {
         private final LanguagesListRepository mLanguagesListRepository;
         @NonNull
         private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+        @NonNull
+        private final AlarmsHelper mAlarmsHelper;
+        @NonNull
+        private final EventsHelper2 mEventsHelper;
 
         @Inject
         public Factory(
                 @NonNull Application application,
-                @NonNull ScheduleRepository scheduleRepository,
+                @NonNull MutableRepository<Event> mutableScheduleRepository,
+                @NonNull CanClearRepository<Event> canClearScheduleRepository,
                 @NonNull NotesRepository notesRepository,
                 @NonNull CategoriesRepository categoriesRepository,
                 @NonNull UserDefinedListsRepository userDefinedListsRepository,
@@ -182,10 +205,13 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull MusicListRepository musicListRepository,
                 @NonNull ShoppingListRepository shoppingListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
-                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
+                @NonNull AlarmsHelper alarmsHelper,
+                @NonNull EventsHelper2 eventsHelper
         ) {
             mApplication = application;
-            mScheduleRepository = scheduleRepository;
+            mMutableScheduleRepository = mutableScheduleRepository;
+            mCanClearScheduleRepository = canClearScheduleRepository;
             mNotesRepository = notesRepository;
             mCategoriesRepository = categoriesRepository;
             mUserDefinedListsRepository = userDefinedListsRepository;
@@ -195,16 +221,21 @@ public class ImportActivityViewModel extends AndroidViewModel {
             mShoppingListRepository = shoppingListRepository;
             mLanguagesListRepository = languagesListRepository;
             mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+            mAlarmsHelper = alarmsHelper;
+            mEventsHelper = eventsHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             ImportActivityViewModel vm = new ImportActivityViewModel(
-                    mApplication, mScheduleRepository, mNotesRepository, mCategoriesRepository,
+                    mApplication,
+                    mMutableScheduleRepository, mCanClearScheduleRepository,
+                    mNotesRepository, mCategoriesRepository,
                     mUserDefinedListsRepository, mUserDefinedListItemsRepository,
                     mMoviesListRepository, mMusicListRepository, mShoppingListRepository,
-                    mLanguagesListRepository, mLanguagesListAttachedImagesRepository
+                    mLanguagesListRepository, mLanguagesListAttachedImagesRepository,
+                    mAlarmsHelper, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

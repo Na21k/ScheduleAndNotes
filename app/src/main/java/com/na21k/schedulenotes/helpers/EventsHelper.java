@@ -8,12 +8,14 @@ import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepositoryImpl;
+import com.na21k.schedulenotes.repositories.schedule.ScheduleRepositoryImpl;
 
 import java.util.Date;
 import java.util.List;
 
+//switch to EventsHelper2
+@Deprecated(forRemoval = true)
 public class EventsHelper {
 
     public static final int EVENT_STARTS_SOON_TIME_OFFSET_MINS = -30;
@@ -47,15 +49,15 @@ public class EventsHelper {
 
         event.setDateTimeStarts(newDateTimeStarts);
         event.setDateTimeEnds(newDateTimeEnds);
-        new ScheduleRepository(context).update(event);
+        new ScheduleRepositoryImpl(context).update(event);
 
         scheduleEventNotificationsBlocking(event, context);
     }
 
     public static void scheduleEventNotificationsBlocking(@NonNull Event event,
                                                           @NonNull Context context) {
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
+        EventNotificationAlarmPendingIntentRepositoryImpl pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepositoryImpl(context);
 
         int eventId = event.getId();
         Date starts = event.getDateTimeStarts();
@@ -77,7 +79,7 @@ public class EventsHelper {
     public static void scheduleEventNotificationBlocking(
             @NonNull EventNotificationAlarmPendingIntent pendingIntent, @NonNull Context context) {
         EventNotificationType notificationType = pendingIntent.getNotificationType();
-        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
+        ScheduleRepositoryImpl scheduleRepository = new ScheduleRepositoryImpl(context);
         Event event = scheduleRepository.getByIdBlocking(pendingIntent.getEventId());
 
         Date starts = event.getDateTimeStarts();
@@ -103,8 +105,8 @@ public class EventsHelper {
                                                         @NonNull Context context) {
         AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), context);
 
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
+        EventNotificationAlarmPendingIntentRepositoryImpl pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepositoryImpl(context);
         List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
                 .getByEventIdBlocking(event.getId());
 
@@ -114,8 +116,8 @@ public class EventsHelper {
     }
 
     public static void ensureEventNotificationsScheduledBlocking(@NonNull Context context) {
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
+        EventNotificationAlarmPendingIntentRepositoryImpl pendingIntentRepository
+                = new EventNotificationAlarmPendingIntentRepositoryImpl(context);
         //only pending intents for notifications that haven't been sent yet are stored
         List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
                 .getAllBlocking();

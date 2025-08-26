@@ -8,21 +8,38 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.na21k.schedulenotes.Constants;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper;
+import com.na21k.schedulenotes.helpers.EventsHelper2;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 public class NotificationActionBroadcastReceiver extends BroadcastReceiver {
+
+    @Inject
+    protected Repository<Event> mScheduleRepository;
+    @Inject
+    protected MutableRepository<LanguagesListItem> mLanguagesListRepository;
+    @Inject
+    protected EventsHelper2 mEventsHelper;
+
+    private void inject(Context context) {
+        ((ScheduleNotesApplication) context.getApplicationContext())
+                .getAppComponent()
+                .inject(this);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        inject(context);
+
         String action = intent.getAction();
         Bundle bundle = intent.getExtras();
 
@@ -53,11 +70,11 @@ public class NotificationActionBroadcastReceiver extends BroadcastReceiver {
         PendingResult pendingResult = goAsync();
 
         new Thread(() -> {
-            Event event = new ScheduleRepository(context).getByIdBlocking(eventId);
+            Event event = mScheduleRepository.getByIdBlocking(eventId);
             Date newStarts = DateTimeHelper.addDays(event.getDateTimeStarts(), 1);
             Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(newStarts);
 
-            EventsHelper.postponeToBlocking(event, newStartsDateOnly, context);
+            mEventsHelper.postponeToBlocking(event, newStartsDateOnly);
 
             showToast(context, newStarts.toString());
             pendingResult.finish();
@@ -69,10 +86,9 @@ public class NotificationActionBroadcastReceiver extends BroadcastReceiver {
         PendingResult pendingResult = goAsync();
 
         new Thread(() -> {
-            MutableRepository<LanguagesListItem> repository = new LanguagesListRepository(context);
-            LanguagesListItem item = repository.getByIdBlocking(itemId);
+            LanguagesListItem item = mLanguagesListRepository.getByIdBlocking(itemId);
             item.setArchived(true);
-            repository.update(item)
+            mLanguagesListRepository.update(item)
                     .addOnCompleteListener(task -> pendingResult.finish());
         }).start();
     }

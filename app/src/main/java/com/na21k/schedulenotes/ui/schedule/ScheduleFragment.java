@@ -36,7 +36,6 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.databinding.ScheduleFragmentBinding;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
-import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
@@ -436,7 +435,7 @@ public class ScheduleFragment extends Fragment
             calendar.set(year, month, dayOfMonth);
             Date date = calendar.getTime();
 
-            EventsHelper.postponeToAsync(event, date, requireContext());
+            mViewModel.postponeTo(event, date);
             jumpToDate(date);
         }).show();
     }

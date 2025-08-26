@@ -24,7 +24,6 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
-import com.na21k.schedulenotes.helpers.AlarmsHelper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -105,8 +104,7 @@ public class ImportActivity extends AppCompatActivity {
             List<ShoppingListItem> shoppingListItems = (List<ShoppingListItem>) objectInputStream.readObject();
             List<LanguagesListItem> languagesListItems = (List<LanguagesListItem>) objectInputStream.readObject();
 
-            AlarmsHelper.cancelAllEventNotificationAlarmsBlocking(this);
-            mViewModel.clearDatabaseBlocking();
+            mViewModel.cancelAllEventNotificationAlarmsAndClearDatabaseBlocking();
 
             mViewModel.insertCategoriesBlocking(categories);
             mViewModel.insertEventsBlocking(events);
