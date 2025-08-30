@@ -14,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class NotesRepository extends MutableRepository<Note>
-        implements CanSearchRepository<Note>, CanClearRepository {
+        implements CanSearchRepository<Note>, CanClearRepository<Note> {
 
     private final NoteDao mNoteDao = db.noteDao();
 
