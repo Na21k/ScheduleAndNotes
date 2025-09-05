@@ -3,16 +3,15 @@ package com.na21k.schedulenotes.di.modules;
 import android.app.Application;
 import android.content.Context;
 
-import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
+import com.na21k.schedulenotes.di.modules.repositories.CategoryRepositoriesModule;
 import com.na21k.schedulenotes.di.modules.repositories.NoteRepositoriesModule;
 import com.na21k.schedulenotes.di.modules.repositories.ScheduleRepositoriesModule;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
@@ -25,17 +24,15 @@ import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRe
 import dagger.Binds;
 import dagger.Module;
 
-@Module(includes = {ScheduleRepositoriesModule.class, NoteRepositoriesModule.class})
+@Module(includes = {
+        ScheduleRepositoriesModule.class,
+        NoteRepositoriesModule.class,
+        CategoryRepositoriesModule.class
+})
 public interface AppModule {
 
     @Binds
     Context applicationContext(Application application);
-
-    @Binds
-    Repository<Category> bindCategoriesRepository(CategoriesRepository categoriesRepository);
-
-    @Binds
-    MutableRepository<Category> bindCategoriesRepositoryMutable(CategoriesRepository categoriesRepository);
 
     @Binds
     Repository<UserDefinedList> bindUserDefinedListsRepository(UserDefinedListsRepository userDefinedListsRepository);

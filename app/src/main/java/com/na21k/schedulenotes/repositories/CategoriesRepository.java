@@ -14,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class CategoriesRepository extends MutableRepository<Category>
-        implements CanSearchRepository<Category>, CanClearRepository {
+        implements CanSearchRepository<Category>, CanClearRepository<Category> {
 
     private final CategoryDao mCategoryDao = db.categoryDao();
 

@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class NoteDetailsViewModel extends ViewModel {
     private NoteDetailsViewModel(
             @NonNull MutableRepository<Note> mutableNotesRepository,
             int noteId,
-            @NonNull CategoriesRepository categoriesRepository
+            @NonNull Repository<Category> categoriesRepository
     ) {
         super();
 
@@ -69,14 +69,14 @@ public class NoteDetailsViewModel extends ViewModel {
         @NonNull
         private final MutableRepository<Note> mMutableNotesRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final Repository<Category> mCategoriesRepository;
         private final int mNoteId;
 
         @AssistedInject
         public Factory(
                 @NonNull MutableRepository<Note> mutableNotesRepository,
                 @Assisted int noteId,
-                @NonNull CategoriesRepository categoriesRepository
+                @NonNull Repository<Category> categoriesRepository
         ) {
             mMutableNotesRepository = mutableNotesRepository;
             mCategoriesRepository = categoriesRepository;

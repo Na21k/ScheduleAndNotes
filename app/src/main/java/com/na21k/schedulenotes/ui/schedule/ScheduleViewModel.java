@@ -10,8 +10,8 @@ import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.DateTimeHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.repositories.schedule.ScheduleRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
@@ -42,7 +42,7 @@ public class ScheduleViewModel extends ViewModel {
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             @NonNull ScheduleRepository scheduleRepository,
             @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
-            @NonNull CategoriesRepository categoriesRepository,
+            @NonNull Repository<Category> categoriesRepository,
             @NonNull AlarmsHelper alarmsHelper,
             @NonNull EventsHelper eventsHelper
     ) {
@@ -136,7 +136,7 @@ public class ScheduleViewModel extends ViewModel {
         @NonNull
         private final CanSearchRepository<Event> mCanSearchScheduleRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final Repository<Category> mCategoriesRepository;
         @NonNull
         private final AlarmsHelper mAlarmsHelper;
         @NonNull
@@ -147,7 +147,7 @@ public class ScheduleViewModel extends ViewModel {
                 @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @NonNull ScheduleRepository scheduleRepository,
                 @NonNull CanSearchRepository<Event> canSearchScheduleRepository,
-                @NonNull CategoriesRepository categoriesRepository,
+                @NonNull Repository<Category> categoriesRepository,
                 @NonNull AlarmsHelper alarmsHelper,
                 @NonNull EventsHelper eventsHelper
         ) {

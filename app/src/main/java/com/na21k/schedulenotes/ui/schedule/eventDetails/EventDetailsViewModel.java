@@ -8,8 +8,8 @@ import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class EventDetailsViewModel extends ViewModel {
     private EventDetailsViewModel(
             @NonNull MutableRepository<Event> mutableScheduleRepository,
             int eventId,
-            @NonNull CategoriesRepository categoriesRepository,
+            @NonNull Repository<Category> categoriesRepository,
             @NonNull AlarmsHelper alarmsHelper,
             @NonNull EventsHelper eventsHelper
     ) {
@@ -95,7 +95,7 @@ public class EventDetailsViewModel extends ViewModel {
         @NonNull
         private final MutableRepository<Event> mMutableScheduleRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final Repository<Category> mCategoriesRepository;
         private final int mEventId;
         @NonNull
         private final AlarmsHelper mAlarmsHelper;
@@ -106,7 +106,7 @@ public class EventDetailsViewModel extends ViewModel {
         public Factory(
                 @NonNull MutableRepository<Event> mutableScheduleRepository,
                 @Assisted int eventId,
-                @NonNull CategoriesRepository categoriesRepository,
+                @NonNull Repository<Category> categoriesRepository,
                 @NonNull AlarmsHelper alarmsHelper,
                 @NonNull EventsHelper eventsHelper
         ) {

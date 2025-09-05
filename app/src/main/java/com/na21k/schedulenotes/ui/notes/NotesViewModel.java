@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel;
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class NotesViewModel extends ViewModel {
     private NotesViewModel(
             @NonNull MutableRepository<Note> mutableNotesRepository,
             @NonNull CanSearchRepository<Note> canSearchNotesRepository,
-            @NonNull CategoriesRepository categoriesRepository
+            @NonNull Repository<Category> categoriesRepository
     ) {
         super();
 
@@ -91,13 +91,13 @@ public class NotesViewModel extends ViewModel {
         @NonNull
         private final CanSearchRepository<Note> mCanSearchNotesRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final Repository<Category> mCategoriesRepository;
 
         @Inject
         public Factory(
                 @NonNull MutableRepository<Note> mutableNotesRepository,
                 @NonNull CanSearchRepository<Note> canSearchNotesRepository,
-                @NonNull CategoriesRepository categoriesRepository
+                @NonNull Repository<Category> categoriesRepository
         ) {
             mMutableNotesRepository = mutableNotesRepository;
             mCanSearchNotesRepository = canSearchNotesRepository;
