@@ -24,6 +24,11 @@ public class NotesRepository extends MutableRepository<Note>
     }
 
     @Override
+    protected BaseDao<Note> getDao() {
+        return mNoteDao;
+    }
+
+    @Override
     public LiveData<List<Note>> getSearch(String query) {
         return mNoteDao.search(query);
     }
@@ -31,10 +36,5 @@ public class NotesRepository extends MutableRepository<Note>
     @Override
     public void clearBlocking() {
         mNoteDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<Note> getDao() {
-        return mNoteDao;
     }
 }

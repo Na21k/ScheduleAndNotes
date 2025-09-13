@@ -26,12 +26,12 @@ public class EventNotificationAlarmPendingIntentRepositoryImpl
     }
 
     @Override
-    public List<EventNotificationAlarmPendingIntent> getByEventIdBlocking(int eventId) {
-        return mEventNotificationAlarmPendingIntentDao.getByEventIdBlocking(eventId);
+    protected BaseDao<EventNotificationAlarmPendingIntent> getDao() {
+        return mEventNotificationAlarmPendingIntentDao;
     }
 
     @Override
-    protected BaseDao<EventNotificationAlarmPendingIntent> getDao() {
-        return mEventNotificationAlarmPendingIntentDao;
+    public List<EventNotificationAlarmPendingIntent> getByEventIdBlocking(int eventId) {
+        return mEventNotificationAlarmPendingIntentDao.getByEventIdBlocking(eventId);
     }
 }

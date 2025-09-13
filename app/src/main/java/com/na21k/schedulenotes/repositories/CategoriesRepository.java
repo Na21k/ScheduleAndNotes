@@ -24,6 +24,11 @@ public class CategoriesRepository extends MutableRepository<Category>
     }
 
     @Override
+    protected BaseDao<Category> getDao() {
+        return mCategoryDao;
+    }
+
+    @Override
     public LiveData<List<Category>> getSearch(String query) {
         return mCategoryDao.search(query);
     }
@@ -31,10 +36,5 @@ public class CategoriesRepository extends MutableRepository<Category>
     @Override
     public void clearBlocking() {
         mCategoryDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<Category> getDao() {
-        return mCategoryDao;
     }
 }
