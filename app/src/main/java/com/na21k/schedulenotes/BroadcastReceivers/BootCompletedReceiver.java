@@ -9,8 +9,11 @@ import com.na21k.schedulenotes.helpers.EventsHelper;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 public class BootCompletedReceiver extends BroadcastReceiver {
 
+    @Inject
     protected EventsHelper mEventsHelper;
 
     private void inject(Context context) {
