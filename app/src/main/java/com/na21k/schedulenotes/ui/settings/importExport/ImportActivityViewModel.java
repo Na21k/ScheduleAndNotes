@@ -22,7 +22,6 @@ import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
-import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
@@ -57,7 +56,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
     @NonNull
     private final MusicListRepository mMusicListRepository;
     @NonNull
-    private final ShoppingListRepository mShoppingListRepository;
+    private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+    @NonNull
+    private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
     @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
     @NonNull
@@ -79,7 +80,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
             @NonNull MoviesListRepository moviesListRepository,
             @NonNull MusicListRepository musicListRepository,
-            @NonNull ShoppingListRepository shoppingListRepository,
+            @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+            @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
             @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
             @NonNull AlarmsHelper alarmsHelper,
@@ -97,7 +99,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mUserDefinedListItemsRepository = userDefinedListItemsRepository;
         mMoviesListRepository = moviesListRepository;
         mMusicListRepository = musicListRepository;
-        mShoppingListRepository = shoppingListRepository;
+        mMutableShoppingListRepository = mutableShoppingListRepository;
+        mCanClearShoppingListRepository = canClearShoppingListRepository;
         mLanguagesListRepository = languagesListRepository;
         mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
         mAlarmsHelper = alarmsHelper;
@@ -113,7 +116,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mUserDefinedListsRepository.clearBlocking();
         mMoviesListRepository.clearBlocking();
         mMusicListRepository.clearBlocking();
-        mShoppingListRepository.clearBlocking();
+        mCanClearShoppingListRepository.clearBlocking();
         mLanguagesListRepository.clearBlocking();
     }
 
@@ -155,7 +158,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertShoppingListItemsBlocking(List<ShoppingListItem> items) {
-        mShoppingListRepository.addBlocking(items);
+        mMutableShoppingListRepository.addBlocking(items);
     }
 
     public void insertLanguagesListItemsBlocking(List<LanguagesListItem> items) {
@@ -192,7 +195,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final MusicListRepository mMusicListRepository;
         @NonNull
-        private final ShoppingListRepository mShoppingListRepository;
+        private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+        @NonNull
+        private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
         @NonNull
         private final LanguagesListRepository mLanguagesListRepository;
         @NonNull
@@ -215,7 +220,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
                 @NonNull MoviesListRepository moviesListRepository,
                 @NonNull MusicListRepository musicListRepository,
-                @NonNull ShoppingListRepository shoppingListRepository,
+                @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+                @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
                 @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
                 @NonNull AlarmsHelper alarmsHelper,
@@ -232,7 +238,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             mUserDefinedListItemsRepository = userDefinedListItemsRepository;
             mMoviesListRepository = moviesListRepository;
             mMusicListRepository = musicListRepository;
-            mShoppingListRepository = shoppingListRepository;
+            mMutableShoppingListRepository = mutableShoppingListRepository;
+            mCanClearShoppingListRepository = canClearShoppingListRepository;
             mLanguagesListRepository = languagesListRepository;
             mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
             mAlarmsHelper = alarmsHelper;
@@ -248,7 +255,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
                     mMutableNotesRepository, mCanClearNotesRepository,
                     mMutableCategoriesRepository, mCanClearCategoriesRepository,
                     mUserDefinedListsRepository, mUserDefinedListItemsRepository,
-                    mMoviesListRepository, mMusicListRepository, mShoppingListRepository,
+                    mMoviesListRepository, mMusicListRepository,
+                    mMutableShoppingListRepository, mCanClearShoppingListRepository,
                     mLanguagesListRepository, mLanguagesListAttachedImagesRepository,
                     mAlarmsHelper, mEventsHelper
             );

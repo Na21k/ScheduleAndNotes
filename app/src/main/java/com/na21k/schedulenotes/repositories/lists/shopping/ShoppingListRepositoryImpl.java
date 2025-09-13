@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories.lists;
+package com.na21k.schedulenotes.repositories.lists.shopping;
 
 import android.content.Context;
 
@@ -16,14 +16,25 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ShoppingListRepository extends MutableRepository<ShoppingListItem>
-        implements CanSearchRepository<ShoppingListItem>, CanClearRepository {
+public class ShoppingListRepositoryImpl extends MutableRepository<ShoppingListItem>
+        implements ShoppingListRepository,
+        CanSearchRepository<ShoppingListItem>, CanClearRepository<ShoppingListItem> {
 
     private final ShoppingListItemDao mShoppingListItemDao = db.shoppingListItemDao();
 
     @Inject
-    public ShoppingListRepository(@NonNull Context context) {
+    public ShoppingListRepositoryImpl(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    protected BaseDao<ShoppingListItem> getDao() {
+        return mShoppingListItemDao;
+    }
+
+    @Override
+    public void deleteChecked() {
+        new Thread(mShoppingListItemDao::deleteChecked).start();
     }
 
     @Override
@@ -31,17 +42,8 @@ public class ShoppingListRepository extends MutableRepository<ShoppingListItem>
         return mShoppingListItemDao.search(query);
     }
 
-    public void deleteChecked() {
-        new Thread(mShoppingListItemDao::deleteChecked).start();
-    }
-
     @Override
     public void clearBlocking() {
         mShoppingListItemDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<ShoppingListItem> getDao() {
-        return mShoppingListItemDao;
     }
 }
