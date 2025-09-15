@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
-import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
@@ -14,7 +13,6 @@ import com.na21k.schedulenotes.di.modules.repositories.ScheduleRepositoriesModul
 import com.na21k.schedulenotes.di.modules.repositories.lists.ListRepositoriesModule;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.Repository;
-import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
@@ -39,9 +37,6 @@ public interface AppModule {
 
     @Binds
     Repository<UserDefinedListItem> bindUserDefinedListItemsRepository(UserDefinedListItemsRepository userDefinedListItemsRepository);
-
-    @Binds
-    Repository<MoviesListItem> bindMoviesListItemsRepository(MoviesListRepository moviesListRepository);
 
     @Binds
     Repository<MusicListItem> bindMusicListItemsRepository(MusicListRepository musicListRepository);

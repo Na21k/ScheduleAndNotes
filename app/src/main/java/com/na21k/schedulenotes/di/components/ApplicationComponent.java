@@ -24,6 +24,7 @@ import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
 import com.na21k.schedulenotes.ui.settings.SettingsFragment;
 import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
 import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
+import com.na21k.schedulenotes.workers.RecommendationsWorker;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -75,6 +76,8 @@ public interface ApplicationComponent {
     void inject(EventNotificationAlarmReceiver eventNotificationAlarmReceiver);
 
     void inject(NotificationActionBroadcastReceiver notificationActionBroadcastReceiver);
+
+    void inject(RecommendationsWorker recommendationsWorker);
 
     @Component.Factory
     interface Factory {

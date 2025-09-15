@@ -8,35 +8,45 @@ import androidx.work.WorkerParameters;
 
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
+import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
-import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
 import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 
 import java.util.StringJoiner;
 
+import javax.inject.Inject;
+
 public class RecommendationsWorker extends Worker {
 
-    private final CanProvideRandomRepository<MoviesListItem> mMoviesListRepository;
     private final CanProvideRandomRepository<MusicListItem> mMusicListRepository;
     private final CanProvideRandomRepository<LanguagesListItem> mLanguagesListRepository;
+    @Inject
+    protected CanProvideRandomRepository<MoviesListItem> mCanProvideRandomMoviesListRepository;
 
     public RecommendationsWorker(@NonNull Context context,
                                  @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
 
-        mMoviesListRepository = new MoviesListRepository(context);
         mMusicListRepository = new MusicListRepository(context);
         mLanguagesListRepository = new LanguagesListRepository(context);
+    }
+
+    private void inject() {
+        ((ScheduleNotesApplication) getApplicationContext())
+                .getAppComponent()
+                .inject(this);
     }
 
     @NonNull
     @Override
     public Result doWork() {
+        inject();
+
         Context context = getApplicationContext();
         showMoviesListNotification(context);
         showMusicListNotification(context);
@@ -53,7 +63,7 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        MoviesListItem item = mMoviesListRepository.getRandomBlocking();
+        MoviesListItem item = mCanProvideRandomMoviesListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
