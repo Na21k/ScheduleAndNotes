@@ -23,17 +23,17 @@ import javax.inject.Inject;
 
 public class RecommendationsWorker extends Worker {
 
-    private final CanProvideRandomRepository<MusicListItem> mMusicListRepository;
-    private final CanProvideRandomRepository<LanguagesListItem> mLanguagesListRepository;
     @Inject
     protected CanProvideRandomRepository<MoviesListItem> mCanProvideRandomMoviesListRepository;
+    private final CanProvideRandomRepository<MusicListItem> mCanProvideRandomMusicListRepository;
+    private final CanProvideRandomRepository<LanguagesListItem> mCanProvideRandomLanguagesListRepository;
 
     public RecommendationsWorker(@NonNull Context context,
                                  @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
 
-        mMusicListRepository = new MusicListRepository(context);
-        mLanguagesListRepository = new LanguagesListRepository(context);
+        mCanProvideRandomMusicListRepository = new MusicListRepository(context);
+        mCanProvideRandomLanguagesListRepository = new LanguagesListRepository(context);
     }
 
     private void inject() {
@@ -81,7 +81,7 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        MusicListItem item = mMusicListRepository.getRandomBlocking();
+        MusicListItem item = mCanProvideRandomMusicListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
@@ -99,7 +99,7 @@ public class RecommendationsWorker extends Worker {
             return;
         }
 
-        LanguagesListItem item = mLanguagesListRepository.getRandomBlocking();
+        LanguagesListItem item = mCanProvideRandomLanguagesListRepository.getRandomBlocking();
 
         if (item == null) {
             return;
