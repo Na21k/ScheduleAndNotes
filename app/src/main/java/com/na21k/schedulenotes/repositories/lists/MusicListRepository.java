@@ -18,7 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class MusicListRepository extends MutableRepository<MusicListItem>
-        implements CanSearchRepository<MusicListItem>, CanClearRepository,
+        implements CanSearchRepository<MusicListItem>, CanClearRepository<MusicListItem>,
         CanProvideRandomRepository<MusicListItem> {
 
     private final MusicListItemDao mMusicListItemDao = db.musicListItemDao();
@@ -29,8 +29,8 @@ public class MusicListRepository extends MutableRepository<MusicListItem>
     }
 
     @Override
-    public MusicListItem getRandomBlocking() {
-        return mMusicListItemDao.getRandomBlocking();
+    protected BaseDao<MusicListItem> getDao() {
+        return mMusicListItemDao;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MusicListRepository extends MutableRepository<MusicListItem>
     }
 
     @Override
-    protected BaseDao<MusicListItem> getDao() {
-        return mMusicListItemDao;
+    public MusicListItem getRandomBlocking() {
+        return mMusicListItemDao.getRandomBlocking();
     }
 }

@@ -20,7 +20,6 @@ import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
@@ -55,7 +54,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
     @NonNull
     private final CanClearRepository<MoviesListItem> mCanClearMoviesListRepository;
     @NonNull
-    private final MusicListRepository mMusicListRepository;
+    private final MutableRepository<MusicListItem> mMutableMusicListRepository;
+    @NonNull
+    private final CanClearRepository<MusicListItem> mCanClearMusicListRepository;
     @NonNull
     private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
     @NonNull
@@ -81,7 +82,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
             @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
             @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
-            @NonNull MusicListRepository musicListRepository,
+            @NonNull MutableRepository<MusicListItem> mutableMusicListRepository,
+            @NonNull CanClearRepository<MusicListItem> canClearMusicListRepository,
             @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
             @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
@@ -101,7 +103,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mUserDefinedListItemsRepository = userDefinedListItemsRepository;
         mMutableMoviesListRepository = mutableMoviesListRepository;
         mCanClearMoviesListRepository = canClearMoviesListRepository;
-        mMusicListRepository = musicListRepository;
+        mMutableMusicListRepository = mutableMusicListRepository;
+        mCanClearMusicListRepository = canClearMusicListRepository;
         mMutableShoppingListRepository = mutableShoppingListRepository;
         mCanClearShoppingListRepository = canClearShoppingListRepository;
         mLanguagesListRepository = languagesListRepository;
@@ -118,7 +121,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mCanClearCategoriesRepository.clearBlocking();
         mUserDefinedListsRepository.clearBlocking();
         mCanClearMoviesListRepository.clearBlocking();
-        mMusicListRepository.clearBlocking();
+        mCanClearMusicListRepository.clearBlocking();
         mCanClearShoppingListRepository.clearBlocking();
         mLanguagesListRepository.clearBlocking();
     }
@@ -157,7 +160,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertMusicListItemsBlocking(List<MusicListItem> items) {
-        mMusicListRepository.addBlocking(items);
+        mMutableMusicListRepository.addBlocking(items);
     }
 
     public void insertShoppingListItemsBlocking(List<ShoppingListItem> items) {
@@ -198,7 +201,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final CanClearRepository<MoviesListItem> mCanClearMoviesListRepository;
         @NonNull
-        private final MusicListRepository mMusicListRepository;
+        private final MutableRepository<MusicListItem> mMutableMusicListRepository;
+        @NonNull
+        private final CanClearRepository<MusicListItem> mCanClearMusicListRepository;
         @NonNull
         private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
         @NonNull
@@ -225,7 +230,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
                 @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
                 @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
-                @NonNull MusicListRepository musicListRepository,
+                @NonNull MutableRepository<MusicListItem> mutableMusicListRepository,
+                @NonNull CanClearRepository<MusicListItem> canClearMusicListRepository,
                 @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
                 @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
@@ -244,7 +250,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             mUserDefinedListItemsRepository = userDefinedListItemsRepository;
             mMutableMoviesListRepository = mutableMoviesListRepository;
             mCanClearMoviesListRepository = canClearMoviesListRepository;
-            mMusicListRepository = musicListRepository;
+            mMutableMusicListRepository = mutableMusicListRepository;
+            mCanClearMusicListRepository = canClearMusicListRepository;
             mMutableShoppingListRepository = mutableShoppingListRepository;
             mCanClearShoppingListRepository = canClearShoppingListRepository;
             mLanguagesListRepository = languagesListRepository;
@@ -263,7 +270,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
                     mMutableCategoriesRepository, mCanClearCategoriesRepository,
                     mUserDefinedListsRepository, mUserDefinedListItemsRepository,
                     mMutableMoviesListRepository, mCanClearMoviesListRepository,
-                    mMusicListRepository,
+                    mMutableMusicListRepository, mCanClearMusicListRepository,
                     mMutableShoppingListRepository, mCanClearShoppingListRepository,
                     mLanguagesListRepository, mLanguagesListAttachedImagesRepository,
                     mAlarmsHelper, mEventsHelper

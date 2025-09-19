@@ -4,6 +4,7 @@ import dagger.Module;
 
 @Module(includes = {
         MoviesListRepositoriesModule.class,
+        MusicListRepositoriesModule.class,
         ShoppingListRepositoriesModule.class
 })
 public interface ListRepositoriesModule {
