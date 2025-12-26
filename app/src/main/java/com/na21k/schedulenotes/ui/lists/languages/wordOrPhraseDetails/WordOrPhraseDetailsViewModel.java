@@ -29,7 +29,7 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     @NonNull
     private final LiveData<LanguagesListItem> mItem;
     @NonNull
-    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
     @NonNull
     private final LiveData<List<LanguagesListItemAttachedImage>> mAttachedImages;
     private List<LanguagesListItemAttachedImage> mImagesBefore = new ArrayList<>();
@@ -40,13 +40,14 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
             @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
             int itemId,
+            @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
             @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
     ) {
         super();
 
         mMutableLanguagesListRepository = mutableLanguagesListRepository;
         mLanguagesListRepository = languagesListRepository;
-        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
         mItemId = itemId;
 
         mItem = mutableLanguagesListRepository.getById(itemId);
@@ -128,12 +129,12 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
             List<LanguagesListItemAttachedImage> added = getAddedImages();
 
             for (LanguagesListItemAttachedImage image : deleted) {
-                mLanguagesListAttachedImagesRepository.delete(image);
+                mMutableLanguagesListAttachedImagesRepository.delete(image);
             }
 
             for (LanguagesListItemAttachedImage image : added) {
                 image.setLanguagesListItemId(addedImagesListItemId);
-                mLanguagesListAttachedImagesRepository.add(image);
+                mMutableLanguagesListAttachedImagesRepository.add(image);
             }
         }
     }
@@ -173,6 +174,8 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         @NonNull
         private final LanguagesListRepository mLanguagesListRepository;
         @NonNull
+        private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
+        @NonNull
         private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
         private final int mItemId;
 
@@ -181,10 +184,12 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
                 @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
                 @Assisted int itemId,
+                @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
                 @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
         ) {
             mMutableLanguagesListRepository = mutableLanguagesListRepository;
             mLanguagesListRepository = languagesListRepository;
+            mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
             mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
             mItemId = itemId;
         }
@@ -194,7 +199,7 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             WordOrPhraseDetailsViewModel vm = new WordOrPhraseDetailsViewModel(
                     mMutableLanguagesListRepository, mLanguagesListRepository, mItemId,
-                    mLanguagesListAttachedImagesRepository
+                    mMutableLanguagesListAttachedImagesRepository, mLanguagesListAttachedImagesRepository
             );
             ensureViewModelType(vm, modelClass);
 

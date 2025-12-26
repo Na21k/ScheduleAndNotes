@@ -20,7 +20,6 @@ import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
@@ -65,7 +64,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     @NonNull
     private final CanClearRepository<LanguagesListItem> mCanClearLanguagesListRepository;
     @NonNull
-    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
     @NonNull
     private final AlarmsHelper mAlarmsHelper;
     @NonNull
@@ -89,7 +88,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
             @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
             @NonNull CanClearRepository<LanguagesListItem> canClearLanguagesListRepository,
-            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
+            @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
             @NonNull AlarmsHelper alarmsHelper,
             @NonNull EventsHelper eventsHelper
     ) {
@@ -111,7 +110,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mCanClearShoppingListRepository = canClearShoppingListRepository;
         mMutableLanguagesListRepository = mutableLanguagesListRepository;
         mCanClearLanguagesListRepository = canClearLanguagesListRepository;
-        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
         mAlarmsHelper = alarmsHelper;
         mEventsHelper = eventsHelper;
     }
@@ -176,7 +175,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
 
     public void insertLanguageListItemAttachedImagesBlocking(
             List<LanguagesListItemAttachedImage> images) {
-        mLanguagesListAttachedImagesRepository.addBlocking(images);
+        mMutableLanguagesListAttachedImagesRepository.addBlocking(images);
     }
 
     public static class Factory extends BaseViewModelFactory {
@@ -216,7 +215,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final CanClearRepository<LanguagesListItem> mCanClearLanguagesListRepository;
         @NonNull
-        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+        private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
         @NonNull
         private final AlarmsHelper mAlarmsHelper;
         @NonNull
@@ -241,7 +240,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
                 @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
                 @NonNull CanClearRepository<LanguagesListItem> canClearLanguagesListRepository,
-                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository,
+                @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
                 @NonNull AlarmsHelper alarmsHelper,
                 @NonNull EventsHelper eventsHelper
         ) {
@@ -262,7 +261,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
             mCanClearShoppingListRepository = canClearShoppingListRepository;
             mMutableLanguagesListRepository = mutableLanguagesListRepository;
             mCanClearLanguagesListRepository = canClearLanguagesListRepository;
-            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+            mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
             mAlarmsHelper = alarmsHelper;
             mEventsHelper = eventsHelper;
         }
@@ -280,7 +279,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
                     mMutableMusicListRepository, mCanClearMusicListRepository,
                     mMutableShoppingListRepository, mCanClearShoppingListRepository,
                     mMutableLanguagesListRepository, mCanClearLanguagesListRepository,
-                    mLanguagesListAttachedImagesRepository,
+                    mMutableLanguagesListAttachedImagesRepository,
                     mAlarmsHelper, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);

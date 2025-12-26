@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.di.modules.repositories.lists;
+package com.na21k.schedulenotes.di.modules.repositories.lists.languagesListRepositoriesModules;
 
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
@@ -12,7 +12,7 @@ import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListReposit
 import dagger.Binds;
 import dagger.Module;
 
-@Module
+@Module(includes = LanguagesListAttachedImagesRepositoriesModule.class)
 public interface LanguagesListRepositoriesModule {
 
     @Binds
