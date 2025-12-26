@@ -14,7 +14,6 @@ import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Music.MusicListItem;
 import com.na21k.schedulenotes.helpers.NotificationsHelper;
 import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 
 import java.util.StringJoiner;
 
@@ -26,13 +25,12 @@ public class RecommendationsWorker extends Worker {
     protected CanProvideRandomRepository<MoviesListItem> mCanProvideRandomMoviesListRepository;
     @Inject
     protected CanProvideRandomRepository<MusicListItem> mCanProvideRandomMusicListRepository;
-    private final CanProvideRandomRepository<LanguagesListItem> mCanProvideRandomLanguagesListRepository;
+    @Inject
+    protected CanProvideRandomRepository<LanguagesListItem> mCanProvideRandomLanguagesListRepository;
 
     public RecommendationsWorker(@NonNull Context context,
                                  @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-
-        mCanProvideRandomLanguagesListRepository = new LanguagesListRepository(context);
     }
 
     private void inject() {

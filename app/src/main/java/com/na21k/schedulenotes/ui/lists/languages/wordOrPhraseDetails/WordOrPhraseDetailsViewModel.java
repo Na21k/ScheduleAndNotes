@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
@@ -21,6 +22,8 @@ import dagger.assisted.AssistedInject;
 public class WordOrPhraseDetailsViewModel extends ViewModel {
 
     @NonNull
+    private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+    @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
     private final int mItemId;
     @NonNull
@@ -34,17 +37,19 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     private boolean mTrackedAttachedImagesSetExternally;
 
     private WordOrPhraseDetailsViewModel(
+            @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
             int itemId,
             @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
     ) {
         super();
 
+        mMutableLanguagesListRepository = mutableLanguagesListRepository;
         mLanguagesListRepository = languagesListRepository;
         mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
         mItemId = itemId;
 
-        mItem = languagesListRepository.getById(itemId);
+        mItem = mutableLanguagesListRepository.getById(itemId);
         mAttachedImages = languagesListAttachedImagesRepository.getByListItemId(itemId);
     }
 
@@ -70,10 +75,10 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         item.setId(mItemId);
 
         if (isEditing()) {
-            mLanguagesListRepository.update(item);
+            mMutableLanguagesListRepository.update(item);
             updateImagesIfChanged(mItemId);
         } else {
-            mLanguagesListRepository.add(item)
+            mMutableLanguagesListRepository.add(item)
                     .addOnSuccessListener(id -> {
                         int newItemId = Math.toIntExact(id);
 
@@ -88,7 +93,7 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     }
 
     public void delete() {
-        mLanguagesListRepository.delete(mItemId);
+        mMutableLanguagesListRepository.delete(mItemId);
     }
 
     public void setTrackedAttachedImages(@NonNull List<LanguagesListItemAttachedImage> images) {
@@ -164,6 +169,8 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
+        private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+        @NonNull
         private final LanguagesListRepository mLanguagesListRepository;
         @NonNull
         private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
@@ -171,10 +178,12 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
 
         @AssistedInject
         public Factory(
+                @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
                 @Assisted int itemId,
                 @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
         ) {
+            mMutableLanguagesListRepository = mutableLanguagesListRepository;
             mLanguagesListRepository = languagesListRepository;
             mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
             mItemId = itemId;
@@ -184,7 +193,8 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             WordOrPhraseDetailsViewModel vm = new WordOrPhraseDetailsViewModel(
-                    mLanguagesListRepository, mItemId, mLanguagesListAttachedImagesRepository
+                    mMutableLanguagesListRepository, mLanguagesListRepository, mItemId,
+                    mLanguagesListAttachedImagesRepository
             );
             ensureViewModelType(vm, modelClass);
 
