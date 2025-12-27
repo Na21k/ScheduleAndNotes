@@ -17,13 +17,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class UserDefinedListsRepository extends MutableRepository<UserDefinedList>
-        implements CanSearchRepository<UserDefinedList>, CanClearRepository {
+        implements CanSearchRepository<UserDefinedList>, CanClearRepository<UserDefinedList> {
 
     private final UserDefinedListDao mUserDefinedListDao = db.userDefinedListDao();
 
     @Inject
     public UserDefinedListsRepository(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    protected BaseDao<UserDefinedList> getDao() {
+        return mUserDefinedListDao;
     }
 
     @Override
@@ -34,10 +39,5 @@ public class UserDefinedListsRepository extends MutableRepository<UserDefinedLis
     @Override
     public void clearBlocking() {
         mUserDefinedListDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<UserDefinedList> getDao() {
-        return mUserDefinedListDao;
     }
 }

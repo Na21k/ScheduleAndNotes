@@ -21,7 +21,6 @@ import com.na21k.schedulenotes.helpers.EventsHelper;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
-import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.Date;
@@ -44,7 +43,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
     @NonNull
     private final CanClearRepository<Category> mCanClearCategoriesRepository;
     @NonNull
-    private final UserDefinedListsRepository mUserDefinedListsRepository;
+    private final MutableRepository<UserDefinedList> mMutableUserDefinedListsRepository;
+    @NonNull
+    private final CanClearRepository<UserDefinedList> mCanClearUserDefinedListsRepository;
     @NonNull
     private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
     @NonNull
@@ -78,7 +79,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             @NonNull CanClearRepository<Note> canClearNotesRepository,
             @NonNull MutableRepository<Category> mutableCategoriesRepository,
             @NonNull CanClearRepository<Category> canClearCategoriesRepository,
-            @NonNull UserDefinedListsRepository userDefinedListsRepository,
+            @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
+            @NonNull CanClearRepository<UserDefinedList> canClearUserDefinedListsRepository,
             @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
             @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
             @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
@@ -100,7 +102,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mCanClearNotesRepository = canClearNotesRepository;
         mMutableCategoriesRepository = mutableCategoriesRepository;
         mCanClearCategoriesRepository = canClearCategoriesRepository;
-        mUserDefinedListsRepository = userDefinedListsRepository;
+        mMutableUserDefinedListsRepository = mutableUserDefinedListsRepository;
+        mCanClearUserDefinedListsRepository = canClearUserDefinedListsRepository;
         mUserDefinedListItemsRepository = userDefinedListItemsRepository;
         mMutableMoviesListRepository = mutableMoviesListRepository;
         mCanClearMoviesListRepository = canClearMoviesListRepository;
@@ -121,7 +124,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
         mCanClearScheduleRepository.clearBlocking();
         mCanClearNotesRepository.clearBlocking();
         mCanClearCategoriesRepository.clearBlocking();
-        mUserDefinedListsRepository.clearBlocking();
+        mCanClearUserDefinedListsRepository.clearBlocking();
         mCanClearMoviesListRepository.clearBlocking();
         mCanClearMusicListRepository.clearBlocking();
         mCanClearShoppingListRepository.clearBlocking();
@@ -150,7 +153,7 @@ public class ImportActivityViewModel extends AndroidViewModel {
     }
 
     public void insertUserDefinedListsBlocking(List<UserDefinedList> lists) {
-        mUserDefinedListsRepository.addBlocking(lists);
+        mMutableUserDefinedListsRepository.addBlocking(lists);
     }
 
     public void insertUserDefinedListItemsBlocking(List<UserDefinedListItem> items) {
@@ -195,7 +198,9 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final CanClearRepository<Category> mCanClearCategoriesRepository;
         @NonNull
-        private final UserDefinedListsRepository mUserDefinedListsRepository;
+        private final MutableRepository<UserDefinedList> mMutableUserDefinedListsRepository;
+        @NonNull
+        private final CanClearRepository<UserDefinedList> mCanClearUserDefinedListsRepository;
         @NonNull
         private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
         @NonNull
@@ -230,7 +235,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 @NonNull CanClearRepository<Note> canClearNotesRepository,
                 @NonNull MutableRepository<Category> mutableCategoriesRepository,
                 @NonNull CanClearRepository<Category> canClearCategoriesRepository,
-                @NonNull UserDefinedListsRepository userDefinedListsRepository,
+                @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
+                @NonNull CanClearRepository<UserDefinedList> canClearUserDefinedListsRepository,
                 @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
                 @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
                 @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
@@ -251,7 +257,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
             mCanClearNotesRepository = canClearNotesRepository;
             mMutableCategoriesRepository = mutableCategoriesRepository;
             mCanClearCategoriesRepository = canClearCategoriesRepository;
-            mUserDefinedListsRepository = userDefinedListsRepository;
+            mMutableUserDefinedListsRepository = mutableUserDefinedListsRepository;
+            mCanClearUserDefinedListsRepository = canClearUserDefinedListsRepository;
             mUserDefinedListItemsRepository = userDefinedListItemsRepository;
             mMutableMoviesListRepository = mutableMoviesListRepository;
             mCanClearMoviesListRepository = canClearMoviesListRepository;
@@ -274,7 +281,8 @@ public class ImportActivityViewModel extends AndroidViewModel {
                     mMutableScheduleRepository, mCanClearScheduleRepository,
                     mMutableNotesRepository, mCanClearNotesRepository,
                     mMutableCategoriesRepository, mCanClearCategoriesRepository,
-                    mUserDefinedListsRepository, mUserDefinedListItemsRepository,
+                    mMutableUserDefinedListsRepository, mCanClearUserDefinedListsRepository,
+                    mUserDefinedListItemsRepository,
                     mMutableMoviesListRepository, mCanClearMoviesListRepository,
                     mMutableMusicListRepository, mCanClearMusicListRepository,
                     mMutableShoppingListRepository, mCanClearShoppingListRepository,
