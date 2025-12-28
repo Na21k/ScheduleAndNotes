@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.na21k.schedulenotes.di.modules.repositories.CategoryRepositoriesModule;
 import com.na21k.schedulenotes.di.modules.repositories.NoteRepositoriesModule;
-import com.na21k.schedulenotes.di.modules.repositories.ScheduleRepositoriesModule;
 import com.na21k.schedulenotes.di.modules.repositories.lists.ListRepositoriesModule;
+import com.na21k.schedulenotes.di.modules.repositories.schedule.ScheduleRepositoriesModule;
 
 import dagger.Binds;
 import dagger.Module;

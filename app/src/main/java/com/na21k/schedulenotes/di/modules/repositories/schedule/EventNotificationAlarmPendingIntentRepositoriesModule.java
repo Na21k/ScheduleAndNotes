@@ -1,0 +1,19 @@
+package com.na21k.schedulenotes.di.modules.repositories.schedule;
+
+import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepositoryImpl;
+
+import dagger.Binds;
+import dagger.Module;
+
+@Module
+public interface EventNotificationAlarmPendingIntentRepositoriesModule {
+
+    @Binds
+    MutableRepository<EventNotificationAlarmPendingIntent> bindEventNotificationAlarmPendingIntentsRepositoryMutable(EventNotificationAlarmPendingIntentRepositoryImpl eventNotificationAlarmPendingIntentRepository);
+
+    @Binds
+    EventNotificationAlarmPendingIntentRepository bindEventNotificationAlarmPendingIntentsRepository(EventNotificationAlarmPendingIntentRepositoryImpl eventNotificationAlarmPendingIntentRepository);
+}
