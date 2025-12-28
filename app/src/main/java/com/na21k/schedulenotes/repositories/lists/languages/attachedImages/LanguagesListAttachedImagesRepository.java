@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories.lists.languages;
+package com.na21k.schedulenotes.repositories.lists.languages.attachedImages;
 
 import androidx.lifecycle.LiveData;
 

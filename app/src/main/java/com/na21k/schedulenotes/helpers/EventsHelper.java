@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepository;
 
 import java.util.Date;
 import java.util.List;

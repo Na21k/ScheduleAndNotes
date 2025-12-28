@@ -6,10 +6,10 @@ import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.Repository;
-import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepository;
-import com.na21k.schedulenotes.repositories.schedule.EventNotificationAlarmPendingIntentRepositoryImpl;
 import com.na21k.schedulenotes.repositories.schedule.ScheduleRepository;
 import com.na21k.schedulenotes.repositories.schedule.ScheduleRepositoryImpl;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepository;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepositoryImpl;
 
 import dagger.Binds;
 import dagger.Module;

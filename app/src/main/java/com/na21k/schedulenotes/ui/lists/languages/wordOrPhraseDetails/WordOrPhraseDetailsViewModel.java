@@ -8,7 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 

@@ -3,8 +3,8 @@ package com.na21k.schedulenotes.di.modules.repositories.lists.languagesListRepos
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.repositories.Repository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepositoryImpl;
+import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepositoryImpl;
 
 import dagger.Binds;
 import dagger.Module;

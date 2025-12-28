@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories.schedule;
+package com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents;
 
 import android.content.Context;
 
