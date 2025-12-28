@@ -10,7 +10,7 @@ import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRe
 import dagger.Binds;
 import dagger.Module;
 
-@Module
+@Module(includes = UserDefinedListItemsRepositoriesModule.class)
 public interface UserDefinedListsRepositoriesModule {
 
     @Binds

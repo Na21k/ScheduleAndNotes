@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories.lists.userDefined;
+package com.na21k.schedulenotes.repositories.lists.userDefined.listItems;
 
 import android.content.Context;
 
@@ -14,25 +14,28 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class UserDefinedListItemsRepository extends MutableRepository<UserDefinedListItem> {
+public class UserDefinedListItemsRepositoryImpl extends MutableRepository<UserDefinedListItem>
+        implements UserDefinedListItemsRepository {
 
     private final UserDefinedListItemDao mUserDefinedListItemDao = db.userDefinedListItemDao();
 
     @Inject
-    public UserDefinedListItemsRepository(@NonNull Context context) {
+    public UserDefinedListItemsRepositoryImpl(@NonNull Context context) {
         super(context);
-    }
-
-    public LiveData<List<UserDefinedListItem>> getAllForList(int listId) {
-        return mUserDefinedListItemDao.getByListId(listId);
-    }
-
-    public LiveData<List<UserDefinedListItem>> getSearch(int listId, String query) {
-        return mUserDefinedListItemDao.searchInList(listId, query);
     }
 
     @Override
     protected BaseDao<UserDefinedListItem> getDao() {
         return mUserDefinedListItemDao;
+    }
+
+    @Override
+    public LiveData<List<UserDefinedListItem>> getAllForList(int listId) {
+        return mUserDefinedListItemDao.getByListId(listId);
+    }
+
+    @Override
+    public LiveData<List<UserDefinedListItem>> getSearch(int listId, String query) {
+        return mUserDefinedListItemDao.searchInList(listId, query);
     }
 }

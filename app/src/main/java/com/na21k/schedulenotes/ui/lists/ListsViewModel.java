@@ -10,7 +10,7 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -24,20 +24,20 @@ public class ListsViewModel extends ViewModel {
     @NonNull
     private final CanSearchRepository<UserDefinedList> mCanSearchListsRepository;
     @NonNull
-    private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+    private final Repository<UserDefinedListItem> mListItemsRepository;
     private List<UserDefinedList> mListsCache = null;
     private List<UserDefinedListItem> mListItemsCache = null;
 
     private ListsViewModel(
             @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
             @NonNull CanSearchRepository<UserDefinedList> canSearchUserDefinedListsRepository,
-            @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository
+            @NonNull Repository<UserDefinedListItem> userDefinedListItemsRepository
     ) {
         super();
 
         mMutableListsRepository = mutableUserDefinedListsRepository;
         mCanSearchListsRepository = canSearchUserDefinedListsRepository;
-        mUserDefinedListItemsRepository = userDefinedListItemsRepository;
+        mListItemsRepository = userDefinedListItemsRepository;
     }
 
     public LiveData<List<UserDefinedList>> getAllLists() {
@@ -49,7 +49,7 @@ public class ListsViewModel extends ViewModel {
     }
 
     public LiveData<List<UserDefinedListItem>> getAllListItems() {
-        return mUserDefinedListItemsRepository.getAll();
+        return mListItemsRepository.getAll();
     }
 
     public void addNew(UserDefinedList list) {
@@ -93,17 +93,17 @@ public class ListsViewModel extends ViewModel {
         @NonNull
         private final CanSearchRepository<UserDefinedList> mCanSearchListsRepository;
         @NonNull
-        private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+        private final Repository<UserDefinedListItem> mListItemsRepository;
 
         @Inject
         public Factory(
                 @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
                 @NonNull CanSearchRepository<UserDefinedList> canSearchUserDefinedListsRepository,
-                @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository
+                @NonNull Repository<UserDefinedListItem> userDefinedListItemsRepository
         ) {
             mMutableListsRepository = mutableUserDefinedListsRepository;
             mCanSearchListsRepository = canSearchUserDefinedListsRepository;
-            mUserDefinedListItemsRepository = userDefinedListItemsRepository;
+            mListItemsRepository = userDefinedListItemsRepository;
         }
 
         @NonNull
@@ -111,7 +111,7 @@ public class ListsViewModel extends ViewModel {
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             ListsViewModel vm = new ListsViewModel(
                     mMutableListsRepository, mCanSearchListsRepository,
-                    mUserDefinedListItemsRepository
+                    mListItemsRepository
             );
             ensureViewModelType(vm, modelClass);
 
