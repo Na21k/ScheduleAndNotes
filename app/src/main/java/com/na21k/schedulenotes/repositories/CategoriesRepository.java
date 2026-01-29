@@ -14,13 +14,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class CategoriesRepository extends MutableRepository<Category>
-        implements CanSearchRepository<Category>, CanClearRepository {
+        implements CanSearchRepository<Category>, CanClearRepository<Category> {
 
     private final CategoryDao mCategoryDao = db.categoryDao();
 
     @Inject
     public CategoriesRepository(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    protected BaseDao<Category> getDao() {
+        return mCategoryDao;
     }
 
     @Override
@@ -31,10 +36,5 @@ public class CategoriesRepository extends MutableRepository<Category>
     @Override
     public void clearBlocking() {
         mCategoryDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<Category> getDao() {
-        return mCategoryDao;
     }
 }

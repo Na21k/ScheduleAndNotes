@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Lists.Shopping.ShoppingListItem;
-import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
+import com.na21k.schedulenotes.repositories.CanClearRepository;
+import com.na21k.schedulenotes.repositories.CanSearchRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.lists.shopping.ShoppingListRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -15,32 +18,46 @@ import javax.inject.Inject;
 public class ShoppingListViewModel extends ViewModel {
 
     @NonNull
+    private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+    @NonNull
     private final ShoppingListRepository mShoppingListRepository;
+    @NonNull
+    private final CanSearchRepository<ShoppingListItem> mCanSearchShoppingListRepository;
+    @NonNull
+    private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
 
-    private ShoppingListViewModel(@NonNull ShoppingListRepository shoppingListRepository) {
+    private ShoppingListViewModel(
+            @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+            @NonNull ShoppingListRepository shoppingListRepository,
+            @NonNull CanSearchRepository<ShoppingListItem> canSearchShoppingListRepository,
+            @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository
+    ) {
         super();
 
+        mMutableShoppingListRepository = mutableShoppingListRepository;
         mShoppingListRepository = shoppingListRepository;
+        mCanSearchShoppingListRepository = canSearchShoppingListRepository;
+        mCanClearShoppingListRepository = canClearShoppingListRepository;
     }
 
     public LiveData<List<ShoppingListItem>> getAll() {
-        return mShoppingListRepository.getAll();
+        return mMutableShoppingListRepository.getAll();
     }
 
     public LiveData<List<ShoppingListItem>> getItemsSearch(String searchQuery) {
-        return mShoppingListRepository.getSearch(searchQuery);
+        return mCanSearchShoppingListRepository.getSearch(searchQuery);
     }
 
     public void addNew(ShoppingListItem item) {
-        mShoppingListRepository.add(item);
+        mMutableShoppingListRepository.add(item);
     }
 
     public void update(ShoppingListItem item) {
-        mShoppingListRepository.update(item);
+        mMutableShoppingListRepository.update(item);
     }
 
     public void delete(ShoppingListItem item) {
-        mShoppingListRepository.delete(item);
+        mMutableShoppingListRepository.delete(item);
     }
 
     public void deleteChecked() {
@@ -48,23 +65,40 @@ public class ShoppingListViewModel extends ViewModel {
     }
 
     public void deleteAll() {
-        mShoppingListRepository.clear();
+        mCanClearShoppingListRepository.clear();
     }
 
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
+        private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+        @NonNull
         private final ShoppingListRepository mShoppingListRepository;
+        @NonNull
+        private final CanSearchRepository<ShoppingListItem> mCanSearchShoppingListRepository;
+        @NonNull
+        private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
 
         @Inject
-        public Factory(@NonNull ShoppingListRepository shoppingListRepository) {
+        public Factory(
+                @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+                @NonNull ShoppingListRepository shoppingListRepository,
+                @NonNull CanSearchRepository<ShoppingListItem> canSearchShoppingListRepository,
+                @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository
+        ) {
+            mMutableShoppingListRepository = mutableShoppingListRepository;
             mShoppingListRepository = shoppingListRepository;
+            mCanSearchShoppingListRepository = canSearchShoppingListRepository;
+            mCanClearShoppingListRepository = canClearShoppingListRepository;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            ShoppingListViewModel vm = new ShoppingListViewModel(mShoppingListRepository);
+            ShoppingListViewModel vm = new ShoppingListViewModel(
+                    mMutableShoppingListRepository, mShoppingListRepository,
+                    mCanSearchShoppingListRepository, mCanClearShoppingListRepository
+            );
             ensureViewModelType(vm, modelClass);
 
             return (T) vm;

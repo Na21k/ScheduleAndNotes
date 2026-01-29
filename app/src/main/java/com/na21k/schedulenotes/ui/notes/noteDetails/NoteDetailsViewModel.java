@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Categories.Category;
 import com.na21k.schedulenotes.data.database.Notes.Note;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
-import com.na21k.schedulenotes.repositories.NotesRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.Repository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import dagger.assisted.AssistedInject;
 public class NoteDetailsViewModel extends ViewModel {
 
     @NonNull
-    private final NotesRepository mNotesRepository;
+    private final MutableRepository<Note> mMutableNotesRepository;
     private final int mNoteId;
     @NonNull
     private final LiveData<Note> mNote;
@@ -26,16 +26,16 @@ public class NoteDetailsViewModel extends ViewModel {
     private final LiveData<List<Category>> mCategories;
 
     private NoteDetailsViewModel(
-            @NonNull NotesRepository notesRepository,
+            @NonNull MutableRepository<Note> mutableNotesRepository,
             int noteId,
-            @NonNull CategoriesRepository categoriesRepository
+            @NonNull Repository<Category> categoriesRepository
     ) {
         super();
 
-        mNotesRepository = notesRepository;
+        mMutableNotesRepository = mutableNotesRepository;
         mNoteId = noteId;
 
-        mNote = notesRepository.getById(noteId);
+        mNote = mutableNotesRepository.getById(noteId);
         mCategories = categoriesRepository.getAll();
     }
 
@@ -56,29 +56,29 @@ public class NoteDetailsViewModel extends ViewModel {
     public void saveNote(@NonNull Note note) {
         note.setId(mNoteId);
 
-        if (isEditing()) mNotesRepository.update(note);
-        else mNotesRepository.add(note);
+        if (isEditing()) mMutableNotesRepository.update(note);
+        else mMutableNotesRepository.add(note);
     }
 
     public void deleteNote() {
-        mNotesRepository.delete(mNoteId);
+        mMutableNotesRepository.delete(mNoteId);
     }
 
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
-        private final NotesRepository mNotesRepository;
+        private final MutableRepository<Note> mMutableNotesRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final Repository<Category> mCategoriesRepository;
         private final int mNoteId;
 
         @AssistedInject
         public Factory(
-                @NonNull NotesRepository notesRepository,
+                @NonNull MutableRepository<Note> mutableNotesRepository,
                 @Assisted int noteId,
-                @NonNull CategoriesRepository categoriesRepository
+                @NonNull Repository<Category> categoriesRepository
         ) {
-            mNotesRepository = notesRepository;
+            mMutableNotesRepository = mutableNotesRepository;
             mCategoriesRepository = categoriesRepository;
             mNoteId = noteId;
         }
@@ -87,7 +87,7 @@ public class NoteDetailsViewModel extends ViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             NoteDetailsViewModel vm = new NoteDetailsViewModel(
-                    mNotesRepository, mNoteId, mCategoriesRepository
+                    mMutableNotesRepository, mNoteId, mCategoriesRepository
             );
             ensureViewModelType(vm, modelClass);
 

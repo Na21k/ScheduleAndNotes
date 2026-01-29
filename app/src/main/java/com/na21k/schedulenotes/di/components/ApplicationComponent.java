@@ -2,6 +2,10 @@ package com.na21k.schedulenotes.di.components;
 
 import android.app.Application;
 
+import com.na21k.schedulenotes.BroadcastReceivers.BootCompletedReceiver;
+import com.na21k.schedulenotes.BroadcastReceivers.EventNotificationAlarmReceiver;
+import com.na21k.schedulenotes.BroadcastReceivers.NotificationActionBroadcastReceiver;
+import com.na21k.schedulenotes.MainActivity;
 import com.na21k.schedulenotes.di.modules.AppModule;
 import com.na21k.schedulenotes.di.modules.CategoriesModule;
 import com.na21k.schedulenotes.ui.categories.CategoriesFragment;
@@ -17,8 +21,10 @@ import com.na21k.schedulenotes.ui.notes.NotesFragment;
 import com.na21k.schedulenotes.ui.notes.noteDetails.NoteDetailsActivity;
 import com.na21k.schedulenotes.ui.schedule.ScheduleFragment;
 import com.na21k.schedulenotes.ui.schedule.eventDetails.EventDetailsActivity;
+import com.na21k.schedulenotes.ui.settings.SettingsFragment;
 import com.na21k.schedulenotes.ui.settings.importExport.ExportActivity;
 import com.na21k.schedulenotes.ui.settings.importExport.ImportActivity;
+import com.na21k.schedulenotes.workers.RecommendationsWorker;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -30,6 +36,8 @@ import dagger.Component;
         }
 )
 public interface ApplicationComponent {
+
+    void inject(MainActivity mainActivity);
 
     void inject(EventDetailsActivity eventDetailsActivity);
 
@@ -60,6 +68,16 @@ public interface ApplicationComponent {
     void inject(ListsFragment listsFragment);
 
     void inject(CategoriesFragment categoriesFragment);
+
+    void inject(SettingsFragment settingsFragment);
+
+    void inject(BootCompletedReceiver bootCompletedReceiver);
+
+    void inject(EventNotificationAlarmReceiver eventNotificationAlarmReceiver);
+
+    void inject(NotificationActionBroadcastReceiver notificationActionBroadcastReceiver);
+
+    void inject(RecommendationsWorker recommendationsWorker);
 
     @Component.Factory
     interface Factory {

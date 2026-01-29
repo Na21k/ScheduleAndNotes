@@ -1,30 +1,53 @@
 package com.na21k.schedulenotes.helpers;
 
-import static com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent.EventNotificationType;
-
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.data.database.Schedule.EventNotificationAlarmPendingIntent;
-import com.na21k.schedulenotes.repositories.EventNotificationAlarmPendingIntentRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.schedule.eventNotificationAlarmPendingIntents.EventNotificationAlarmPendingIntentRepository;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class EventsHelper {
 
-    public static final int EVENT_STARTS_SOON_TIME_OFFSET_MINS = -30;
+    private static final int EVENT_STARTS_SOON_TIME_OFFSET_MINS = -30;
+    @NonNull
+    private final MutableRepository<Event> mMutableScheduleRepository;
+    @NonNull
+    private final MutableRepository<EventNotificationAlarmPendingIntent> mMutablePendingIntentRepository;
+    @NonNull
+    private final EventNotificationAlarmPendingIntentRepository mPendingIntentRepository;
+    @NonNull
+    private final AlarmsHelper mAlarmsHelper;
 
-    public static void postponeToAsync(@NonNull Event event, @NonNull Date dateOnly,
-                                       @NonNull Context context) {
-        new Thread(() -> postponeToBlocking(event, dateOnly, context)).start();
+    @Inject
+    public EventsHelper(
+            @NonNull MutableRepository<Event> mutableScheduleRepository,
+            @NonNull MutableRepository<EventNotificationAlarmPendingIntent> mutablePendingIntentRepository,
+            @NonNull EventNotificationAlarmPendingIntentRepository pendingIntentRepository,
+            @NonNull AlarmsHelper alarmsHelper
+    ) {
+        mMutableScheduleRepository = mutableScheduleRepository;
+        mMutablePendingIntentRepository = mutablePendingIntentRepository;
+        mPendingIntentRepository = pendingIntentRepository;
+        mAlarmsHelper = alarmsHelper;
     }
 
-    public static void postponeToBlocking(@NonNull Event event, @NonNull Date dateOnly,
-                                          @NonNull Context context) {
+    /**
+     * Updates the Event and reschedules the notifications. The longevity of the Event is preserved.
+     */
+    public void postponeToAsync(@NonNull Event event, @NonNull Date dateOnly) {
+        new Thread(() -> postponeToBlocking(event, dateOnly)).start();
+    }
+
+    /**
+     * Updates the Event and reschedules the notifications. The longevity of the Event is preserved.
+     */
+    public void postponeToBlocking(@NonNull Event event, @NonNull Date dateOnly) {
         Date newStartsDateOnly = DateTimeHelper.truncateToDateOnly(dateOnly);
         Date oldStartsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeStarts());
         Date oldEndsDateOnly = DateTimeHelper.truncateToDateOnly(event.getDateTimeEnds());
@@ -38,47 +61,71 @@ public class EventsHelper {
         Date newDateTimeStarts = DateTimeHelper.addDates(newStartsDateOnly, startsTimeOnly);
         Date newDateTimeEnds = DateTimeHelper.addDates(newEndsDateOnly, endsTimeOnly);
 
-        postponeToBlocking(event, newDateTimeStarts, newDateTimeEnds, context);
+        postponeToBlocking(event, newDateTimeStarts, newDateTimeEnds);
     }
 
-    private static void postponeToBlocking(@NonNull Event event, @NonNull Date newDateTimeStarts,
-                                           @NonNull Date newDateTimeEnds, @NonNull Context context) {
-        cancelEventNotificationsBlocking(event, context);
+    /**
+     * Updates the Event and reschedules the notifications
+     */
+    private void postponeToBlocking(
+            @NonNull Event event,
+            @NonNull Date newDateTimeStarts,
+            @NonNull Date newDateTimeEnds
+    ) {
+        cancelEventNotificationsBlocking(event);
 
         event.setDateTimeStarts(newDateTimeStarts);
         event.setDateTimeEnds(newDateTimeEnds);
-        new ScheduleRepository(context).update(event);
+        mMutableScheduleRepository.update(event);
 
-        scheduleEventNotificationsBlocking(event, context);
+        scheduleEventNotificationsBlocking(event);
     }
 
-    public static void scheduleEventNotificationsBlocking(@NonNull Event event,
-                                                          @NonNull Context context) {
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
-
+    public void scheduleEventNotificationsBlocking(@NonNull Event event) {
         int eventId = event.getId();
         Date starts = event.getDateTimeStarts();
         Date startsSoon = getEventStartsSoonDateTime(starts);
 
-        int startsSoonPendingIntentRequestCode = (int) pendingIntentRepository.addBlocking(
+        int startsSoonPendingIntentRequestCode = (int) mMutablePendingIntentRepository.addBlocking(
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStartsSoon));
-        int startsPendingIntentRequestCode = (int) pendingIntentRepository.addBlocking(
+        int startsPendingIntentRequestCode = (int) mMutablePendingIntentRepository.addBlocking(
                 new EventNotificationAlarmPendingIntent(0, eventId,
                         EventNotificationAlarmPendingIntent.EventNotificationType.EventStarted));
 
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                eventId, startsSoon.getTime(), startsSoonPendingIntentRequestCode, context);
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                eventId, starts.getTime(), startsPendingIntentRequestCode, context);
+        mAlarmsHelper.scheduleEventNotificationAlarm(
+                startsSoon.getTime(), startsSoonPendingIntentRequestCode);
+        mAlarmsHelper.scheduleEventNotificationAlarm(
+                starts.getTime(), startsPendingIntentRequestCode);
     }
 
-    public static void scheduleEventNotificationBlocking(
-            @NonNull EventNotificationAlarmPendingIntent pendingIntent, @NonNull Context context) {
-        EventNotificationType notificationType = pendingIntent.getNotificationType();
-        ScheduleRepository scheduleRepository = new ScheduleRepository(context);
-        Event event = scheduleRepository.getByIdBlocking(pendingIntent.getEventId());
+    private void cancelEventNotificationsBlocking(@NonNull Event event) {
+        mAlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId());
+
+        List<EventNotificationAlarmPendingIntent> pendingIntents = mPendingIntentRepository
+                .getByEventIdBlocking(event.getId());
+
+        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
+            mMutablePendingIntentRepository.deleteBlocking(pendingIntent);
+        }
+    }
+
+    public void ensureEventNotificationsScheduledBlocking() {
+        //only pending intents for notifications that haven't been sent yet are stored
+        List<EventNotificationAlarmPendingIntent> pendingIntents = mMutablePendingIntentRepository
+                .getAllBlocking();
+
+        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
+            scheduleEventNotificationBlocking(pendingIntent);
+        }
+    }
+
+    private void scheduleEventNotificationBlocking(
+            @NonNull EventNotificationAlarmPendingIntent pendingIntent
+    ) {
+        EventNotificationAlarmPendingIntent.EventNotificationType notificationType = pendingIntent
+                .getNotificationType();
+        Event event = mMutableScheduleRepository.getByIdBlocking(pendingIntent.getEventId());
 
         Date starts = event.getDateTimeStarts();
         long triggerAtMillis;
@@ -95,38 +142,11 @@ public class EventsHelper {
                         "Unexpected notification type: " + notificationType.name());
         }
 
-        AlarmsHelper.scheduleEventNotificationAlarm(
-                event.getId(), triggerAtMillis, pendingIntent.getId(), context);
-    }
-
-    public static void cancelEventNotificationsBlocking(@NonNull Event event,
-                                                        @NonNull Context context) {
-        AlarmsHelper.cancelEventNotificationAlarmsBlocking(event.getId(), context);
-
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
-                .getByEventIdBlocking(event.getId());
-
-        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
-            pendingIntentRepository.deleteBlocking(pendingIntent);
-        }
-    }
-
-    public static void ensureEventNotificationsScheduledBlocking(@NonNull Context context) {
-        EventNotificationAlarmPendingIntentRepository pendingIntentRepository
-                = new EventNotificationAlarmPendingIntentRepository(context);
-        //only pending intents for notifications that haven't been sent yet are stored
-        List<EventNotificationAlarmPendingIntent> pendingIntents = pendingIntentRepository
-                .getAllBlocking();
-
-        for (EventNotificationAlarmPendingIntent pendingIntent : pendingIntents) {
-            scheduleEventNotificationBlocking(pendingIntent, context);
-        }
+        mAlarmsHelper.scheduleEventNotificationAlarm(triggerAtMillis, pendingIntent.getId());
     }
 
     @NonNull
-    public static Date getEventStartsSoonDateTime(Date eventsStarts) {
+    private static Date getEventStartsSoonDateTime(@NonNull Date eventsStarts) {
         return DateTimeHelper.addMinutes(eventsStarts, EVENT_STARTS_SOON_TIME_OFFSET_MINS);
     }
 }

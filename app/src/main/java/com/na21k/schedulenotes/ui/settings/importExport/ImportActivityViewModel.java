@@ -16,17 +16,10 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedList;
 import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListItem;
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
+import com.na21k.schedulenotes.helpers.AlarmsHelper;
 import com.na21k.schedulenotes.helpers.EventsHelper;
-import com.na21k.schedulenotes.repositories.CategoriesRepository;
-import com.na21k.schedulenotes.repositories.NotesRepository;
-import com.na21k.schedulenotes.repositories.ScheduleRepository;
-import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
-import com.na21k.schedulenotes.repositories.lists.MusicListRepository;
-import com.na21k.schedulenotes.repositories.lists.ShoppingListRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
-import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListItemsRepository;
-import com.na21k.schedulenotes.repositories.lists.userDefined.UserDefinedListsRepository;
+import com.na21k.schedulenotes.repositories.CanClearRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.Date;
@@ -37,66 +30,108 @@ import javax.inject.Inject;
 public class ImportActivityViewModel extends AndroidViewModel {
 
     @NonNull
-    private final ScheduleRepository mScheduleRepository;
+    private final MutableRepository<Event> mMutableScheduleRepository;
     @NonNull
-    private final NotesRepository mNotesRepository;
+    private final CanClearRepository<Event> mCanClearScheduleRepository;
     @NonNull
-    private final CategoriesRepository mCategoriesRepository;
+    private final MutableRepository<Note> mMutableNotesRepository;
     @NonNull
-    private final UserDefinedListsRepository mUserDefinedListsRepository;
+    private final CanClearRepository<Note> mCanClearNotesRepository;
     @NonNull
-    private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+    private final MutableRepository<Category> mMutableCategoriesRepository;
     @NonNull
-    private final MoviesListRepository mMoviesListRepository;
+    private final CanClearRepository<Category> mCanClearCategoriesRepository;
     @NonNull
-    private final MusicListRepository mMusicListRepository;
+    private final MutableRepository<UserDefinedList> mMutableUserDefinedListsRepository;
     @NonNull
-    private final ShoppingListRepository mShoppingListRepository;
+    private final CanClearRepository<UserDefinedList> mCanClearUserDefinedListsRepository;
     @NonNull
-    private final LanguagesListRepository mLanguagesListRepository;
+    private final MutableRepository<UserDefinedListItem> mMutableUserDefinedListItemsRepository;
     @NonNull
-    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    private final MutableRepository<MoviesListItem> mMutableMoviesListRepository;
+    @NonNull
+    private final CanClearRepository<MoviesListItem> mCanClearMoviesListRepository;
+    @NonNull
+    private final MutableRepository<MusicListItem> mMutableMusicListRepository;
+    @NonNull
+    private final CanClearRepository<MusicListItem> mCanClearMusicListRepository;
+    @NonNull
+    private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+    @NonNull
+    private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
+    @NonNull
+    private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+    @NonNull
+    private final CanClearRepository<LanguagesListItem> mCanClearLanguagesListRepository;
+    @NonNull
+    private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
+    @NonNull
+    private final AlarmsHelper mAlarmsHelper;
+    @NonNull
+    private final EventsHelper mEventsHelper;
 
     private ImportActivityViewModel(
             @NonNull Application application,
-            @NonNull ScheduleRepository scheduleRepository,
-            @NonNull NotesRepository notesRepository,
-            @NonNull CategoriesRepository categoriesRepository,
-            @NonNull UserDefinedListsRepository userDefinedListsRepository,
-            @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
-            @NonNull MoviesListRepository moviesListRepository,
-            @NonNull MusicListRepository musicListRepository,
-            @NonNull ShoppingListRepository shoppingListRepository,
-            @NonNull LanguagesListRepository languagesListRepository,
-            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+            @NonNull MutableRepository<Event> mutableScheduleRepository,
+            @NonNull CanClearRepository<Event> canClearScheduleRepository,
+            @NonNull MutableRepository<Note> mutableNotesRepository,
+            @NonNull CanClearRepository<Note> canClearNotesRepository,
+            @NonNull MutableRepository<Category> mutableCategoriesRepository,
+            @NonNull CanClearRepository<Category> canClearCategoriesRepository,
+            @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
+            @NonNull CanClearRepository<UserDefinedList> canClearUserDefinedListsRepository,
+            @NonNull MutableRepository<UserDefinedListItem> mutableUserDefinedListItemsRepository,
+            @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
+            @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
+            @NonNull MutableRepository<MusicListItem> mutableMusicListRepository,
+            @NonNull CanClearRepository<MusicListItem> canClearMusicListRepository,
+            @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+            @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
+            @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
+            @NonNull CanClearRepository<LanguagesListItem> canClearLanguagesListRepository,
+            @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
+            @NonNull AlarmsHelper alarmsHelper,
+            @NonNull EventsHelper eventsHelper
     ) {
         super(application);
 
-        mScheduleRepository = scheduleRepository;
-        mNotesRepository = notesRepository;
-        mCategoriesRepository = categoriesRepository;
-        mUserDefinedListsRepository = userDefinedListsRepository;
-        mUserDefinedListItemsRepository = userDefinedListItemsRepository;
-        mMoviesListRepository = moviesListRepository;
-        mMusicListRepository = musicListRepository;
-        mShoppingListRepository = shoppingListRepository;
-        mLanguagesListRepository = languagesListRepository;
-        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mMutableScheduleRepository = mutableScheduleRepository;
+        mCanClearScheduleRepository = canClearScheduleRepository;
+        mMutableNotesRepository = mutableNotesRepository;
+        mCanClearNotesRepository = canClearNotesRepository;
+        mMutableCategoriesRepository = mutableCategoriesRepository;
+        mCanClearCategoriesRepository = canClearCategoriesRepository;
+        mMutableUserDefinedListsRepository = mutableUserDefinedListsRepository;
+        mCanClearUserDefinedListsRepository = canClearUserDefinedListsRepository;
+        mMutableUserDefinedListItemsRepository = mutableUserDefinedListItemsRepository;
+        mMutableMoviesListRepository = mutableMoviesListRepository;
+        mCanClearMoviesListRepository = canClearMoviesListRepository;
+        mMutableMusicListRepository = mutableMusicListRepository;
+        mCanClearMusicListRepository = canClearMusicListRepository;
+        mMutableShoppingListRepository = mutableShoppingListRepository;
+        mCanClearShoppingListRepository = canClearShoppingListRepository;
+        mMutableLanguagesListRepository = mutableLanguagesListRepository;
+        mCanClearLanguagesListRepository = canClearLanguagesListRepository;
+        mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
+        mAlarmsHelper = alarmsHelper;
+        mEventsHelper = eventsHelper;
     }
 
-    public void clearDatabaseBlocking() {
-        mScheduleRepository.clearBlocking();
-        mNotesRepository.clearBlocking();
-        mCategoriesRepository.clearBlocking();
-        mUserDefinedListsRepository.clearBlocking();
-        mMoviesListRepository.clearBlocking();
-        mMusicListRepository.clearBlocking();
-        mShoppingListRepository.clearBlocking();
-        mLanguagesListRepository.clearBlocking();
+    public void cancelAllEventNotificationAlarmsAndClearDatabaseBlocking() {
+        mAlarmsHelper.cancelAllEventNotificationAlarmsBlocking();
+
+        mCanClearScheduleRepository.clearBlocking();
+        mCanClearNotesRepository.clearBlocking();
+        mCanClearCategoriesRepository.clearBlocking();
+        mCanClearUserDefinedListsRepository.clearBlocking();
+        mCanClearMoviesListRepository.clearBlocking();
+        mCanClearMusicListRepository.clearBlocking();
+        mCanClearShoppingListRepository.clearBlocking();
+        mCanClearLanguagesListRepository.clearBlocking();
     }
 
     public void insertEventsBlocking(List<Event> events) {
-        mScheduleRepository.addBlocking(events);
+        mMutableScheduleRepository.addBlocking(events);
         Date now = new Date();
 
         for (Event event : events) {
@@ -104,45 +139,45 @@ public class ImportActivityViewModel extends AndroidViewModel {
                 continue;
             }
 
-            EventsHelper.scheduleEventNotificationsBlocking(event, getApplication());
+            mEventsHelper.scheduleEventNotificationsBlocking(event);
         }
     }
 
     public void insertNotesBlocking(List<Note> notes) {
-        mNotesRepository.addBlocking(notes);
+        mMutableNotesRepository.addBlocking(notes);
     }
 
     public void insertCategoriesBlocking(List<Category> categories) {
-        mCategoriesRepository.addBlocking(categories);
+        mMutableCategoriesRepository.addBlocking(categories);
     }
 
     public void insertUserDefinedListsBlocking(List<UserDefinedList> lists) {
-        mUserDefinedListsRepository.addBlocking(lists);
+        mMutableUserDefinedListsRepository.addBlocking(lists);
     }
 
     public void insertUserDefinedListItemsBlocking(List<UserDefinedListItem> items) {
-        mUserDefinedListItemsRepository.addBlocking(items);
+        mMutableUserDefinedListItemsRepository.addBlocking(items);
     }
 
     public void insertMoviesListItemsBlocking(List<MoviesListItem> items) {
-        mMoviesListRepository.addBlocking(items);
+        mMutableMoviesListRepository.addBlocking(items);
     }
 
     public void insertMusicListItemsBlocking(List<MusicListItem> items) {
-        mMusicListRepository.addBlocking(items);
+        mMutableMusicListRepository.addBlocking(items);
     }
 
     public void insertShoppingListItemsBlocking(List<ShoppingListItem> items) {
-        mShoppingListRepository.addBlocking(items);
+        mMutableShoppingListRepository.addBlocking(items);
     }
 
     public void insertLanguagesListItemsBlocking(List<LanguagesListItem> items) {
-        mLanguagesListRepository.addBlocking(items);
+        mMutableLanguagesListRepository.addBlocking(items);
     }
 
     public void insertLanguageListItemAttachedImagesBlocking(
             List<LanguagesListItemAttachedImage> images) {
-        mLanguagesListAttachedImagesRepository.addBlocking(images);
+        mMutableLanguagesListAttachedImagesRepository.addBlocking(images);
     }
 
     public static class Factory extends BaseViewModelFactory {
@@ -150,61 +185,109 @@ public class ImportActivityViewModel extends AndroidViewModel {
         @NonNull
         private final Application mApplication;
         @NonNull
-        private final ScheduleRepository mScheduleRepository;
+        private final MutableRepository<Event> mMutableScheduleRepository;
         @NonNull
-        private final NotesRepository mNotesRepository;
+        private final CanClearRepository<Event> mCanClearScheduleRepository;
         @NonNull
-        private final CategoriesRepository mCategoriesRepository;
+        private final MutableRepository<Note> mMutableNotesRepository;
         @NonNull
-        private final UserDefinedListsRepository mUserDefinedListsRepository;
+        private final CanClearRepository<Note> mCanClearNotesRepository;
         @NonNull
-        private final UserDefinedListItemsRepository mUserDefinedListItemsRepository;
+        private final MutableRepository<Category> mMutableCategoriesRepository;
         @NonNull
-        private final MoviesListRepository mMoviesListRepository;
+        private final CanClearRepository<Category> mCanClearCategoriesRepository;
         @NonNull
-        private final MusicListRepository mMusicListRepository;
+        private final MutableRepository<UserDefinedList> mMutableUserDefinedListsRepository;
         @NonNull
-        private final ShoppingListRepository mShoppingListRepository;
+        private final CanClearRepository<UserDefinedList> mCanClearUserDefinedListsRepository;
         @NonNull
-        private final LanguagesListRepository mLanguagesListRepository;
+        private final MutableRepository<UserDefinedListItem> mMutableUserDefinedListItemsRepository;
         @NonNull
-        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+        private final MutableRepository<MoviesListItem> mMutableMoviesListRepository;
+        @NonNull
+        private final CanClearRepository<MoviesListItem> mCanClearMoviesListRepository;
+        @NonNull
+        private final MutableRepository<MusicListItem> mMutableMusicListRepository;
+        @NonNull
+        private final CanClearRepository<MusicListItem> mCanClearMusicListRepository;
+        @NonNull
+        private final MutableRepository<ShoppingListItem> mMutableShoppingListRepository;
+        @NonNull
+        private final CanClearRepository<ShoppingListItem> mCanClearShoppingListRepository;
+        @NonNull
+        private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+        @NonNull
+        private final CanClearRepository<LanguagesListItem> mCanClearLanguagesListRepository;
+        @NonNull
+        private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
+        @NonNull
+        private final AlarmsHelper mAlarmsHelper;
+        @NonNull
+        private final EventsHelper mEventsHelper;
 
         @Inject
         public Factory(
                 @NonNull Application application,
-                @NonNull ScheduleRepository scheduleRepository,
-                @NonNull NotesRepository notesRepository,
-                @NonNull CategoriesRepository categoriesRepository,
-                @NonNull UserDefinedListsRepository userDefinedListsRepository,
-                @NonNull UserDefinedListItemsRepository userDefinedListItemsRepository,
-                @NonNull MoviesListRepository moviesListRepository,
-                @NonNull MusicListRepository musicListRepository,
-                @NonNull ShoppingListRepository shoppingListRepository,
-                @NonNull LanguagesListRepository languagesListRepository,
-                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+                @NonNull MutableRepository<Event> mutableScheduleRepository,
+                @NonNull CanClearRepository<Event> canClearScheduleRepository,
+                @NonNull MutableRepository<Note> mutableNotesRepository,
+                @NonNull CanClearRepository<Note> canClearNotesRepository,
+                @NonNull MutableRepository<Category> mutableCategoriesRepository,
+                @NonNull CanClearRepository<Category> canClearCategoriesRepository,
+                @NonNull MutableRepository<UserDefinedList> mutableUserDefinedListsRepository,
+                @NonNull CanClearRepository<UserDefinedList> canClearUserDefinedListsRepository,
+                @NonNull MutableRepository<UserDefinedListItem> mutableUserDefinedListItemsRepository,
+                @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
+                @NonNull CanClearRepository<MoviesListItem> canClearMoviesListRepository,
+                @NonNull MutableRepository<MusicListItem> mutableMusicListRepository,
+                @NonNull CanClearRepository<MusicListItem> canClearMusicListRepository,
+                @NonNull MutableRepository<ShoppingListItem> mutableShoppingListRepository,
+                @NonNull CanClearRepository<ShoppingListItem> canClearShoppingListRepository,
+                @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
+                @NonNull CanClearRepository<LanguagesListItem> canClearLanguagesListRepository,
+                @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
+                @NonNull AlarmsHelper alarmsHelper,
+                @NonNull EventsHelper eventsHelper
         ) {
             mApplication = application;
-            mScheduleRepository = scheduleRepository;
-            mNotesRepository = notesRepository;
-            mCategoriesRepository = categoriesRepository;
-            mUserDefinedListsRepository = userDefinedListsRepository;
-            mUserDefinedListItemsRepository = userDefinedListItemsRepository;
-            mMoviesListRepository = moviesListRepository;
-            mMusicListRepository = musicListRepository;
-            mShoppingListRepository = shoppingListRepository;
-            mLanguagesListRepository = languagesListRepository;
-            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+            mMutableScheduleRepository = mutableScheduleRepository;
+            mCanClearScheduleRepository = canClearScheduleRepository;
+            mMutableNotesRepository = mutableNotesRepository;
+            mCanClearNotesRepository = canClearNotesRepository;
+            mMutableCategoriesRepository = mutableCategoriesRepository;
+            mCanClearCategoriesRepository = canClearCategoriesRepository;
+            mMutableUserDefinedListsRepository = mutableUserDefinedListsRepository;
+            mCanClearUserDefinedListsRepository = canClearUserDefinedListsRepository;
+            mMutableUserDefinedListItemsRepository = mutableUserDefinedListItemsRepository;
+            mMutableMoviesListRepository = mutableMoviesListRepository;
+            mCanClearMoviesListRepository = canClearMoviesListRepository;
+            mMutableMusicListRepository = mutableMusicListRepository;
+            mCanClearMusicListRepository = canClearMusicListRepository;
+            mMutableShoppingListRepository = mutableShoppingListRepository;
+            mCanClearShoppingListRepository = canClearShoppingListRepository;
+            mMutableLanguagesListRepository = mutableLanguagesListRepository;
+            mCanClearLanguagesListRepository = canClearLanguagesListRepository;
+            mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
+            mAlarmsHelper = alarmsHelper;
+            mEventsHelper = eventsHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             ImportActivityViewModel vm = new ImportActivityViewModel(
-                    mApplication, mScheduleRepository, mNotesRepository, mCategoriesRepository,
-                    mUserDefinedListsRepository, mUserDefinedListItemsRepository,
-                    mMoviesListRepository, mMusicListRepository, mShoppingListRepository,
-                    mLanguagesListRepository, mLanguagesListAttachedImagesRepository
+                    mApplication,
+                    mMutableScheduleRepository, mCanClearScheduleRepository,
+                    mMutableNotesRepository, mCanClearNotesRepository,
+                    mMutableCategoriesRepository, mCanClearCategoriesRepository,
+                    mMutableUserDefinedListsRepository, mCanClearUserDefinedListsRepository,
+                    mMutableUserDefinedListItemsRepository,
+                    mMutableMoviesListRepository, mCanClearMoviesListRepository,
+                    mMutableMusicListRepository, mCanClearMusicListRepository,
+                    mMutableShoppingListRepository, mCanClearShoppingListRepository,
+                    mMutableLanguagesListRepository, mCanClearLanguagesListRepository,
+                    mMutableLanguagesListAttachedImagesRepository,
+                    mAlarmsHelper, mEventsHelper
             );
             ensureViewModelType(vm, modelClass);
 

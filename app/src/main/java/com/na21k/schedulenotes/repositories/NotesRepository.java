@@ -14,13 +14,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class NotesRepository extends MutableRepository<Note>
-        implements CanSearchRepository<Note>, CanClearRepository {
+        implements CanSearchRepository<Note>, CanClearRepository<Note> {
 
     private final NoteDao mNoteDao = db.noteDao();
 
     @Inject
     public NotesRepository(@NonNull Context context) {
         super(context);
+    }
+
+    @Override
+    protected BaseDao<Note> getDao() {
+        return mNoteDao;
     }
 
     @Override
@@ -31,10 +36,5 @@ public class NotesRepository extends MutableRepository<Note>
     @Override
     public void clearBlocking() {
         mNoteDao.deleteAll();
-    }
-
-    @Override
-    protected BaseDao<Note> getDao() {
-        return mNoteDao;
     }
 }

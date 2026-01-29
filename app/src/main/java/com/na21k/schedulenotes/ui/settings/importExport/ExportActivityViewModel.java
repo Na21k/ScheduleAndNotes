@@ -14,7 +14,7 @@ import com.na21k.schedulenotes.data.database.Lists.UserDefined.UserDefinedListIt
 import com.na21k.schedulenotes.data.database.Notes.Note;
 import com.na21k.schedulenotes.data.database.Schedule.Event;
 import com.na21k.schedulenotes.repositories.Repository;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;

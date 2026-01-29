@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.na21k.schedulenotes.data.database.Lists.Movies.MoviesListItem;
-import com.na21k.schedulenotes.repositories.lists.MoviesListRepository;
+import com.na21k.schedulenotes.repositories.CanSearchRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
@@ -15,48 +16,62 @@ import javax.inject.Inject;
 public class MoviesListViewModel extends ViewModel {
 
     @NonNull
-    private final MoviesListRepository mMoviesListRepository;
+    private final MutableRepository<MoviesListItem> mMutableMoviesListRepository;
+    @NonNull
+    private final CanSearchRepository<MoviesListItem> mCanSearchMoviesListRepository;
 
-    private MoviesListViewModel(@NonNull MoviesListRepository moviesListRepository) {
+    private MoviesListViewModel(
+            @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
+            @NonNull CanSearchRepository<MoviesListItem> canSearchMoviesListRepository
+    ) {
         super();
 
-        mMoviesListRepository = moviesListRepository;
+        mMutableMoviesListRepository = mutableMoviesListRepository;
+        mCanSearchMoviesListRepository = canSearchMoviesListRepository;
     }
 
     public LiveData<List<MoviesListItem>> getAll() {
-        return mMoviesListRepository.getAll();
+        return mMutableMoviesListRepository.getAll();
     }
 
     public LiveData<List<MoviesListItem>> getItemsSearch(String stringQuery) {
-        return mMoviesListRepository.getSearch(stringQuery);
+        return mCanSearchMoviesListRepository.getSearch(stringQuery);
     }
 
     public void addNew(MoviesListItem moviesListItem) {
-        mMoviesListRepository.add(moviesListItem);
+        mMutableMoviesListRepository.add(moviesListItem);
     }
 
     public void update(MoviesListItem moviesListItem) {
-        mMoviesListRepository.update(moviesListItem);
+        mMutableMoviesListRepository.update(moviesListItem);
     }
 
     public void delete(MoviesListItem moviesListItem) {
-        mMoviesListRepository.delete(moviesListItem);
+        mMutableMoviesListRepository.delete(moviesListItem);
     }
 
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
-        private final MoviesListRepository mMoviesListRepository;
+        private final MutableRepository<MoviesListItem> mMutableMoviesListRepository;
+        @NonNull
+        private final CanSearchRepository<MoviesListItem> mCanSearchMoviesListRepository;
 
         @Inject
-        public Factory(@NonNull MoviesListRepository moviesListRepository) {
-            mMoviesListRepository = moviesListRepository;
+        public Factory(
+                @NonNull MutableRepository<MoviesListItem> mutableMoviesListRepository,
+                @NonNull CanSearchRepository<MoviesListItem> canSearchMoviesListRepository
+        ) {
+            mMutableMoviesListRepository = mutableMoviesListRepository;
+            mCanSearchMoviesListRepository = canSearchMoviesListRepository;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            MoviesListViewModel vm = new MoviesListViewModel(mMoviesListRepository);
+            MoviesListViewModel vm = new MoviesListViewModel(
+                    mMutableMoviesListRepository, mCanSearchMoviesListRepository
+            );
             ensureViewModelType(vm, modelClass);
 
             return (T) vm;

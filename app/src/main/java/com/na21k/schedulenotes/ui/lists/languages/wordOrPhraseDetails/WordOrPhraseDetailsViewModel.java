@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
-import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListAttachedImagesRepository;
+import com.na21k.schedulenotes.repositories.MutableRepository;
+import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
@@ -21,12 +22,14 @@ import dagger.assisted.AssistedInject;
 public class WordOrPhraseDetailsViewModel extends ViewModel {
 
     @NonNull
+    private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+    @NonNull
     private final LanguagesListRepository mLanguagesListRepository;
     private final int mItemId;
     @NonNull
     private final LiveData<LanguagesListItem> mItem;
     @NonNull
-    private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
+    private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
     @NonNull
     private final LiveData<List<LanguagesListItemAttachedImage>> mAttachedImages;
     private List<LanguagesListItemAttachedImage> mImagesBefore = new ArrayList<>();
@@ -34,17 +37,20 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     private boolean mTrackedAttachedImagesSetExternally;
 
     private WordOrPhraseDetailsViewModel(
+            @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
             int itemId,
+            @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
             @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
     ) {
         super();
 
+        mMutableLanguagesListRepository = mutableLanguagesListRepository;
         mLanguagesListRepository = languagesListRepository;
-        mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
+        mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
         mItemId = itemId;
 
-        mItem = languagesListRepository.getById(itemId);
+        mItem = mutableLanguagesListRepository.getById(itemId);
         mAttachedImages = languagesListAttachedImagesRepository.getByListItemId(itemId);
     }
 
@@ -70,10 +76,10 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         item.setId(mItemId);
 
         if (isEditing()) {
-            mLanguagesListRepository.update(item);
+            mMutableLanguagesListRepository.update(item);
             updateImagesIfChanged(mItemId);
         } else {
-            mLanguagesListRepository.add(item)
+            mMutableLanguagesListRepository.add(item)
                     .addOnSuccessListener(id -> {
                         int newItemId = Math.toIntExact(id);
 
@@ -88,7 +94,7 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     }
 
     public void delete() {
-        mLanguagesListRepository.delete(mItemId);
+        mMutableLanguagesListRepository.delete(mItemId);
     }
 
     public void setTrackedAttachedImages(@NonNull List<LanguagesListItemAttachedImage> images) {
@@ -123,12 +129,12 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
             List<LanguagesListItemAttachedImage> added = getAddedImages();
 
             for (LanguagesListItemAttachedImage image : deleted) {
-                mLanguagesListAttachedImagesRepository.delete(image);
+                mMutableLanguagesListAttachedImagesRepository.delete(image);
             }
 
             for (LanguagesListItemAttachedImage image : added) {
                 image.setLanguagesListItemId(addedImagesListItemId);
-                mLanguagesListAttachedImagesRepository.add(image);
+                mMutableLanguagesListAttachedImagesRepository.add(image);
             }
         }
     }
@@ -164,18 +170,26 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
     public static class Factory extends BaseViewModelFactory {
 
         @NonNull
+        private final MutableRepository<LanguagesListItem> mMutableLanguagesListRepository;
+        @NonNull
         private final LanguagesListRepository mLanguagesListRepository;
+        @NonNull
+        private final MutableRepository<LanguagesListItemAttachedImage> mMutableLanguagesListAttachedImagesRepository;
         @NonNull
         private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
         private final int mItemId;
 
         @AssistedInject
         public Factory(
+                @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
                 @Assisted int itemId,
+                @NonNull MutableRepository<LanguagesListItemAttachedImage> mutableLanguagesListAttachedImagesRepository,
                 @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
         ) {
+            mMutableLanguagesListRepository = mutableLanguagesListRepository;
             mLanguagesListRepository = languagesListRepository;
+            mMutableLanguagesListAttachedImagesRepository = mutableLanguagesListAttachedImagesRepository;
             mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
             mItemId = itemId;
         }
@@ -184,7 +198,8 @@ public class WordOrPhraseDetailsViewModel extends ViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             WordOrPhraseDetailsViewModel vm = new WordOrPhraseDetailsViewModel(
-                    mLanguagesListRepository, mItemId, mLanguagesListAttachedImagesRepository
+                    mMutableLanguagesListRepository, mLanguagesListRepository, mItemId,
+                    mMutableLanguagesListAttachedImagesRepository, mLanguagesListAttachedImagesRepository
             );
             ensureViewModelType(vm, modelClass);
 

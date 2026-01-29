@@ -1,4 +1,4 @@
-package com.na21k.schedulenotes.repositories.lists.languages;
+package com.na21k.schedulenotes.repositories.lists.languages.attachedImages;
 
 import android.content.Context;
 
@@ -14,31 +14,35 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class LanguagesListAttachedImagesRepository
-        extends MutableRepository<LanguagesListItemAttachedImage> {
+public class LanguagesListAttachedImagesRepositoryImpl
+        extends MutableRepository<LanguagesListItemAttachedImage>
+        implements LanguagesListAttachedImagesRepository {
 
     private final LanguagesListItemAttachedImageDao mAttachedImageDao =
             db.languagesListItemAttachedImageDao();
 
     @Inject
-    public LanguagesListAttachedImagesRepository(@NonNull Context context) {
+    public LanguagesListAttachedImagesRepositoryImpl(@NonNull Context context) {
         super(context);
-    }
-
-    public LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId) {
-        return mAttachedImageDao.getByListItemId(listItemId);
-    }
-
-    public List<LanguagesListItemAttachedImage> getByListItemIdBlocking(int listItemId) {
-        return mAttachedImageDao.getByListItemIdBlocking(listItemId);
-    }
-
-    public LiveData<List<Integer>> getAllListItemIds() {
-        return mAttachedImageDao.getAllListItemIds();
     }
 
     @Override
     protected BaseDao<LanguagesListItemAttachedImage> getDao() {
         return mAttachedImageDao;
+    }
+
+    @Override
+    public LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId) {
+        return mAttachedImageDao.getByListItemId(listItemId);
+    }
+
+    @Override
+    public List<LanguagesListItemAttachedImage> getByListItemIdBlocking(int listItemId) {
+        return mAttachedImageDao.getByListItemIdBlocking(listItemId);
+    }
+
+    @Override
+    public LiveData<List<Integer>> getAllListItemIds() {
+        return mAttachedImageDao.getAllListItemIds();
     }
 }
