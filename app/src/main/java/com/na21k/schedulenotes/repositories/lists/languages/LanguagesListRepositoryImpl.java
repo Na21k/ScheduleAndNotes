@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
@@ -21,9 +22,12 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -47,6 +51,42 @@ public class LanguagesListRepositoryImpl extends MutableRepository<LanguagesList
     @Override
     protected BaseDao<LanguagesListItem> getDao() {
         return mLanguagesListItemDao;
+    }
+
+    @Override
+    public Task<Void> delete(int itemId) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            deleteItemAttachedImagesBlocking(itemId);
+            source.setResult(null);
+        }).start();
+
+        return Tasks.whenAll(source.getTask(), super.delete(itemId));
+    }
+
+    @Override
+    public void deleteBlocking(LanguagesListItem item) {
+        deleteItemAttachedImagesBlocking(item.getId());
+        super.deleteBlocking(item);
+    }
+
+    private void deleteItemAttachedImagesBlocking(int itemId) {
+        String itemImagesDirPath = String.format(
+                Locale.US,
+                "%s/%d",
+                mLanguagesListAttachedImagesAbsoluteFolderPath,
+                itemId
+        );
+
+        File itemImagesDir = new File(itemImagesDirPath);
+
+        //TODO: make sure shis throws no exceptions when the folder does not exist
+        try (Stream<Path> paths = Files.walk(itemImagesDir.toPath())) {
+            paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
