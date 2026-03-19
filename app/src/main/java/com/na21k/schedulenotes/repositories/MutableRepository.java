@@ -16,7 +16,7 @@ public abstract class MutableRepository<T extends Identifiable> extends Reposito
         super(context);
     }
 
-    public Task<Long> add(T item) {
+    public final Task<Long> add(T item) {
         TaskCompletionSource<Long> source = new TaskCompletionSource<>();
 
         new Thread(() -> {
@@ -27,7 +27,7 @@ public abstract class MutableRepository<T extends Identifiable> extends Reposito
         return source.getTask();
     }
 
-    public Task<Void> add(List<T> items) {
+    public final Task<Void> add(List<T> items) {
         return runSimpleAsync(() -> addBlocking(items));
     }
 
@@ -43,7 +43,7 @@ public abstract class MutableRepository<T extends Identifiable> extends Reposito
         return runSimpleAsync(() -> getDao().update(item));
     }
 
-    public Task<Void> delete(T item) {
+    public final Task<Void> delete(T item) {
         return runSimpleAsync(() -> deleteBlocking(item));
     }
 
@@ -55,7 +55,7 @@ public abstract class MutableRepository<T extends Identifiable> extends Reposito
         getDao().delete(item);
     }
 
-    protected Task<Void> runSimpleAsync(Runnable r) {
+    protected final Task<Void> runSimpleAsync(Runnable r) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
 
         new Thread(() -> {
