@@ -6,6 +6,7 @@ import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAt
 
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public interface LanguagesListAttachedImagesRepository {
 
     LiveData<List<LanguagesListItemAttachedImage>> getByListItemId(int listItemId);
