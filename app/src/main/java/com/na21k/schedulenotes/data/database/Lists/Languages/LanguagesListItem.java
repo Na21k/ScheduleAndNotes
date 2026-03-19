@@ -8,6 +8,11 @@ import com.na21k.schedulenotes.data.database.SimpleListItem;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 @Entity(tableName = "languages_list_items",
         indices = {@Index(value = "id"), @Index(value = "is_archived")})
 public class LanguagesListItem extends SimpleListItem {
@@ -83,5 +88,40 @@ public class LanguagesListItem extends SimpleListItem {
 
     public void setArchived(boolean archived) {
         isArchived = archived;
+    }
+
+    /**
+     * Get the attached images' paths for this entity.
+     *
+     * @param attachedImagesDirPathAbsolute the absolute path of the directory that contains
+     *                                      item-specific directories of attached images.
+     * @return The attached images' paths or empty List.
+     * @apiNote The List returned is generated on each call,
+     * it's not a member of the class and it's not present in the database,
+     * thus {@link androidx.lifecycle.LiveData} updates from Room for this entity should not be expected
+     * when adding/removing images.
+     */
+    @NotNull
+    public List<String> getAttachedImagesPaths(@NotNull String attachedImagesDirPathAbsolute) {
+        String attachedImagesDirPath = String.format(
+                Locale.US,
+                "%s/%d",
+                attachedImagesDirPathAbsolute,
+                id
+        );
+
+        File attachedImagesDir = new File(attachedImagesDirPath);
+        File[] attachedImages = attachedImagesDir.listFiles();
+
+        if (attachedImages == null) return new ArrayList<>();
+
+        List<String> attachedImagesPaths = new ArrayList<>();
+
+        for (File image : attachedImages) {
+            String imagePath = image.getPath();
+            attachedImagesPaths.add(imagePath);
+        }
+
+        return attachedImagesPaths;
     }
 }
