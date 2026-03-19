@@ -7,7 +7,6 @@ import com.na21k.schedulenotes.BroadcastReceivers.EventNotificationAlarmReceiver
 import com.na21k.schedulenotes.BroadcastReceivers.NotificationActionBroadcastReceiver;
 import com.na21k.schedulenotes.MainActivity;
 import com.na21k.schedulenotes.di.modules.AppModule;
-import com.na21k.schedulenotes.di.modules.CategoriesModule;
 import com.na21k.schedulenotes.ui.categories.CategoriesFragment;
 import com.na21k.schedulenotes.ui.categories.categoryDetails.CategoryDetailsActivity;
 import com.na21k.schedulenotes.ui.lists.ListsFragment;
@@ -29,12 +28,7 @@ import com.na21k.schedulenotes.workers.RecommendationsWorker;
 import dagger.BindsInstance;
 import dagger.Component;
 
-@Component(
-        modules = {
-                AppModule.class,
-                CategoriesModule.class
-        }
-)
+@Component(modules = AppModule.class)
 public interface ApplicationComponent {
 
     void inject(MainActivity mainActivity);
