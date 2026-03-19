@@ -16,7 +16,8 @@ import dagger.Module;
         NoteRepositoriesModule.class,
         CategoryRepositoriesModule.class,
         ListRepositoriesModule.class,
-        CategoriesModule.class
+        CategoriesModule.class,
+        FilePathsModule.class
 })
 public interface AppModule {
 
