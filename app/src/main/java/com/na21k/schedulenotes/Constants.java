@@ -24,6 +24,16 @@ public class Constants {
     @IntRange(from = 1)
     public static final int UNDO_DELETE_TIMEOUT_MILLIS = 7000;
     public static final int ATTACHED_IMAGES_COUNT_LIMIT = 5;
+    /**
+     * The relative location of the folder containing the attached images for Languages List.
+     * </br></br>
+     * To get the absolute path, use {@code Context.getFilesDir().getAbsolutePath()}
+     * and combine it with this relative path.
+     * </br></br>
+     * To get the folder path for a specific Languages List item,
+     * append {@code /[item id]} (without the brackets), too.
+     */
+    public static final String LANGUAGES_LIST_ATTACHED_IMAGES_LOCATION_RELATIVE = "attachments/languagesList/images";
     public static final String OPEN_IMAGE_TMP_FILE_NAME = "openImageTmpFile";
     public static final String RECEIVE_NOTIFICATIONS_PREFERENCE_KEY = "receive_notifications";
     public static final String RECEIVE_SCHEDULE_NOTIFICATIONS_PREFERENCE_KEY = "receive_schedule_notifications";
