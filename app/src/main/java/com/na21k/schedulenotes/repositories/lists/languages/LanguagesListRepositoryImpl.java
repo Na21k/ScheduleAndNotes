@@ -10,12 +10,20 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.na21k.schedulenotes.data.database.BaseDao;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemDao;
+import com.na21k.schedulenotes.di.modules.FilePathsModule;
 import com.na21k.schedulenotes.repositories.CanClearRepository;
 import com.na21k.schedulenotes.repositories.CanProvideRandomRepository;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -25,10 +33,15 @@ public class LanguagesListRepositoryImpl extends MutableRepository<LanguagesList
         CanProvideRandomRepository<LanguagesListItem> {
 
     private final LanguagesListItemDao mLanguagesListItemDao = db.languagesListItemDao();
+    private final String mLanguagesListAttachedImagesAbsoluteFolderPath;
 
     @Inject
-    public LanguagesListRepositoryImpl(@NonNull Context context) {
+    public LanguagesListRepositoryImpl(
+            @NonNull Context context,
+            @FilePathsModule.LanguagesListAttachedImagesAbsoluteFolderPath String languagesListAttachedImagesAbsoluteFolderPath
+    ) {
         super(context);
+        mLanguagesListAttachedImagesAbsoluteFolderPath = languagesListAttachedImagesAbsoluteFolderPath;
     }
 
     @Override
@@ -65,6 +78,37 @@ public class LanguagesListRepositoryImpl extends MutableRepository<LanguagesList
         new Thread(() -> {
             mLanguagesListItemDao.setArchived(itemId, archived);
             source.setResult(null);
+        }).start();
+
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Map<Integer, Integer>> getItemIdsToAttachedImageCounts() {
+        TaskCompletionSource<Map<Integer, Integer>> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            Map<Integer, Integer> resMap = new HashMap<>(100);
+            File imagesDir = new File(mLanguagesListAttachedImagesAbsoluteFolderPath);
+
+            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(imagesDir.toPath())) {
+                dirStream.iterator()
+                        .forEachRemaining(itemDirPath -> {
+                            File itemDir = itemDirPath.toFile();
+                            Integer itemId = Integer.valueOf(itemDir.getName());
+
+                            String[] itemImages = itemDir.list();
+                            Integer itemImagesCount = itemImages != null
+                                    ? itemImages.length
+                                    : 0;
+
+                            resMap.put(itemId, itemImagesCount);
+                        });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            source.setResult(resMap);
         }).start();
 
         return source.getTask();

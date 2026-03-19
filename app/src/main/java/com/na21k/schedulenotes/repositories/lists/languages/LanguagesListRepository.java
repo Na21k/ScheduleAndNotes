@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 
 import java.util.List;
+import java.util.Map;
 
 public interface LanguagesListRepository {
 
@@ -16,4 +17,6 @@ public interface LanguagesListRepository {
     Task<Boolean> isArchiveEmpty();
 
     Task<Void> setArchived(int itemId, boolean archived);
+
+    Task<Map<Integer, Integer>> getItemIdsToAttachedImageCounts();
 }
