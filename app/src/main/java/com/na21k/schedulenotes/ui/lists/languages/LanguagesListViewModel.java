@@ -8,11 +8,11 @@ import com.google.android.gms.tasks.Task;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
 import com.na21k.schedulenotes.repositories.CanSearchRepository;
 import com.na21k.schedulenotes.repositories.MutableRepository;
-import com.na21k.schedulenotes.repositories.lists.languages.attachedImages.LanguagesListAttachedImagesRepository;
 import com.na21k.schedulenotes.repositories.lists.languages.LanguagesListRepository;
 import com.na21k.schedulenotes.ui.shared.BaseViewModelFactory;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -26,15 +26,13 @@ public class LanguagesListViewModel extends ViewModel {
     private final CanSearchRepository<LanguagesListItem> mCanSearchLanguagesListRepository;
     private final LiveData<List<LanguagesListItem>> mUnarchivedItems;
     private final LiveData<List<LanguagesListItem>> mArchivedItems;
-    private final LiveData<List<Integer>> mAllAttachedImagesListItemIds;
     private List<LanguagesListItem> mDisplayedItemsCache;
-    private List<Integer> mDisplayedItemsAttachedImagesListItemIdsCache;
+    private Map<Integer, Integer> mItemIdsToAttachedImageCounts;
 
     private LanguagesListViewModel(
             @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
             @NonNull LanguagesListRepository languagesListRepository,
-            @NonNull CanSearchRepository<LanguagesListItem> canSearchLanguagesListRepository,
-            @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+            @NonNull CanSearchRepository<LanguagesListItem> canSearchLanguagesListRepository
     ) {
         super();
 
@@ -44,7 +42,6 @@ public class LanguagesListViewModel extends ViewModel {
 
         mUnarchivedItems = languagesListRepository.getUnarchived();
         mArchivedItems = languagesListRepository.getArchived();
-        mAllAttachedImagesListItemIds = languagesListAttachedImagesRepository.getAllListItemIds();
     }
 
     public LiveData<List<LanguagesListItem>> getUnarchived() {
@@ -75,8 +72,8 @@ public class LanguagesListViewModel extends ViewModel {
         mMutableLanguagesListRepository.delete(item);
     }
 
-    public LiveData<List<Integer>> getAllAttachedImagesListItemIds() {
-        return mAllAttachedImagesListItemIds;
+    public Task<Map<Integer, Integer>> getItemIdsToAttachedImageCounts() {
+        return mLanguagesListRepository.getItemIdsToAttachedImageCounts();
     }
 
     public List<LanguagesListItem> getDisplayedItemsCache() {
@@ -87,13 +84,14 @@ public class LanguagesListViewModel extends ViewModel {
         mDisplayedItemsCache = allItemsCache;
     }
 
-    public List<Integer> getDisplayedItemsAttachedImagesListItemIdsCache() {
-        return mDisplayedItemsAttachedImagesListItemIdsCache;
+    public Map<Integer, Integer> getItemIdsToAttachedImageCountsCache() {
+        return mItemIdsToAttachedImageCounts;
     }
 
-    public void setDisplayedItemsAttachedImagesListItemIdsCache(
-            List<Integer> attachedImagesListItemIdsCache) {
-        mDisplayedItemsAttachedImagesListItemIdsCache = attachedImagesListItemIdsCache;
+    public void setItemIdsToAttachedImageCountsCache(
+            Map<Integer, Integer> itemIdsToAttachedImageCounts
+    ) {
+        mItemIdsToAttachedImageCounts = itemIdsToAttachedImageCounts;
     }
 
     public static class Factory extends BaseViewModelFactory {
@@ -104,20 +102,16 @@ public class LanguagesListViewModel extends ViewModel {
         private final LanguagesListRepository mLanguagesListRepository;
         @NonNull
         private final CanSearchRepository<LanguagesListItem> mCanSearchLanguagesListRepository;
-        @NonNull
-        private final LanguagesListAttachedImagesRepository mLanguagesListAttachedImagesRepository;
 
         @Inject
         public Factory(
                 @NonNull MutableRepository<LanguagesListItem> mutableLanguagesListRepository,
                 @NonNull LanguagesListRepository languagesListRepository,
-                @NonNull CanSearchRepository<LanguagesListItem> canSearchLanguagesListRepository,
-                @NonNull LanguagesListAttachedImagesRepository languagesListAttachedImagesRepository
+                @NonNull CanSearchRepository<LanguagesListItem> canSearchLanguagesListRepository
         ) {
             mMutableLanguagesListRepository = mutableLanguagesListRepository;
             mLanguagesListRepository = languagesListRepository;
             mCanSearchLanguagesListRepository = canSearchLanguagesListRepository;
-            mLanguagesListAttachedImagesRepository = languagesListAttachedImagesRepository;
         }
 
         @NonNull
@@ -125,7 +119,7 @@ public class LanguagesListViewModel extends ViewModel {
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             LanguagesListViewModel vm = new LanguagesListViewModel(
                     mMutableLanguagesListRepository, mLanguagesListRepository,
-                    mCanSearchLanguagesListRepository, mLanguagesListAttachedImagesRepository
+                    mCanSearchLanguagesListRepository
             );
             ensureViewModelType(vm, modelClass);
 

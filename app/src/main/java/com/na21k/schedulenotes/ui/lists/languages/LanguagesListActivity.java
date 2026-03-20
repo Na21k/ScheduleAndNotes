@@ -33,6 +33,7 @@ import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.WordOrPhra
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -86,6 +87,30 @@ public class LanguagesListActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        //refetch when going back from WordOrPhraseDetailsActivity
+        //as images might have been added/deleted
+        mViewModel.setItemIdsToAttachedImageCountsCache(null);
+        mViewModel.getItemIdsToAttachedImageCounts()
+                .addOnSuccessListener(
+                        this,
+                        itemIdsToAttachedImageCounts -> {
+                            mViewModel.setItemIdsToAttachedImageCountsCache(
+                                    itemIdsToAttachedImageCounts
+                            );
+                            updateListIfEnoughData();
+                        }
+                ).addOnFailureListener(
+                        this,
+                        e -> {
+                            UiHelper.showErrorDialog(this, R.string.unexpected_error);
+
+                            String message = e.getMessage();
+
+                            if (message != null) UiHelper.showSnackbar(mBinding.getRoot(), message);
+                        }
+                );
+
         //when going back from LanguagesListArchiveActivity
         //in case the sorting order was changed from there
         updateListIfEnoughData();
@@ -191,10 +216,6 @@ public class LanguagesListActivity extends AppCompatActivity
 
     protected void setObservers() {
         mViewModel.getUnarchived().observe(this, mItemsObserver);
-        mViewModel.getAllAttachedImagesListItemIds().observe(this, integers -> {
-            mViewModel.setDisplayedItemsAttachedImagesListItemIdsCache(integers);
-            updateListIfEnoughData();
-        });
     }
 
     private void replaceItemsObserverAccordingToSearchQuery(String query) {
@@ -210,10 +231,10 @@ public class LanguagesListActivity extends AppCompatActivity
 
     protected void updateListIfEnoughData() {
         List<LanguagesListItem> itemsCache = mViewModel.getDisplayedItemsCache();
-        List<Integer> attachedImagesListItemIdsCache = mViewModel
-                .getDisplayedItemsAttachedImagesListItemIdsCache();
+        Map<Integer, Integer> itemIdsToAttachedImageCountsCache = mViewModel
+                .getItemIdsToAttachedImageCountsCache();
 
-        boolean isEnoughData = itemsCache != null && attachedImagesListItemIdsCache != null;
+        boolean isEnoughData = itemsCache != null && itemIdsToAttachedImageCountsCache != null;
 
         if (!isEnoughData) {
             return;
@@ -223,10 +244,12 @@ public class LanguagesListActivity extends AppCompatActivity
 
         for (LanguagesListItem item : itemsCache) {
             int itemId = item.getId();
-            int attachedImagesCount = attachedImagesListItemIdsCache.stream()
-                    .filter(integer -> integer == itemId).mapToInt(value -> 1).sum();
+            Integer attachedImagesCount = itemIdsToAttachedImageCountsCache.get(itemId);
 
-            models.add(new LanguagesListItemModel(item, attachedImagesCount));
+            models.add(new LanguagesListItemModel(
+                    item,
+                    attachedImagesCount != null ? attachedImagesCount : 0
+            ));
         }
 
         switch (getSortingOrder()) {
