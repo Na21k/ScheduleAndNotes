@@ -2,7 +2,6 @@ package com.na21k.schedulenotes.data.database.Lists.Languages;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -31,9 +30,6 @@ public class LanguagesListItemAttachedImage extends Identifiable {
     private transient Bitmap bitmapData;
 
     @Ignore
-    private transient Bitmap thumbnailBitmap;
-
-    @Ignore
     public LanguagesListItemAttachedImage(int id, @NotNull Bitmap bitmapData) {
         this.id = id;
         this.bitmapData = bitmapData;
@@ -57,28 +53,6 @@ public class LanguagesListItemAttachedImage extends Identifiable {
     @NotNull
     public Bitmap getBitmapData() {
         return bitmapData;
-    }
-
-    public Bitmap getThumbnailBitmap() {
-        if (thumbnailBitmap == null) {
-            int width = bitmapData.getWidth();
-            int height = bitmapData.getHeight();
-            final int maxTargetSide = 2000;
-
-            if (width > maxTargetSide || height > maxTargetSide) {
-                float requiredWidthFactor = 1f * width / maxTargetSide;
-                float requiredHeightFactor = 1f * height / maxTargetSide;
-                float requiredFactor = Math.max(requiredWidthFactor, requiredHeightFactor);
-
-                width = (int) (width / requiredFactor);
-                height = (int) (height / requiredFactor);
-                thumbnailBitmap = ThumbnailUtils.extractThumbnail(bitmapData, width, height);
-            } else {
-                thumbnailBitmap = bitmapData;
-            }
-        }
-
-        return thumbnailBitmap;
     }
 
     private void writeObject(java.io.ObjectOutputStream out)
