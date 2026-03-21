@@ -2,6 +2,7 @@ package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedI
 
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.databinding.ImagesListItemBinding;
@@ -32,6 +33,10 @@ public class ImageItemViewHolder extends ImagesListViewHolderBase {
 
     public void setData(LanguagesListItemAttachedImage image) {
         mAttachedImage = image;
-        mBinding.imageView.setImageBitmap(image.getThumbnailBitmap());
+        Glide.with(itemView)
+                .load(image.getBitmapData())
+                .placeholder(R.drawable.ic_image_24)
+                .error(R.drawable.ic_error_24)
+                .into(mBinding.imageView);
     }
 }
