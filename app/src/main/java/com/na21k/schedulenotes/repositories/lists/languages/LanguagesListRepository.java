@@ -18,5 +18,9 @@ public interface LanguagesListRepository {
 
     Task<Void> setArchived(int itemId, boolean archived);
 
+    Task<Void> addAttachedImage(int itemId, String absoluteSrcFilePath);
+
+    Task<Void> deleteAttachedImage(String absoluteFilePath);
+
     Task<Map<Integer, Integer>> getItemIdsToAttachedImageCounts();
 }

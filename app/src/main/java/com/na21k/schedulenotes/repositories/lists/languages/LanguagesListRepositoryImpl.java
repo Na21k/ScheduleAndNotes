@@ -22,11 +22,13 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -117,6 +119,88 @@ public class LanguagesListRepositoryImpl extends MutableRepository<LanguagesList
 
         new Thread(() -> {
             mLanguagesListItemDao.setArchived(itemId, archived);
+            source.setResult(null);
+        }).start();
+
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> addAttachedImage(int itemId, String absoluteSrcFilePath) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            String itemAttachmentsPath = mLanguagesListAttachedImagesAbsoluteFolderPath + '/' + itemId;
+            File itemAttachmentsDir = new File(itemAttachmentsPath);
+
+            int newAttachedImageFileName = 1;
+
+            if (itemAttachmentsDir.exists()) {
+                int maxName = Arrays.stream(itemAttachmentsDir.list())
+                        .mapToInt(Integer::parseInt)
+                        .max()
+                        .orElse(0);
+                newAttachedImageFileName = maxName + 1;
+            }
+
+            String newAttachedImagePath = itemAttachmentsPath + '/' + newAttachedImageFileName;
+            File newAttachedImage = new File(newAttachedImagePath);
+            File sourceImage = new File(absoluteSrcFilePath);
+
+            try {
+                Files.copy(sourceImage.toPath(), newAttachedImage.toPath());
+            } catch (IOException e) {
+                source.setException(new RuntimeException("Could not copy file", e));
+                return;
+            }
+
+            source.setResult(null);
+        }).start();
+
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> deleteAttachedImage(String absoluteFilePath) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+
+        new Thread(() -> {
+            boolean isLanguagesListItemAttachedImage =
+                    Pattern.matches(
+                            "^" + mLanguagesListAttachedImagesAbsoluteFolderPath + "/\\d+/[^/]+$",
+                            absoluteFilePath
+                    );
+
+            if (!isLanguagesListItemAttachedImage) {
+                source.setException(
+                        new IllegalArgumentException(
+                                "Not a path to a Languages List item attached image: "
+                                        + absoluteFilePath
+                        )
+                );
+
+                return;
+            }
+
+            File attachedImageFile = new File(absoluteFilePath);
+            File listItemDir = new File(attachedImageFile.getParent());
+
+            try {
+                Files.delete(attachedImageFile.toPath());
+            } catch (IOException e) {
+                source.setException(e);
+                return;
+            }
+
+            if (listItemDir.listFiles().length == 0) {
+                try {
+                    Files.delete(listItemDir.toPath());
+                } catch (IOException e) {
+                    source.setException(e);
+                    return;
+                }
+            }
+
             source.setResult(null);
         }).start();
 
