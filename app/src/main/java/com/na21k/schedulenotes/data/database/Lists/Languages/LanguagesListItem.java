@@ -9,6 +9,7 @@ import com.na21k.schedulenotes.data.database.SimpleListItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +103,8 @@ public class LanguagesListItem extends SimpleListItem {
      * when adding/removing images.
      */
     @NotNull
-    public List<String> getAttachedImagesPaths(@NotNull String attachedImagesDirPathAbsolute) {
+    public List<String> getAttachedImagesPaths(@NotNull String attachedImagesDirPathAbsolute)
+            throws NotDirectoryException {
         String attachedImagesDirPath = String.format(
                 Locale.US,
                 "%s/%d",
@@ -118,6 +120,8 @@ public class LanguagesListItem extends SimpleListItem {
         List<String> attachedImagesPaths = new ArrayList<>();
 
         for (File image : attachedImages) {
+            if (!image.isDirectory()) throw new NotDirectoryException(image.getPath());
+
             String imagePath = image.getPath();
             attachedImagesPaths.add(imagePath);
         }
