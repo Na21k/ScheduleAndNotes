@@ -3,15 +3,17 @@ package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedI
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.na21k.schedulenotes.R;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.databinding.ImagesListItemBinding;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedImagesList.OnImageActionRequestedListener;
+
+import java.io.File;
 
 public class ImageItemViewHolder extends ImagesListViewHolderBase {
 
     private final ImagesListItemBinding mBinding;
-    private LanguagesListItemAttachedImage mAttachedImage;
+    private File mAttachedImage;
 
     public ImageItemViewHolder(ImagesListItemBinding binding,
                                OnImageActionRequestedListener actionRequestedListener) {
@@ -31,10 +33,14 @@ public class ImageItemViewHolder extends ImagesListViewHolderBase {
         return false;
     }
 
-    public void setData(LanguagesListItemAttachedImage image) {
+    public void setData(File image) {
         mAttachedImage = image;
+
+        String signature = "" + image.lastModified() + image.length();
+
         Glide.with(itemView)
-                .load(image.getBitmapData())
+                .load(image)
+                .signature(new ObjectKey(signature))
                 .placeholder(R.drawable.ic_image_24)
                 .error(R.drawable.ic_error_24)
                 .into(mBinding.imageView);

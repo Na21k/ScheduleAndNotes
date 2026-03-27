@@ -1,17 +1,17 @@
 package com.na21k.schedulenotes.data.models.litsWithFooterModels;
 
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
+import java.io.File;
 
 public class ImageListItem extends ListWithFooterItem {
 
-    private LanguagesListItemAttachedImage mAttachedImage;
+    private final File mImage;
 
-    public ImageListItem(LanguagesListItemAttachedImage attachedImage) {
-        mAttachedImage = attachedImage;
+    public ImageListItem(String imageAbsolutePath) {
+        mImage = new File(imageAbsolutePath);
     }
 
-    public LanguagesListItemAttachedImage getAttachedImage() {
-        return mAttachedImage;
+    public File getImage() {
+        return mImage;
     }
 
     @Override

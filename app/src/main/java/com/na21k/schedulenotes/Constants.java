@@ -34,7 +34,6 @@ public class Constants {
      * append {@code /[item id]} (without the brackets), too.
      */
     public static final String LANGUAGES_LIST_ATTACHED_IMAGES_LOCATION_RELATIVE = "attachments/languagesList/images";
-    public static final String OPEN_IMAGE_TMP_FILE_NAME = "openImageTmpFile";
     public static final String RECEIVE_NOTIFICATIONS_PREFERENCE_KEY = "receive_notifications";
     public static final String RECEIVE_SCHEDULE_NOTIFICATIONS_PREFERENCE_KEY = "receive_schedule_notifications";
     public static final String RECEIVE_MOVIES_LIST_NOTIFICATIONS_PREFERENCE_KEY = "receive_movies_list_notifications";

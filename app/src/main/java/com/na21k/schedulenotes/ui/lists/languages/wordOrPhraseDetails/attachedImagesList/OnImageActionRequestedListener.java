@@ -1,12 +1,12 @@
 package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedImagesList;
 
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
+import java.io.File;
 
 public interface OnImageActionRequestedListener {
 
-    void onImageOpenRequested(LanguagesListItemAttachedImage attachedImage);
+    void onImageOpenRequested(File attachedImage);
 
-    void onImageDeletionRequested(LanguagesListItemAttachedImage attachedImage);
+    void onImageDeletionRequested(File attachedImage);
 
     void onImageAdditionRequested();
 }

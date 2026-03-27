@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.data.models.litsWithFooterModels.FooterListItem;
 import com.na21k.schedulenotes.data.models.litsWithFooterModels.ImageListItem;
 import com.na21k.schedulenotes.data.models.litsWithFooterModels.ListWithFooterItem;
@@ -57,7 +56,7 @@ public class AttachedImagesListAdapter extends RecyclerView.Adapter<ImagesListVi
             ImageListItem imageListItem = (ImageListItem) mImages.get(position);
             ImageItemViewHolder viewHolder = (ImageItemViewHolder) holder;
 
-            viewHolder.setData(imageListItem.getAttachedImage());
+            viewHolder.setData(imageListItem.getImage());
         }
     }
 
@@ -71,11 +70,11 @@ public class AttachedImagesListAdapter extends RecyclerView.Adapter<ImagesListVi
         return mImages != null ? mImages.size() : 0;
     }
 
-    public void setData(List<LanguagesListItemAttachedImage> attachedImages) {
+    public void setData(List<String> attachedImagesAbsolutePaths) {
         List<ListWithFooterItem> items = new ArrayList<>();
 
-        for (LanguagesListItemAttachedImage image : attachedImages) {
-            items.add(new ImageListItem(image));
+        for (String imageAbsolutePath : attachedImagesAbsolutePaths) {
+            items.add(new ImageListItem(imageAbsolutePath));
         }
 
         items.add(new FooterListItem());
@@ -84,11 +83,13 @@ public class AttachedImagesListAdapter extends RecyclerView.Adapter<ImagesListVi
         notifyDataSetChanged();
     }
 
-    public void removeItem(LanguagesListItemAttachedImage attachedImage) {
+    public void removeItem(String attachedImageAbsolutePath) {
         List<ImageListItem> imagesItemOnly = getImageItemsOnly();
 
         ImageListItem found = imagesItemOnly.stream()
-                .filter(imageListItem -> imageListItem.getAttachedImage() == attachedImage)
+                .filter(imageListItem ->
+                        imageListItem.getImage().getPath().equals(attachedImageAbsolutePath)
+                )
                 .findFirst().orElse(null);
 
         if (found != null) {
@@ -98,9 +99,9 @@ public class AttachedImagesListAdapter extends RecyclerView.Adapter<ImagesListVi
         }
     }
 
-    public void addItem(LanguagesListItemAttachedImage image) {
-        ImageListItem model = new ImageListItem(image);
-        int position = mImages.size() - 1;    //insert before footer
+    public void addItem(String imageAbsolutePath) {
+        ImageListItem model = new ImageListItem(imageAbsolutePath);
+        int position = mImages.size() - 1;  //insert before footer
         mImages.add(position, model);
         notifyItemInserted(position);
     }

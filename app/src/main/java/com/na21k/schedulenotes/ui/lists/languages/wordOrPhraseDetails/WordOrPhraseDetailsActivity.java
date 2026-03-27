@@ -2,10 +2,8 @@ package com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,21 +21,27 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.na21k.schedulenotes.BuildConfig;
 import com.na21k.schedulenotes.Constants;
 import com.na21k.schedulenotes.R;
 import com.na21k.schedulenotes.ScheduleNotesApplication;
 import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItem;
-import com.na21k.schedulenotes.data.database.Lists.Languages.LanguagesListItemAttachedImage;
 import com.na21k.schedulenotes.databinding.ActivityWordOrPhraseDetailsBinding;
+import com.na21k.schedulenotes.di.modules.FilePathsModule;
 import com.na21k.schedulenotes.helpers.UiHelper;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedImagesList.AttachedImagesListAdapter;
 import com.na21k.schedulenotes.ui.lists.languages.wordOrPhraseDetails.attachedImagesList.OnImageActionRequestedListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.NotDirectoryException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,6 +54,8 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
     private WordOrPhraseDetailsViewModel mViewModel;
     private ActivityWordOrPhraseDetailsBinding mBinding;
     private ActivityResultLauncher<Intent> mOpenImageActivityResultLauncher;
+    private String mAttachedImagesAbsoluteDirPath;
+    private String mAttachedImagesSelectedForAdditionAbsoluteTmpDirPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +104,18 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         }
 
         mViewModelFactory = viewModelFactoryAssistedFactory.create(itemId);
+    }
+
+    @Inject
+    protected void initPaths(
+            @FilePathsModule.LanguagesListAttachedImagesAbsoluteFolderPath
+            String attachedImagesAbsoluteDirPath,
+            @FilePathsModule.LanguagesListAttachedImagesSelectedForAdditionTmpFolderPath
+            String attachedImagesSelectedForAdditionAbsoluteTmpDirPath
+    ) {
+        mAttachedImagesAbsoluteDirPath = attachedImagesAbsoluteDirPath;
+        mAttachedImagesSelectedForAdditionAbsoluteTmpDirPath
+                = attachedImagesSelectedForAdditionAbsoluteTmpDirPath;
     }
 
     @Override
@@ -158,7 +176,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         recyclerView.setAdapter(mAttachedImagesListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if (mViewModel.getTrackedAttachedImagesCount() > 0) {
+        if (mViewModel.trackedAttachedImagesSetExternally()) {
             //the ViewModel already has attached images cached
             //after a configuration change
             mAttachedImagesListAdapter.setData(mViewModel.getTrackedAttachedImages());
@@ -168,28 +186,52 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
 
     private void observe() {
         mViewModel.getItem().observe(this, item -> {
-            if (item != null) {
-                mBinding.wordOrPhrase.setText(item.getText());
-                mBinding.transcription.setText(item.getTranscription());
-                mBinding.translation.setText(item.getTranslation());
-                mBinding.explanation.setText(item.getExplanation());
-                mBinding.usageExample.setText(item.getUsageExampleText());
-            } else {
+            if (item == null) {
                 finish();
+                return;
+            }
+
+            mBinding.wordOrPhrase.setText(item.getText());
+            mBinding.transcription.setText(item.getTranscription());
+            mBinding.translation.setText(item.getTranslation());
+            mBinding.explanation.setText(item.getExplanation());
+            mBinding.usageExample.setText(item.getUsageExampleText());
+
+            //not after a configuration change
+            if (!mViewModel.trackedAttachedImagesSetExternally()) {
+                loadAttachedImages(item)
+                        .addOnSuccessListener(attachedImages -> {
+                            mViewModel.setTrackedAttachedImages(attachedImages);
+                            mAttachedImagesListAdapter.setData(attachedImages);
+                            mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(
+                                    this,
+                                    R.string.unexpected_error,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            e.printStackTrace();
+                        });
             }
         });
+    }
 
-        if (mViewModel.getTrackedAttachedImagesCount() > 0) {
-            //the ViewModel already has attached images cached
-            //after a configuration change
-            return;
-        }
+    private Task<List<String>> loadAttachedImages(LanguagesListItem languagesListItem) {
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
 
-        mViewModel.getAttachedImages().observe(this, attachedImages -> {
-            mViewModel.setTrackedAttachedImages(attachedImages);
-            mAttachedImagesListAdapter.setData(attachedImages);
-            mBinding.loadingAttachedImagesProgressbar.setVisibility(View.GONE);
-        });
+        new Thread(() -> {
+            try {
+                List<String> attachedImages = languagesListItem.getAttachedImagesPaths(
+                        mAttachedImagesAbsoluteDirPath
+                );
+                source.setResult(attachedImages);
+            } catch (NotDirectoryException e) {
+                source.setException(e);
+            }
+        }).start();
+
+        return source.getTask();
     }
 
     private void saveItem() {
@@ -288,47 +330,20 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         Uri uri = FileProvider.getUriForFile(this,
                 BuildConfig.APPLICATION_ID + ".provider", imageFile);
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "image/jpeg");
+        intent.setData(uri);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
     }
 
     @Override
-    public void onImageOpenRequested(LanguagesListItemAttachedImage attachedImage) {
-        Bitmap bitmap = attachedImage.getBitmapData();
-        File cache = getExternalCacheDir();
-        File file = new File(cache, Constants.OPEN_IMAGE_TMP_FILE_NAME);
-        FileOutputStream out;
-
-        try {
-            file.delete();
-            out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-        } catch (FileNotFoundException | SecurityException e) {
-            e.printStackTrace();
-
-            UiHelper.showSnackbar(mBinding.getRoot(), R.string.unexpected_error);
-
-            return;
-        }
-
-        try {
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            UiHelper.showSnackbar(mBinding.getRoot(), R.string.unexpected_error);
-
-            return;
-        }
-
-        openImageFile(file);
+    public void onImageOpenRequested(File attachedImage) {
+        openImageFile(attachedImage);
     }
 
     @Override
-    public void onImageDeletionRequested(LanguagesListItemAttachedImage attachedImage) {
-        mViewModel.trackDeleteAttachedImage(attachedImage);
-        mAttachedImagesListAdapter.removeItem(attachedImage);
+    public void onImageDeletionRequested(File attachedImage) {
+        mViewModel.trackDeleteAttachedImage(attachedImage.getPath());
+        mAttachedImagesListAdapter.removeItem(attachedImage.getPath());
     }
 
     @Override
@@ -372,11 +387,9 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
                         if (data != null) {
                             Uri uri = data.getData();
                             try {
-                                Bitmap bitmap = imageUriToBitmap(uri);
-                                LanguagesListItemAttachedImage image =
-                                        new LanguagesListItemAttachedImage(0, bitmap);
-                                mViewModel.trackAddAttachedImage(image);
-                                mAttachedImagesListAdapter.addItem(image);
+                                File image = copyFromUriToTmpFileBlocking(uri);
+                                mViewModel.trackAddAttachedImage(image.getPath());
+                                mAttachedImagesListAdapter.addItem(image.getPath());
                             } catch (IOException e) {
                                 Toast.makeText(getApplicationContext(),
                                         R.string.importing_image_failed_toast,
@@ -392,7 +405,36 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
         );
     }
 
-    private Bitmap imageUriToBitmap(Uri uri) throws IOException {
-        return MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+    private File copyFromUriToTmpFileBlocking(Uri uri) throws IOException {
+        String tmpDirPath = mAttachedImagesSelectedForAdditionAbsoluteTmpDirPath;
+        File tmpDir = new File(tmpDirPath);
+
+        int newAttachedImageTmpFileName = 1;
+
+        if (tmpDir.exists()) {
+            int maxName = Arrays.stream(tmpDir.list())
+                    .mapToInt(Integer::parseInt)
+                    .max()
+                    .orElse(0);
+            newAttachedImageTmpFileName = maxName + 1;
+        }
+
+        String newAttachedImageTmpFilePath = tmpDirPath + '/' + newAttachedImageTmpFileName;
+        File newAttachedImageTmpFile = new File(newAttachedImageTmpFilePath);
+
+        try (InputStream in = getContentResolver().openInputStream(uri);
+             OutputStream out = new FileOutputStream(newAttachedImageTmpFile)) {
+            byte[] buffer = new byte[8192]; //8 MiB
+            int read;
+
+            while (true) {
+                read = in.read(buffer);
+
+                if (read != -1) out.write(buffer, 0, read);
+                else break;
+            }
+        }
+
+        return newAttachedImageTmpFile;
     }
 }

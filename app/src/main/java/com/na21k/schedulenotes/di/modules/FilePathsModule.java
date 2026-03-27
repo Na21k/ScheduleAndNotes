@@ -28,9 +28,26 @@ public interface FilePathsModule {
         );
     }
 
+    @Provides
+    @LanguagesListAttachedImagesSelectedForAdditionTmpFolderPath
+    static String provideLanguagesListAttachedImagesSelectedForAdditionTmpFolderPath(Context context) {
+        return String.format(
+                Locale.US,
+                "%s/%s",
+                context.getCacheDir().getAbsolutePath(),
+                "attachmentsSelectedForAdditionTmpDir"
+        );
+    }
+
     @Qualifier
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface LanguagesListAttachedImagesAbsoluteFolderPath {
+    }
+
+    @Qualifier
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface LanguagesListAttachedImagesSelectedForAdditionTmpFolderPath {
     }
 }
