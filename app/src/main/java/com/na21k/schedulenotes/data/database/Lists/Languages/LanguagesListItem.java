@@ -9,7 +9,7 @@ import com.na21k.schedulenotes.data.database.SimpleListItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.nio.file.NotDirectoryException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -104,7 +104,7 @@ public class LanguagesListItem extends SimpleListItem {
      */
     @NotNull
     public List<String> getAttachedImagesPaths(@NotNull String attachedImagesDirPathAbsolute)
-            throws NotDirectoryException {
+            throws IOException {
         String attachedImagesDirPath = String.format(
                 Locale.US,
                 "%s/%d",
@@ -115,13 +115,11 @@ public class LanguagesListItem extends SimpleListItem {
         File attachedImagesDir = new File(attachedImagesDirPath);
         File[] attachedImages = attachedImagesDir.listFiles();
 
-        if (attachedImages == null) return new ArrayList<>();
+        if (attachedImages == null) throw new IOException("Failed to list attached image files.");
 
         List<String> attachedImagesPaths = new ArrayList<>();
 
         for (File image : attachedImages) {
-            if (!image.isDirectory()) throw new NotDirectoryException(image.getPath());
-
             String imagePath = image.getPath();
             attachedImagesPaths.add(imagePath);
         }

@@ -39,7 +39,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.NotDirectoryException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -226,7 +225,7 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
                         mAttachedImagesAbsoluteDirPath
                 );
                 source.setResult(attachedImages);
-            } catch (NotDirectoryException e) {
+            } catch (IOException e) {
                 source.setException(e);
             }
         }).start();
