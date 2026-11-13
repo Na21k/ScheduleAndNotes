@@ -245,7 +245,18 @@ public class LanguagesListRepositoryImpl extends MutableRepository<LanguagesList
 
     @Override
     public void clearBlocking() {
+        deleteAllAttachedImagesBlocking();
         mLanguagesListItemDao.deleteAll();
+    }
+
+    private void deleteAllAttachedImagesBlocking() {
+        File imagesDir = new File(mLanguagesListAttachedImagesAbsoluteFolderPath);
+
+        try (Stream<Path> paths = Files.walk(imagesDir.toPath())) {
+            paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
