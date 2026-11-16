@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -418,7 +419,12 @@ public class WordOrPhraseDetailsActivity extends AppCompatActivity
             newAttachedImageTmpFileName = maxName + 1;
         }
 
-        String newAttachedImageTmpFilePath = tmpDirPath + '/' + newAttachedImageTmpFileName;
+        String newAttachedImageTmpFilePath = String.format(
+                Locale.US,
+                "%s/%d",
+                tmpDirPath,
+                newAttachedImageTmpFileName
+        );
         File newAttachedImageTmpFile = new File(newAttachedImageTmpFilePath);
 
         try (InputStream in = getContentResolver().openInputStream(uri);
